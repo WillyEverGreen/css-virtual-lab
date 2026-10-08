@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "experiment": "sha1",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What is the output digest size produced by the SHA-1 hash algorithm?",
+      "options": ["128 bits (32 hex chars)", "160 bits (40 hex chars)", "224 bits (56 hex chars)", "256 bits (64 hex chars)"],
+      "answerIndex": 1,
+      "explanation": "SHA-1 produces a 160-bit (20-byte) message digest, represented as a 40-character lowercase hexadecimal string."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "How many total step operations are executed in SHA-1 for each 512-bit message block?",
+      "options": ["32 operations", "64 operations", "80 operations", "128 operations"],
+      "answerIndex": 2,
+      "explanation": "SHA-1 processes each 512-bit block through 80 step operations divided into 4 rounds of 20 steps each."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "How many 32-bit state registers does SHA-1 maintain internally during compression?",
+      "options": ["4 registers (A, B, C, D)", "5 registers (A, B, C, D, E)", "8 registers (A to H)", "16 registers (W0 to W15)"],
+      "answerIndex": 1,
+      "explanation": "SHA-1 maintains five 32-bit working registers: A, B, C, D, and E, totaling 160 bits of internal state."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "How is the 16-word message block expanded into 80 words (W0 to W79) in SHA-1?",
+      "options": ["Duplicating the 16 words five times", "XORing four previous words and rotating left by 1 bit", "Adding constant K to each word", "Applying modular multiplication mod 2^32"],
+      "answerIndex": 1,
+      "explanation": "In SHA-1, W[t] for t >= 16 is generated as (W[t-3] XOR W[t-8] XOR W[t-14] XOR W[t-16]) circularly rotated left by 1 bit."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "What milestone cryptanalytic attack demonstrated practical SHA-1 collisions in 2017?",
+      "options": ["The Flame malware attack", "SHAttered (Stevens et al. / Google)", "Wang differential analysis on MD4", "POODLE attack"],
+      "answerIndex": 1,
+      "explanation": "In 2017, the SHAttered project by CWI Amsterdam and Google produced the first real-world collision between two different PDF files with identical SHA-1 hashes."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "What endianness is used by SHA-1 to process 32-bit words and length encoding?",
+      "options": ["Little-endian byte ordering", "Big-endian (network) byte ordering", "Mixed-endian byte ordering", "Bit-reversed byte ordering"],
+      "answerIndex": 1,
+      "explanation": "Unlike MD5 which uses little-endian, SHA-1 uses big-endian byte ordering for word loading, length appending, and final digest formatting."
+    }
+  ]
+}

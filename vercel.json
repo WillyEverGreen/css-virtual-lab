@@ -1,0 +1,24 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "cleanUrls": false,
+  "buildCommand": "echo Static build ready",
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://crypto-virtual-lab.collacou.workers.dev/api/$1"
+    },
+    {
+      "source": "/experiments/:slug/index.html",
+      "destination": "/experiments/:slug/index.html"
+    },
+    {
+      "source": "/experiments/:slug/:file",
+      "destination": "/experiments/:slug/:file"
+    },
+    {
+      "source": "/((?!api).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

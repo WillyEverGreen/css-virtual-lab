@@ -1,0 +1,7 @@
+export default function Hero() {
+  return (
+    <>
+<div className="section hero"><div className="contact-top hero-top-mobile"><img src="images/62d6caa2de257e672850a2dc_hero-mobile-top.svg" loading="lazy" alt="" className="contact-top-bg-bubbles hero-mobile-waves" /></div><div className="contact-bottom hero-bottom-mobile"><img src="images/62d6cab36a8d3d8dc475b243_hero-mobile-bottom.svg" loading="lazy" alt="" className="contact-bottom-bg-bubbles hero-mobile-waves" /></div><div className="hero-blobs"><div className="hero-blob-left"><img src="images/650b2638cb1f90806f5004f5_spark-bottom-left-blue.svg" loading="eager" data-w-id="918ece8e-41cc-dd2b-f80b-01212bac40ad" alt="" className="slide-in-left" /></div><div className="hero-blob-right"><img src="images/650b260d6a9e891820e21fa1_spark-top-right-red.svg" loading="eager" alt="" className="slide-in-right" /></div></div><div className="container fluid"><div className="max-640"><div data-w-id="918ece8e-41cc-dd2b-f80b-01212bac40b2" className="hero-content-block"><div className="hero-title-wrapper"><h1 className="hero-title">Learn cryptography by breaking it.</h1><p className="paragraph">Explore the math, validate the algorithms,<br />and secure the web.</p></div><a href="#experiments" className="button-icon emoji w-inline-block"><div className="emoji"><img src="/icons/rocket.svg" alt="" style={{width:'18px',height:'18px',display:'inline-block',verticalAlign:'middle'}} /></div><div className="button-text">Start exploring</div></a></div></div></div></div>
+    </>
+  );
+}

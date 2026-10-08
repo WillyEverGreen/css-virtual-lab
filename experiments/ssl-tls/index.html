@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SSL/TLS Protocol Overview &amp; Handshake Analysis - Fr. CRCE Virtual Cryptography Lab</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <div class="lab-experiment-container">
+
+    <!-- Header Card -->
+    <header class="lab-header-card">
+      <div class="lab-header-top">
+        <div class="lab-badge-row">
+          <span class="lab-badge-pill lab-badge-accent">Group E</span>
+          <span class="lab-badge-pill lab-badge-group">EXP05</span>
+          <span class="lab-badge-pill lab-badge-subtle">RFC 8446 / RFC 5246</span>
+          <span class="lab-badge-pill lab-badge-subtle">Web Crypto API</span>
+        </div>
+        <div class="lab-authors-strip">
+          <span>Engineered by:</span>
+          <strong>Jace Jaison, Ahamed Wafiq</strong>
+        </div>
+      </div>
+    </header>
+
+    <!-- SECTION 1: OBJECTIVE -->
+    <section id="objective" class="lab-section">
+      <span class="lab-section-tag">Section 1</span>
+      <h1 class="lab-section-title">SSL/TLS Protocol Overview &amp; Handshake Analysis</h1>
+      <div class="lab-prose">
+        <p>
+          The primary objective of this laboratory experiment is to study and simulate the fundamental architecture, key agreement mechanisms, and message sequencing of the <strong>Transport Layer Security (TLS 1.2 &amp; TLS 1.3)</strong> protocols. Students will investigate the difference in round-trip latency between TLS 1.2 (2-RTT) and TLS 1.3 (1-RTT), observe how Perfect Forward Secrecy (PFS) is achieved via Ephemeral Diffie-Hellman (ECDHE P-256) key exchanges, verify digital certificates to defend against Man-in-the-Middle (MITM) attacks, and inspect encrypted application record exchange using authenticated AEAD symmetric ciphers (AES-GCM).
+        </p>
+
+        <div class="lab-callout">
+          <div class="lab-callout-title">Standard Specification &amp; Cryptographic Evolution</div>
+          <p>
+            Standardized in <strong>RFC 8446 (TLS 1.3)</strong> and previously in <strong>RFC 5246 (TLS 1.2)</strong>, TLS provides confidentiality, integrity, and authentication through a synergy of asymmetric key exchange, X.509 digital certificates, and authenticated symmetric encryption. TLS 1.3 deprecates insecure legacy ciphers (static RSA key transport, CBC padding mode, RC4, 3DES) and reduces connection latency to a single round trip (1-RTT).
+          </p>
+        </div>
+
+        <div class="lab-grid-3">
+          <div class="lab-card-item">
+            <h4>1. Handshake Protocol</h4>
+            <p>Negotiates cipher suites, authenticates the server identity via digital certificates, and securely establishes shared symmetric keys in 1 RTT.</p>
+          </div>
+          <div class="lab-card-item">
+            <h4>2. Perfect Forward Secrecy</h4>
+            <p>Mandates Ephemeral Diffie-Hellman (ECDHE) so that future compromise of the server's private key cannot decrypt past recorded sessions.</p>
+          </div>
+          <div class="lab-card-item">
+            <h4>3. AEAD Record Encryption</h4>
+            <p>Wraps all application data in Authenticated Encryption (AES-GCM), eliminating legacy padding oracle attacks (POODLE, Lucky 13, BEAST).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: THEORY -->
+    <section id="theory" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 2</span>
+      <h2 class="lab-section-title">Cryptographic Architecture &amp; Protocol Layers</h2>
+      <div class="lab-prose">
+        <p>
+          TLS operates as a layered protocol positioned between the Transport layer (TCP) and the Application layer (e.g., HTTP):
+        </p>
+
+        <h3>1. The Subprotocol Hierarchy</h3>
+        <ul style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>Handshake Protocol:</strong> Negotiates protocol version, cipher suites, exchanges random nonces, performs public key exchange, and authenticates peer certificates.</li>
+          <li><strong>Record Protocol:</strong> Secures application data using keys generated during the handshake. It fragments, optionally compresses, attaches authentication tags, and encrypts payloads.</li>
+          <li><strong>Alert Protocol:</strong> Transmits warnings and fatal errors (e.g. <code>bad_certificate</code>, <code>bad_record_mac</code>, <code>handshake_failure</code>). Fatal alerts immediately terminate the connection.</li>
+          <li><strong>ChangeCipherSpec Protocol (TLS 1.2):</strong> A legacy 1-byte message signaling the transition to symmetric encryption (deprecated in TLS 1.3).</li>
+        </ul>
+
+        <h3>2. Ephemeral Diffie-Hellman (ECDHE) Key Exchange</h3>
+        <p>
+          In TLS 1.3, static RSA key transport is eliminated. Both client and server dynamically generate ephemeral key pairs on NIST curve P-256 (<code>secp256r1</code>):
+        </p>
+        <div class="lab-formula-box">
+          Client ephemeral private key: d_c &isin; [1, n-1], Public key share: Q_c = d_c &times; G<br>
+          Server ephemeral private key: d_s &isin; [1, n-1], Public key share: Q_s = d_s &times; G<br>
+          Shared ECDH Secret: Z = d_c &times; Q_s = d_s &times; Q_c = (d_c &times; d_s) &times; G
+        </div>
+        <p>
+          Because private keys <code>d_c</code> and <code>d_s</code> are discarded immediately after the session finishes, <strong>Perfect Forward Secrecy (PFS)</strong> is guaranteed: an adversary intercepting and recording ciphertext cannot decrypt historic conversations even if they later compromise the server's long-term certificate private key.
+        </p>
+
+        <h3>3. Key Derivation &amp; Master Secret</h3>
+        <p>
+          Using the HMAC-based Key Derivation Function (HKDF in TLS 1.3 / PRF in TLS 1.2), the client and server combine nonces and the shared secret <code>Z</code> to derive:
+        </p>
+        <ul style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>Client Write Key &amp; IV:</strong> Encrypts outbound data from client to server.</li>
+          <li><strong>Server Write Key &amp; IV:</strong> Encrypts outbound data from server to client.</li>
+          <li><strong>Finished MAC Keys:</strong> Authenticates the complete transcript of prior handshake messages to defeat tampering.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 3: PROCEDURE -->
+    <section id="procedure" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 3</span>
+      <h2 class="lab-section-title">Laboratory Procedure</h2>
+      <div class="lab-prose">
+        <p>Follow these experimental steps to evaluate the TLS handshake state machine:</p>
+        <ol style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>Step 1: Configuration Setup.</strong> Navigate to the <em>Simulator</em> tab. Select protocol version (TLS 1.3 or TLS 1.2), Key Exchange algorithm (ECDHE or RSA), and Execution Scenario (Normal, Expired Certificate, MITM Forged Cert, or Tampered Finished Message).</li>
+          <li><strong>Step 2: Start Handshake Simulation.</strong> Click <strong>▶ Play Auto-Run</strong> to watch the live animated packet flight across the network channel, or click <strong>⏭ Step Forward</strong> to advance through the protocol messages one by one.</li>
+          <li><strong>Step 3: Packet Inspection.</strong> Click any message packet in the central network channel to examine its structured JSON payload (protocol version, randoms, cipher suites, key shares, or verification tags) in the <em>Packet Inspector</em>.</li>
+          <li><strong>Step 4: Interactive Application Data Exchange.</strong> Once the handshake completes with status <code>Established</code>, enter a plaintext application message in the Client terminal and click <strong>⚡ Send Encrypted Record</strong>. Observe AES-GCM ciphertext transmission and automatic server-side decryption.</li>
+          <li><strong>Step 5: Attack Scenario Evaluation.</strong> Test the failure scenarios (Expired Certificate, MITM Attacker, Tampered MAC) to observe how TLS triggers fatal alerts and terminates without exposing application data.</li>
+          <li><strong>Step 6: Review Observations &amp; Export Report.</strong> Check the dynamic <em>Observations &amp; Results</em> table in Section 5 and export the PDF laboratory report.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SECTION 4: PROTOCOL SIMULATOR -->
+    <section id="simulation" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 4</span>
+      <h2 class="lab-section-title">Interactive SSL/TLS Handshake Simulator</h2>
+      <div class="lab-prose">
+        <p>Configure parameters below and step through authentic Web Crypto API key generation and message exchanges:</p>
+      </div>
+
+      <!-- Configuration Card -->
+      <div class="sim-config-box">
+        <div class="config-grid">
+          <label>
+            <span class="config-label-text">TLS Protocol Version:</span>
+            <select id="tlsVersion" class="sim-select">
+              <option value="1.3" selected>TLS 1.3 (RFC 8446 - 1-RTT, PFS Mandated)</option>
+              <option value="1.2">TLS 1.2 (RFC 5246 - 2-RTT, Classic Handshake)</option>
+            </select>
+          </label>
+          <label>
+            <span class="config-label-text">Key Exchange Algorithm:</span>
+            <select id="keyExchange" class="sim-select">
+              <option value="ECDHE" selected>ECDHE (NIST P-256 Curve)</option>
+              <option value="RSA">RSA (Static Key Transport)</option>
+            </select>
+          </label>
+          <label>
+            <span class="config-label-text">Execution Scenario:</span>
+            <select id="simScenario" class="sim-select">
+              <option value="success" selected>Normal (Success - Authentic CA)</option>
+              <option value="expired">Expired Certificate (Validation Failure)</option>
+              <option value="mitm">Man-in-the-Middle (Forged Certificate)</option>
+              <option value="tampered">Tampered Finished Message (MAC Failure)</option>
+            </select>
+          </label>
+        </div>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="sim-controls-strip">
+        <div class="sim-ctrl-btns">
+          <button id="btnPlay" class="sim-btn-primary">▶ Play Auto-Run</button>
+          <button id="btnStepFwd" class="sim-btn-secondary">⏭ Step Forward</button>
+          <button id="btnReset" class="sim-btn-danger">↺ Reset</button>
+        </div>
+        <div class="sim-speed-box">
+          <label for="simSpeed"><strong>Animation Speed:</strong></label>
+          <input type="range" id="simSpeed" min="1" max="5" value="3">
+        </div>
+      </div>
+
+      <!-- Main Simulation Layout -->
+      <div class="sim-layout">
+        <!-- Left: Workspace & Inspector -->
+        <div class="sim-main-col">
+          <div class="sim-workspace">
+            <!-- Client Node -->
+            <div class="node-panel client-panel">
+              <div class="node-header">Client (Browser)</div>
+              <div class="state-indicator" id="clientState">INITIAL</div>
+              <div class="crypto-state" id="clientCrypto">Keys: [Click 'Play' or 'Step Forward' to initialize]</div>
+              <div class="app-data">
+                <input type="text" id="appInput" placeholder="Wait for handshake..." disabled>
+                <button id="btnSendApp" class="sim-btn-mini" disabled>⚡ Send Record</button>
+              </div>
+            </div>
+
+            <!-- Animated Network Channel -->
+            <div class="network-channel" id="networkChannel">
+              <svg id="sequenceSvg" width="100%" height="100%"></svg>
+              <div id="messagesContainer"></div>
+            </div>
+
+            <!-- Server Node -->
+            <div class="node-panel server-panel">
+              <div class="node-header">Server (Host)</div>
+              <div class="state-indicator" id="serverState">INITIAL</div>
+              <div class="crypto-state" id="serverCrypto">Keys: [Click 'Play' or 'Step Forward' to initialize]</div>
+              <div class="app-data" id="serverOutputBox">
+                <p class="server-rcvd-msg">Awaiting secure channel...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Packet Inspector -->
+          <div class="inspector-panel">
+            <div class="inspector-header">🔍 Packet Inspector</div>
+            <div id="inspectorContent">Click any message packet in the sequence to view its structured cryptographic payload.</div>
+          </div>
+        </div>
+
+        <!-- Right: What's Happening & Metrics -->
+        <div class="sim-side-col">
+          <div class="explanation-panel" id="explanationPanel">
+            <h3>Protocol State &amp; Progress</h3>
+            <p id="explanationText">Configure settings above, then click <strong>Play Auto-Run</strong> or <strong>Step Forward</strong> to begin.</p>
+          </div>
+
+          <div class="metrics-panel">
+            <div class="metrics-card">
+              <h4>Metrics &amp; Event Log</h4>
+              <div class="metric-row">
+                <span>Round Trips (RTT):</span>
+                <strong id="rttCount" class="badge-rtt">0</strong>
+              </div>
+              <div class="metric-row">
+                <span>Handshake Status:</span>
+                <span id="hsStatusBadge" class="status-badge">Not Started</span>
+              </div>
+              <ul id="eventLog" class="event-log"></ul>
+              <button id="btnExportLog" class="sim-btn-outline" style="width: 100%; margin-top: 10px;">📄 Export Lab Report (PDF)</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: OBSERVATIONS & COMPARISON -->
+    <section id="comparison" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 5</span>
+      <h2 class="lab-section-title">Observations &amp; Comparative Analysis</h2>
+      
+      <div class="lab-prose">
+        <p>Examine real-time observations recorded from the active simulation session and compare cryptographic features across protocol versions:</p>
+      </div>
+
+      <!-- Real-Time Observations Table -->
+      <h3 style="font-size: 18px; font-weight: 800; margin: 20px 0 10px 0;">Live Handshake Exchange Log</h3>
+      <div class="lab-table-wrapper">
+        <table class="lab-table" id="obsTable">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Direction</th>
+              <th>Message Type</th>
+              <th>Cryptographic State</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="4" style="text-align: center; color: #71717a;">Click 'Play Auto-Run' or 'Step Forward' to generate real-time observations.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="conclusion-box">
+        <h4 style="margin: 0 0 6px 0; font-size: 15px; font-weight: 800; color: #18181b;">Handshake Evaluation Conclusion:</h4>
+        <p id="conclusionText" style="margin: 0; font-size: 14px; color: #52525b;">Awaiting simulation execution.</p>
+      </div>
+
+      <!-- Architectural Comparison Table -->
+      <h3 style="font-size: 18px; font-weight: 800; margin: 28px 0 10px 0;">TLS 1.2 vs TLS 1.3 Architectural Comparison</h3>
+      <div class="lab-table-wrapper">
+        <table class="lab-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>TLS 1.2 (RFC 5246)</th>
+              <th>TLS 1.3 (RFC 8446)</th>
+              <th>Security &amp; Performance Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Handshake Latency</strong></td>
+              <td>2 Round Trips (2-RTT)</td>
+              <td>1 Round Trip (1-RTT) + 0-RTT Resumption</td>
+              <td>50% latency reduction in initial TCP connection establishment</td>
+            </tr>
+            <tr>
+              <td><strong>Key Exchange</strong></td>
+              <td>Static RSA, DHE, or ECDHE</td>
+              <td>ECDHE exclusively mandated</td>
+              <td>Guarantees Perfect Forward Secrecy; eliminates retrospective decryption</td>
+            </tr>
+            <tr>
+              <td><strong>Cipher Suite Architecture</strong></td>
+              <td>Over 30 legacy suites; separate auth/cipher/hash</td>
+              <td>5 streamlined AEAD suites (e.g. AES-128-GCM-SHA256)</td>
+              <td>Drastically shrinks attack surface and configuration error potential</td>
+            </tr>
+            <tr>
+              <td><strong>Symmetric Ciphers</strong></td>
+              <td>CBC mode with HMAC, RC4, 3DES, AES-GCM</td>
+              <td>AEAD only (AES-GCM, AES-CCM, ChaCha20-Poly1305)</td>
+              <td>Eliminates padding oracle attacks (POODLE, Lucky 13, BEAST)</td>
+            </tr>
+            <tr>
+              <td><strong>Certificate Privacy</strong></td>
+              <td>Transmitted in cleartext during handshake</td>
+              <td>Encrypted using derived handshake secret</td>
+              <td>Prevents passive eavesdroppers from observing host identity</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 6: QUIZ -->
+    <section id="quiz" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 6</span>
+      <h2 class="lab-section-title">Knowledge Assessment Quiz</h2>
+      <div class="lab-prose">
+        <p>Test your comprehensive understanding of the TLS protocol architecture, handshake phases, and modern cryptographic design:</p>
+      </div>
+
+      <div id="quizContainer"></div>
+
+      <div style="display: flex; gap: 12px; margin-top: 20px;">
+        <button type="button" id="btnSubmitQuiz" class="sim-btn-primary">Submit Quiz</button>
+        <button type="button" id="btnResetQuiz" class="sim-btn-secondary">Reset Answers</button>
+      </div>
+
+      <div id="quizScoreBanner" class="quiz-score-banner" style="display: none; margin-top: 16px;">
+        <div>
+          <h4 style="margin: 0; font-size: 16px; font-weight: 800;">Quiz Results</h4>
+          <p id="quizScoreText" style="margin: 4px 0 0; font-size: 14px; color: #52525b;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: REFERENCES -->
+    <section id="references" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 7</span>
+      <h2 class="lab-section-title">Authoritative References &amp; Standards</h2>
+      <div class="lab-prose">
+        <p>For official RFC protocol specifications, NIST guidelines, and textbook literature:</p>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[1] RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3</h4>
+          <p>E. Rescorla. Internet Engineering Task Force (August 2018)</p>
+        </div>
+        <a href="https://www.ietf.org/rfc/rfc8446.txt" target="_blank" rel="noopener noreferrer" class="ref-btn">View RFC 8446 &rarr;</a>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[2] RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2</h4>
+          <p>T. Dierks, E. Rescorla. Network Working Group (August 2008)</p>
+        </div>
+        <a href="https://www.ietf.org/rfc/rfc5246.txt" target="_blank" rel="noopener noreferrer" class="ref-btn">View RFC 5246 &rarr;</a>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[3] NIST SP 800-52 (Rev. 2): Guidelines for the Selection and Use of TLS</h4>
+          <p>K. McKay, D. Cooper. National Institute of Standards and Technology (August 2019)</p>
+        </div>
+        <a href="https://csrc.nist.gov/publications/detail/sp/800-52/rev-2/final" target="_blank" rel="noopener noreferrer" class="ref-btn">NIST SP 800-52 &rarr;</a>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[4] Cryptography and Network Security: Principles and Practice (7th ed.)</h4>
+          <p>William Stallings. Pearson Education (2017) - Chapter 17: Transport-Level Security</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

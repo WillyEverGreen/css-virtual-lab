@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "experiment": "md5",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What is the output digest size produced by the MD5 hash algorithm?",
+      "options": ["64 bits (16 hex chars)", "128 bits (32 hex chars)", "160 bits (40 hex chars)", "256 bits (64 hex chars)"],
+      "answerIndex": 1,
+      "explanation": "MD5 produces a 128-bit message digest, represented as a 32-character lowercase hexadecimal string."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "What byte is appended first during the MD5 message padding phase?",
+      "options": ["0x00", "0x01", "0x80", "0xFF"],
+      "answerIndex": 2,
+      "explanation": "Padding begins by appending a single 1 bit, which corresponds to the byte 0x80 (10000000 in binary)."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "What is the block processing size and word size used in MD5?",
+      "options": ["256-bit block and 16-bit word", "512-bit block and 32-bit word", "512-bit block and 64-bit word", "1024-bit block and 64-bit word"],
+      "answerIndex": 1,
+      "explanation": "MD5 partitions the padded message into 512-bit blocks, and each block is divided into sixteen 32-bit words."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "How many total step operations are executed in the compression function for each 512-bit block?",
+      "options": ["16 operations", "32 operations", "64 operations", "80 operations"],
+      "answerIndex": 2,
+      "explanation": "MD5 processes each block through 4 rounds of 16 steps each, totaling 64 step operations."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "According to the Strict Avalanche Criterion (SAC), flipping one bit of input should flip what proportion of output bits on average?",
+      "options": ["Approximately 10%", "Approximately 25%", "Approximately 50%", "Exactly 100%"],
+      "answerIndex": 2,
+      "explanation": "The Strict Avalanche Criterion requires that flipping a single input bit causes each output bit to change with probability 0.5 (50%)."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "Why is MD5 considered cryptographically broken for modern digital signature security?",
+      "options": ["Key length is too short", "Practical collision attacks exist", "It cannot run on 64-bit processors", "It produces variable-length digests"],
+      "answerIndex": 1,
+      "explanation": "Practical collision attacks (demonstrated by Wang et al. in 2004/2005) allow creating two different messages with identical MD5 digests in seconds."
+    }
+  ]
+}

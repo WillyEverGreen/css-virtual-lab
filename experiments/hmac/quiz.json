@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "experiment": "hmac",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "Which IETF RFC formally standardizes the Keyed-Hash Message Authentication Code (HMAC)?",
+      "options": ["RFC 1321", "RFC 2104", "RFC 3174", "RFC 5246"],
+      "answerIndex": 1,
+      "explanation": "RFC 2104 (published by Bellare, Canetti, and Krawczyk in 1997) formally standardizes HMAC, alongside NIST FIPS PUB 198-1."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "What are the standard repeating byte constants used for the inner pad (ipad) and outer pad (opad)?",
+      "options": ["ipad = 0x00, opad = 0xFF", "ipad = 0x36, opad = 0x5C", "ipad = 0x5A, opad = 0x6E", "ipad = 0x80, opad = 0x00"],
+      "answerIndex": 1,
+      "explanation": "In RFC 2104, ipad is defined as the byte 0x36 repeated B times (64 times for SHA-256), and opad is 0x5C repeated B times."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "What is the correct mathematical definition of HMAC for hash function H, key K, and message M?",
+      "options": ["H(K || M)", "H(M || K)", "H((K' ^ opad) || H((K' ^ ipad) || M))", "H(K) ^ H(M)"],
+      "answerIndex": 2,
+      "explanation": "The HMAC formula nests two hashing passes: H((K' XOR opad) concatenated with H((K' XOR ipad) concatenated with M))."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "If a secret key K is strictly longer than the hash block size B (e.g. > 64 bytes for SHA-256), how is K processed?",
+      "options": ["Truncated to the first B bytes", "Hashed using H(K) to reduce it to L bytes, then zero-padded to B bytes", "Rejected as an invalid key error", "Reversed and XORed with 0xFF"],
+      "answerIndex": 1,
+      "explanation": "According to RFC 2104, keys longer than block size B are first hashed down to L bytes via H(K) and then padded with zeros up to B bytes."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "What critical attack against naive Merkle-Damgard prefix construction H(K || M) does HMAC completely prevent?",
+      "options": ["Buffer overflow attack", "Length extension attack", "Timing side-channel attack", "Chosen-ciphertext attack"],
+      "answerIndex": 1,
+      "explanation": "Because Merkle-Damgard hash outputs expose the full internal chaining state, naive H(K || M) allows an attacker to append data without knowing K. HMAC's outer hash H((K' ^ opad) || ...) eliminates length extension."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "Does calculating a standard HMAC digest provide confidentiality for the plaintext message?",
+      "options": ["Yes, it encrypts the entire plaintext", "No, it ensures message authenticity and integrity only, leaving confidentiality to encryption", "Yes, provided the key length exceeds 256 bits", "Only when combined with RSA"],
+      "answerIndex": 1,
+      "explanation": "An HMAC is an authentication tag, not an encryption cipher. To achieve confidentiality, HMAC must be combined with a symmetric cipher like AES (e.g. Encrypt-then-MAC)."
+    }
+  ]
+}

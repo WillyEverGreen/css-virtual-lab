@@ -1,0 +1,21 @@
+export type Env = {
+  ASSETS: Fetcher;
+  PUBLIC_BASE_URL: string;
+  GITHUB_APP_ID: string;
+  GITHUB_APP_CLIENT_ID: string;
+  GITHUB_APP_SLUG: string;
+  DATA_REPO: string;
+  DATA_BRANCH: string;
+  CODE_BRANCH: string;
+  ADMIN_GITHUB_LOGINS: string;
+  TURNSTILE_SITE_KEY: string;
+  GITHUB_API_BASE?: string;
+  GITHUB_OAUTH_BASE?: string;
+  GITHUB_APP_CLIENT_SECRET: string;
+  GITHUB_APP_PRIVATE_KEY_PKCS8?: string;
+  SESSION_SECRET: string;
+  REPO_WRITE_TOKEN?: string;
+  TURNSTILE_SECRET?: string;
+  GITHUB_WEBHOOK_SECRET?: string;
+  DB?: any;
+};

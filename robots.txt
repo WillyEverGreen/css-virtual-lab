@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /instructions
+Allow: /experiments/
+Disallow: /api/
+Disallow: /admin
+Disallow: /team
+Disallow: /join
+
+Sitemap: https://crypto-virtual-lab.workers.dev/sitemap.xml

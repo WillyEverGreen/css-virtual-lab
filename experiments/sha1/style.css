@@ -1,0 +1,763 @@
+/* ==========================================================================
+   SHA-1 Virtual Laboratory Module - Retro-Academic Lab Design System
+   Fr. Conceicao Rodrigues College of Engineering (Fr. CRCE)
+   Authors: Tanush Chavan, Aaron Deniz, Swar, Asher
+   ========================================================================== */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  overflow-x: hidden;
+}
+
+.lab-experiment-container {
+  min-height: auto;
+  background-color: transparent;
+  color: #18181b;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+  padding: 0 0 60px 0;
+  box-sizing: border-box;
+}
+
+.lab-experiment-container * {
+  box-sizing: border-box;
+}
+
+/* Header Card */
+.lab-header-card {
+  max-width: 980px;
+  margin: 0 auto 24px auto;
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 4px 4px 0px #18181b;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lab-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lab-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lab-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid #18181b;
+}
+
+.lab-badge-accent {
+  background: #3c8aff;
+  color: #ffffff;
+}
+
+.lab-badge-group {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #18181b;
+}
+
+.lab-badge-subtle {
+  background: #f4f4f5;
+  color: #52525b;
+}
+
+.lab-authors-strip {
+  font-size: 13px;
+  color: #52525b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lab-authors-strip strong {
+  color: #18181b;
+}
+
+/* Navigation Tabs (Master Navbar takes precedence) */
+.lab-tabs-nav {
+  display: none !important;
+}
+
+.lab-tab-btn {
+  background: transparent;
+  color: #52525b;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lab-tab-btn:hover {
+  background: #f4f4f5;
+  color: #18181b;
+}
+
+.lab-tab-btn.active {
+  background: #3c8aff;
+  color: #ffffff;
+  border-color: #18181b;
+  box-shadow: 2px 2px 0px #18181b;
+}
+
+/* Section Cards */
+.lab-section {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 16px;
+  padding: 36px 40px;
+  margin: 0 auto 28px auto;
+  max-width: 980px;
+  box-shadow: 4px 4px 0px #18181b;
+}
+
+.lab-section.tab-hidden {
+  display: none !important;
+}
+
+.lab-section-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: #eff6ff;
+  color: #1d4ed8;
+  border: 1.5px solid #18181b;
+  padding: 3px 12px;
+  border-radius: 999px;
+  margin-bottom: 14px;
+}
+
+.lab-section-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #18181b;
+  margin: 0 0 20px 0;
+  letter-spacing: -0.02em;
+}
+
+/* Typography & Prose */
+.lab-prose p {
+  font-size: 15.5px;
+  line-height: 1.7;
+  color: #27272a;
+  margin: 0 0 16px 0;
+}
+
+.lab-prose h3 {
+  font-size: 19px;
+  font-weight: 800;
+  color: #18181b;
+  margin: 28px 0 12px 0;
+}
+
+.lab-callout {
+  background: #f0f7ff;
+  border: 2px solid #18181b;
+  border-left: 6px solid #3c8aff;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin: 20px 0;
+}
+
+.lab-callout-title {
+  font-weight: 800;
+  color: #1d4ed8;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+
+.lab-callout p {
+  margin: 0;
+  font-size: 14.5px;
+  color: #1e293b;
+}
+
+.lab-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.lab-card-item {
+  background: #faf9f6;
+  border: 2px solid #18181b;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 2px 2px 0px #18181b;
+}
+
+.lab-card-item h4 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: #18181b;
+}
+
+.lab-card-item p {
+  margin: 0;
+  font-size: 14px;
+  color: #52525b;
+  line-height: 1.55;
+}
+
+/* Formula Box */
+.lab-formula-box {
+  background: #18181b;
+  color: #93c5fd;
+  border: 2px solid #18181b;
+  border-radius: 10px;
+  padding: 16px 20px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 14px;
+  overflow-x: auto;
+  margin: 16px 0;
+  line-height: 1.6;
+}
+
+/* Simulation Controls */
+.sim-controls-card {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.sim-field-group {
+  margin-bottom: 18px;
+}
+
+.sim-label {
+  display: block;
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #18181b;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.sim-textarea {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 14.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #18181b;
+  resize: vertical;
+  min-height: 85px;
+}
+
+.sim-textarea:focus {
+  outline: none;
+  border-color: #3c8aff;
+  box-shadow: 0 0 0 3px rgba(60, 138, 255, 0.2);
+}
+
+.sim-presets-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.sim-preset-btn {
+  background: #f4f4f5;
+  border: 1.5px solid #18181b;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #18181b;
+  cursor: pointer;
+  box-shadow: 1px 1px 0px #18181b;
+}
+
+.sim-preset-btn:hover {
+  background: #e4e4e7;
+}
+
+.sim-actions-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.sim-btn-primary {
+  background: #3c8aff;
+  color: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-weight: 800;
+  font-size: 14.5px;
+  cursor: pointer;
+  box-shadow: 3px 3px 0px #18181b;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sim-btn-primary:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0px #18181b;
+}
+
+.sim-btn-secondary {
+  background: #ffffff;
+  color: #18181b;
+  border: 2px solid #18181b;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0px #18181b;
+}
+
+/* Output Box */
+.sim-output-box {
+  background: #18181b;
+  color: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 20px;
+  box-shadow: 4px 4px 0px #18181b;
+}
+
+.sim-output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sim-output-title {
+  font-weight: 800;
+  font-size: 14px;
+  color: #93c5fd;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sim-copy-btn {
+  background: #27272a;
+  color: #ffffff;
+  border: 1.5px solid #52525b;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sim-digest-display {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(16px, 2.2vw, 22px);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #60a5fa;
+  background: #09090b;
+  border: 1.5px solid #27272a;
+  border-radius: 10px;
+  padding: 16px 20px;
+  word-break: break-all;
+  user-select: all;
+  margin-bottom: 16px;
+}
+
+/* Stats Grid */
+.sim-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.sim-stat-card {
+  background: #27272a;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
+.sim-stat-label {
+  font-size: 11px;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+}
+
+.sim-stat-val {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 15px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-top: 4px;
+}
+
+/* 5 State Registers A, B, C, D, E */
+.sim-reg-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.sim-reg-box {
+  background: #09090b;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.sim-reg-name {
+  color: #facc15;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sim-reg-hex {
+  color: #60a5fa;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 2px;
+}
+
+/* Avalanche Comparison */
+.avalanche-container {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 14px;
+  padding: 24px;
+  margin-top: 20px;
+}
+
+.avalanche-inputs-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .avalanche-inputs-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.avalanche-box {
+  background: #faf9f6;
+  border: 2px solid #18181b;
+  border-radius: 10px;
+  padding: 16px;
+}
+
+.avalanche-scorecard {
+  background: #eff6ff;
+  border: 2px solid #18181b;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.scorecard-metric {
+  text-align: center;
+}
+
+.scorecard-metric .num {
+  font-size: 32px;
+  font-weight: 900;
+  color: #1d4ed8;
+  line-height: 1;
+}
+
+.scorecard-metric .desc {
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #18181b;
+  margin-top: 6px;
+}
+
+/* 160-Bit Diff Grid */
+.bit-diff-wrapper {
+  margin-top: 20px;
+}
+
+.bit-diff-title {
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bit-diff-legend {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.legend-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid #18181b;
+}
+
+.legend-dot.match { background: #dcfce7; }
+.legend-dot.diff { background: #f87171; }
+
+.bit-grid-160 {
+  display: grid;
+  grid-template-columns: repeat(32, 1fr);
+  gap: 3px;
+  background: #18181b;
+  padding: 12px;
+  border: 2px solid #18181b;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.bit-cell {
+  width: 100%;
+  aspect-ratio: 1;
+  min-width: 13px;
+  min-height: 13px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8.5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.bit-cell.match {
+  background: #22c55e;
+  color: #052e16;
+}
+
+.bit-cell.diff {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Table */
+.lab-table-wrapper {
+  overflow-x: auto;
+  border: 2px solid #18181b;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.lab-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  background: #ffffff;
+}
+
+.lab-table th {
+  background: #18181b;
+  color: #ffffff;
+  text-align: left;
+  padding: 12px 16px;
+  font-weight: 800;
+}
+
+.lab-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #e4e4e7;
+  color: #27272a;
+}
+
+.lab-table tr:hover td {
+  background: #eff6ff;
+}
+
+/* Quiz */
+.quiz-card {
+  background: #faf9f6;
+  border: 2px solid #18181b;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 18px;
+  box-shadow: 2px 2px 0px #18181b;
+}
+
+.quiz-prompt {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #18181b;
+  margin-bottom: 14px;
+}
+
+.quiz-option-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1.5px solid #18181b;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.1s ease;
+}
+
+.quiz-option-label:hover {
+  background: #eff6ff;
+  border-color: #3c8aff;
+}
+
+.quiz-option-label input[type="radio"] {
+  accent-color: #3c8aff;
+}
+
+.quiz-feedback {
+  margin-top: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  display: none;
+}
+
+.quiz-feedback.correct {
+  display: block;
+  background: #dcfce7;
+  color: #15803d;
+  border: 1.5px solid #16a34a;
+}
+
+.quiz-feedback.incorrect {
+  display: block;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1.5px solid #dc2626;
+}
+
+.quiz-score-banner {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 20px;
+  box-shadow: 3px 3px 0px #18181b;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Reference Cards */
+.ref-card {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 12px;
+  box-shadow: 2px 2px 0px #18181b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ref-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.ref-info p {
+  margin: 0;
+  font-size: 13.5px;
+  color: #52525b;
+}
+
+.ref-btn {
+  background: #f4f4f5;
+  color: #18181b;
+  border: 1.5px solid #18181b;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 1px 1px 0px #18181b;
+}
+
+.ref-btn:hover {
+  background: #e4e4e7;
+}
+
+@media (max-width: 768px) {
+  .lab-section { padding: 24px 20px; }
+  .lab-header-card { padding: 18px 20px; }
+  .bit-grid-160 { grid-template-columns: repeat(16, 1fr); }
+}

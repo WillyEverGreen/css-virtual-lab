@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "experiment": "ssl-tls",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "Which IETF RFC specification defines the modern Transport Layer Security protocol version 1.3 (TLS 1.3)?",
+      "options": ["RFC 2246", "RFC 5246", "RFC 8446", "RFC 793"],
+      "answerIndex": 2,
+      "explanation": "RFC 8446 (published in August 2018) specifies TLS 1.3, superseding TLS 1.2 defined in RFC 5246."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "How many network round-trips (RTT) are required for a standard full handshake in TLS 1.3 compared to TLS 1.2?",
+      "options": ["0-RTT in TLS 1.2 vs 1-RTT in TLS 1.3", "1-RTT in TLS 1.3 vs 2-RTT in TLS 1.2", "2-RTT in both versions", "3-RTT in TLS 1.3"],
+      "answerIndex": 1,
+      "explanation": "TLS 1.3 optimizes latency by combining key share exchange with the ClientHello/ServerHello messages, cutting handshake latency to 1-RTT."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "Why did TLS 1.3 completely remove static RSA key transport in favor of Ephemeral Diffie-Hellman (ECDHE)?",
+      "options": ["RSA keys are too short for modern CPUs", "To provide Perfect Forward Secrecy (PFS)", "RSA certificates cannot be signed by CAs", "Diffie-Hellman eliminates the need for certificates"],
+      "answerIndex": 1,
+      "explanation": "With static RSA, compromising the server private key allows retrospective decryption of all past sessions. Ephemeral Diffie-Hellman (ECDHE) generates fresh per-session keys to guarantee Perfect Forward Secrecy."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "Which component of the TLS architecture is responsible for negotiating cipher suites and establishing session keys?",
+      "options": ["TLS Record Protocol", "TLS Handshake Protocol", "TLS Alert Protocol", "TCP Transport Layer"],
+      "answerIndex": 1,
+      "explanation": "The TLS Handshake Protocol handles cipher negotiation, server/client authentication, and key agreement before the Record Protocol encrypts application data."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "What cryptographic object protects against Man-in-the-Middle (MITM) attacks during the ServerHello phase?",
+      "options": ["A shared preshared key (PSK)", "An X.509 Digital Certificate signed by a trusted Certificate Authority (CA)", "A random 32-byte salt", "A DNSSEC record"],
+      "answerIndex": 1,
+      "explanation": "The server presents an X.509 certificate carrying its public key, digitally signed by a trusted CA. The client validates the signature chain to authenticate the server."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "Which symmetric encryption mode family is exclusively mandated in TLS 1.3, removing older CBC-mode ciphers?",
+      "options": ["ECB (Electronic Codebook)", "AEAD (Authenticated Encryption with Associated Data, e.g., AES-GCM)", "CBC with HMAC (MAC-then-Encrypt)", "OFB (Output Feedback)"],
+      "answerIndex": 1,
+      "explanation": "TLS 1.3 eliminated CBC-mode ciphers (which were prone to padding oracle attacks like POODLE and Lucky13) and mandates AEAD ciphers such as AES-GCM and ChaCha20-Poly1305."
+    }
+  ]
+}

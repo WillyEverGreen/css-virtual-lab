@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMAC Authentication &amp; Verification - Fr. CRCE Virtual Cryptography Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="lab-experiment-container">
+
+    <!-- Header Card -->
+    <header class="lab-header-card">
+      <div class="lab-header-top">
+        <div class="lab-badge-row">
+          <span class="lab-badge-pill lab-badge-accent">Group D</span>
+          <span class="lab-badge-pill lab-badge-group">EXP04</span>
+          <span class="lab-badge-pill lab-badge-subtle">RFC 2104</span>
+          <span class="lab-badge-pill lab-badge-subtle">HMAC-SHA-256</span>
+        </div>
+        <div class="lab-authors-strip">
+          <span>Engineered by:</span>
+          <strong>Wendell Dsouza, Jadern Crasto, Rohit Ahir</strong>
+        </div>
+      </div>
+    </header>
+
+
+    <!-- SECTION 1: OBJECTIVE (Single H1) -->
+    <section id="objective" class="lab-section">
+      <span class="lab-section-tag">Section 1</span>
+      <h1 class="lab-section-title">HMAC Authentication &amp; Verification</h1>
+      <div class="lab-prose">
+        <p>
+          The primary objective of this experiment is to explore the mathematical structure and cryptographic guarantees of the <strong>HMAC (Keyed-Hash Message Authentication Code)</strong> standard (RFC 2104 / FIPS PUB 198-1). Students will inspect the two-pass inner and outer key padding construction, analyze resistance against length-extension attacks, and simulate in-transit packet tampering detection.
+        </p>
+
+        <div class="lab-callout">
+          <div class="lab-callout-title">Standard Specification &amp; Security Goals</div>
+          <p>
+            Standardized by Bellare, Canetti, and Krawczyk in 1996, HMAC provides simultaneously <strong>data origin authenticity</strong> and <strong>data integrity</strong> without encrypting the message payload. Unlike naive constructions like <code>H(Key || Message)</code> which are vulnerable to length extension attacks on Merkle-Damgard hash functions, HMAC's nested structure guarantees security provided the underlying hash function remains secure.
+          </p>
+        </div>
+
+        <div class="lab-grid-3">
+          <div class="lab-card-item">
+            <h4>1. Nested 2-Pass Padding</h4>
+            <p>XORs the zero-padded key K' with inner pad byte 0x36 (ipad) and outer pad byte 0x5C (opad) across 64-byte blocks.</p>
+          </div>
+          <div class="lab-card-item">
+            <h4>2. Integrity Verification</h4>
+            <p>Recalculates the authentication tag at the receiving end; any single-bit alteration causes complete verification failure.</p>
+          </div>
+          <div class="lab-card-item">
+            <h4>3. Length Extension Defense</h4>
+            <p>Nesting the hash passes hides the internal Merkle-Damgard state, preventing adversaries from appending forged payloads.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: THEORY -->
+    <section id="theory" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 2</span>
+      <h2 class="lab-section-title">Cryptographic Architecture &amp; Mathematical Formulation</h2>
+      <div class="lab-prose">
+        <p>
+          HMAC was explicitly designed to operate on top of any iterated cryptographic hash function <code>H</code> (such as SHA-256) using a shared secret key <code>K</code>.
+        </p>
+
+        <h3>1. The RFC 2104 Mathematical Definition</h3>
+        <p>
+          For a hash function with internal block size <code>B</code> (64 bytes for SHA-256) and output digest length <code>L</code> (32 bytes for SHA-256):
+        </p>
+        <div class="lab-formula-box">
+          HMAC(K, M) = H( (K' &oplus; opad) || H( (K' &oplus; ipad) || M ) )
+        </div>
+        <p>Where the variables are defined as follows:</p>
+        <ul style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>K':</strong> The normalised key of length <code>B</code> bytes. If <code>len(K) &gt; B</code>, then <code>K' = H(K)</code> appended with zeros to length <code>B</code>. If <code>len(K) &lt; B</code>, zeros are appended to the right of <code>K</code> to reach length <code>B</code>.</li>
+          <li><strong>ipad (Inner Pad):</strong> The byte <code>0x36</code> repeated <code>B</code> times (e.g. <code>363636...36</code> for 64 bytes).</li>
+          <li><strong>opad (Outer Pad):</strong> The byte <code>0x5C</code> repeated <code>B</code> times (e.g. <code>5c5c5c...5c</code> for 64 bytes).</li>
+          <li><strong>||:</strong> Concatenation of byte arrays.</li>
+          <li><strong>&oplus;:</strong> Bitwise Exclusive-OR (XOR).</li>
+        </ul>
+
+        <h3>2. Why Naive Concatenation H(K || M) Fails</h3>
+        <p>
+          In iterated hash functions using the Merkle-Damgard construction (such as MD5, SHA-1, and SHA-256), the final digest output is identical to the internal register chaining state after processing the last block. If an application uses <code>Tag = H(K || M)</code>:
+        </p>
+        <div class="lab-callout">
+          <div class="lab-callout-title">Length Extension Vulnerability</div>
+          <p>
+            An attacker who intercepts <code>(M, Tag)</code> can initialize the hash function registers to <code>Tag</code>, append arbitrary padding and malicious data <code>M'</code>, and compute a valid signature <code>Tag' = H(K || M || padding || M')</code> <em>without ever knowing the secret key K</em>. HMAC completely eliminates this vulnerability because the outer hash pass <code>H((K' &oplus; opad) || ...)</code> masks the inner chaining state.
+          </p>
+        </div>
+
+        <h3>3. Encrypt-then-MAC vs MAC-then-Encrypt</h3>
+        <p>
+          When confidentiality and authentication are both required, modern cryptographic best practice mandates <strong>Encrypt-then-MAC (EtM)</strong>: the plaintext is encrypted first with a cipher (like AES-256-CBC), and the HMAC tag is calculated over the resulting ciphertext and initialization vector (IV).
+        </p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: PROCEDURE -->
+    <section id="procedure" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 3</span>
+      <h2 class="lab-section-title">Laboratory Procedure</h2>
+      <div class="lab-prose">
+        <p>Execute the following interactive experimental steps:</p>
+        <ol style="padding-left: 20px; line-height: 1.8;">
+          <li><strong>Step 1: HMAC Generation.</strong> Open the <em>Generator &amp; Pads</em> tab. Enter a plaintext message and a shared secret key (or pick a preset). Observe how the 256-bit hexadecimal authentication tag is produced.</li>
+          <li><strong>Step 2: Inspect Inner and Outer Pads.</strong> Review the 64-byte hex values for <code>K' XOR ipad</code> and <code>K' XOR opad</code> to verify the RFC 2104 XOR expansion.</li>
+          <li><strong>Step 3: Transmit Across Channel.</strong> Switch to the <em>Tamper &amp; Verification</em> tab. Click <em>Sync from Alice</em> to simulate transmission across an insecure channel.</li>
+          <li><strong>Step 4: Active In-Transit Tampering.</strong> Click <em>Tamper Message</em> or <em>Corrupt Tag</em> to simulate a Man-in-the-Middle altering the payload. Note how Bob's receiver engine detects the mismatch and immediately rejects the packet.</li>
+          <li><strong>Step 5: Test Key Authentication.</strong> Alter the receiver key by clicking <em>Tamper Key</em> to observe that knowledge of the exact shared secret is required for valid tag verification.</li>
+          <li><strong>Step 6: Complete Knowledge Quiz.</strong> Open the <em>Knowledge Quiz</em> tab and solve the assessment MCQs.</li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- SECTION 4: SIMULATION -->
+    <section id="simulation" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 4</span>
+      <h2 class="lab-section-title">Interactive HMAC &amp; Authenticated Pipeline Simulator</h2>
+      <div class="lab-prose">
+        <p>Explore RFC 2104 Keyed-Hash generation or simulate the full end-to-end <strong>Encrypt-then-MAC (AES-256-CBC + HMAC)</strong> pipeline with live in-transit channel tampering and receiver plaintext decryption:</p>
+      </div>
+
+      <!-- Flow Stepper -->
+      <div class="flow-stepper">
+        <div class="flow-step active" id="flowStep1">
+          <div class="flow-badge">1</div>
+          <span class="flow-label">Inputs &amp; Key</span>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step" id="flowStep2">
+          <div class="flow-badge">2</div>
+          <span class="flow-label">Encrypt &amp; Tag</span>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step" id="flowStep3">
+          <div class="flow-badge">3</div>
+          <span class="flow-label">Channel Transit</span>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step" id="flowStep4">
+          <div class="flow-badge">4</div>
+          <span class="flow-label">Tamper / Test</span>
+        </div>
+        <div class="flow-arrow">&rarr;</div>
+        <div class="flow-step" id="flowStep5">
+          <div class="flow-badge">5</div>
+          <span class="flow-label">Verify &amp; Decrypt</span>
+        </div>
+      </div>
+
+      <!-- Quick Test Cases -->
+      <div class="preset-strip">
+        <span class="preset-label">Quick Test Cases:</span>
+        <button type="button" class="chip-btn" id="loadPreset1">Case 1: Standard (Hello World)</button>
+        <button type="button" class="chip-btn" id="loadPreset2">Case 2: Tampered Message</button>
+        <button type="button" class="chip-btn" id="loadPreset3">Case 3: Tampered Key</button>
+        <button type="button" class="chip-btn" id="loadPreset4">Case 4: Bad HMAC</button>
+        <button type="button" class="chip-btn" id="loadPresetReset" style="background:#fee2e2; border-color:#dc2626; color:#991b1b;">Reset All</button>
+      </div>
+
+      <!-- Simulation Architecture Switcher -->
+      <div class="mode-switcher-container">
+        <div class="mode-switcher-header">
+          <span class="mode-switcher-label">Simulation Architecture:</span>
+          <span class="mode-switcher-hint">Switch between Full Authenticated Transmission (AES-256-CBC with Decryption) and Standard RFC 2104 HMAC</span>
+        </div>
+        <div class="mode-tabs">
+          <button type="button" class="mode-tab-btn active" id="btnModeEncryptMac">
+            <span>🔒 Full Pipeline: Encrypt-then-MAC (With Decryption)</span>
+            <span class="badge-tag badge-blue">Full Sim</span>
+          </button>
+          <button type="button" class="mode-tab-btn" id="btnModeHmacOnly">
+            <span>🏷️ Standard HMAC: Digest Only (RFC 2104)</span>
+            <span class="badge-tag badge-amber">Integrity Only</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- PANEL 1: FULL PIPELINE (ENCRYPT-THEN-MAC) -->
+      <div id="panelEncryptMac">
+        <div class="sim-split">
+          <!-- Sender (Alice) -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>1. Sender (Alice): Encryption &amp; HMAC</span>
+              <span class="badge-tag badge-blue">Generation &amp; Encrypt</span>
+            </div>
+            <div class="sim-field-group">
+              <label for="pipeMessage" class="sim-label">Plaintext Message</label>
+              <textarea id="pipeMessage" class="sim-textarea" rows="2" placeholder="Enter message to encrypt and authenticate...">Hello World</textarea>
+            </div>
+            <div class="sim-field-group">
+              <label for="pipeKey" class="sim-label">Shared Secret Key</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="password" id="pipeKey" class="sim-input" style="font-family: monospace;" value="mysecretkey">
+                <button type="button" class="chip-btn" id="btnTogglePipeKey">Show</button>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label for="pipeCipher" class="sim-label">Cipher</label>
+                <select id="pipeCipher" class="sim-select">
+                  <option value="AES-CBC" selected>AES-256-CBC</option>
+                </select>
+              </div>
+              <div>
+                <label for="pipeHash" class="sim-label">HMAC Hash</label>
+                <select id="pipeHash" class="sim-select">
+                  <option value="SHA-256" selected>HMAC-SHA-256</option>
+                  <option value="SHA-384">HMAC-SHA-384</option>
+                  <option value="SHA-512">HMAC-SHA-512</option>
+                </select>
+              </div>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" id="btnPipeEncrypt" class="sim-btn-primary">
+                <span>⚡ Encrypt &amp; Generate HMAC</span>
+              </button>
+              <button type="button" id="btnPipeTransmit" class="sim-btn-secondary">
+                Transmit to Channel &darr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Receiver (Bob) -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>2. Receiver (Bob): Verify &amp; Decrypt</span>
+              <span class="badge-tag badge-amber">Integrity &amp; Decrypt</span>
+            </div>
+            <div class="sim-field-group">
+              <label for="pipeRxCiphertext" class="sim-label">Received Ciphertext (Base64)</label>
+              <textarea id="pipeRxCiphertext" class="sim-textarea" rows="2" style="font-family: monospace; font-size: 12px;" placeholder="Ciphertext from channel..."></textarea>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label for="pipeRxIv" class="sim-label">Received IV (Hex)</label>
+                <input type="text" id="pipeRxIv" class="sim-input" style="font-family: monospace; font-size: 12px;" placeholder="16-byte IV...">
+              </div>
+              <div>
+                <label for="pipeRxKey" class="sim-label">Bob's Secret Key</label>
+                <div style="display: flex; gap: 6px;">
+                  <input type="password" id="pipeRxKey" class="sim-input" style="font-family: monospace;" value="mysecretkey">
+                  <button type="button" class="chip-btn" id="btnTogglePipeRxKey">Show</button>
+                </div>
+              </div>
+            </div>
+            <div class="sim-field-group">
+              <label for="pipeRxHmac" class="sim-label">Supplied HMAC Tag (Hex)</label>
+              <input type="text" id="pipeRxHmac" class="sim-input" style="font-family: monospace; font-size: 12px;" placeholder="HMAC tag to verify...">
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button type="button" id="btnPipeVerifyDecrypt" class="sim-btn-primary">
+                <span>⚡ Verify HMAC &amp; Decrypt</span>
+              </button>
+              <button type="button" id="btnPipeForceDecrypt" class="sim-btn-danger" style="font-size: 12px;">
+                ⚠️ Force Decrypt (Unsafe)
+              </button>
+              <button type="button" id="btnPipeCopySender" class="sim-btn-secondary" style="font-size: 12px;">
+                Copy from Sender
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- In-Transit Network Channel & Attacker Simulator -->
+        <div class="channel-card">
+          <div class="channel-header">
+            <div class="channel-title">
+              <span>🌐 In-Transit Network Channel (Attacker / MITM Interceptor)</span>
+            </div>
+            <div id="channelStatusBadge" class="badge-tag badge-green">Status: Clean (No Tampering)</div>
+          </div>
+          <p style="font-size: 13px; color: #71717a; margin: 4px 0 10px 0;">
+            Data packet traveling across the untrusted network. An adversary can intercept and tamper with the ciphertext or HMAC tag before the receiver gets it:
+          </p>
+          <div class="packet-display">
+            <div class="packet-chunk">
+              <span class="chunk-label">IV (16 Bytes)</span>
+              <span class="chunk-val" id="packetIvDisplay">-</span>
+            </div>
+            <span class="packet-delim">+</span>
+            <div class="packet-chunk">
+              <span class="chunk-label">Ciphertext (AES-256)</span>
+              <span class="chunk-val" id="packetCtDisplay">-</span>
+            </div>
+            <span class="packet-delim">+</span>
+            <div class="packet-chunk">
+              <span class="chunk-label">HMAC Tag (SHA-256)</span>
+              <span class="chunk-val" id="packetHmacDisplay">-</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 12px; font-weight: 800; text-transform: uppercase;">Simulate In-Transit Attacks:</span>
+            <button type="button" class="chip-btn chip-active" id="btnChannelClean">✓ Clean Transmission</button>
+            <button type="button" class="chip-btn" id="btnChannelTamperCt">⚠️ Tamper Ciphertext (Flip Byte)</button>
+            <button type="button" class="chip-btn" id="btnChannelTamperHmac">⚠️ Tamper HMAC (Corrupt Tag)</button>
+            <button type="button" class="chip-btn" id="btnChannelTamperKey">⚠️ Use Wrong Receiver Key</button>
+          </div>
+        </div>
+
+        <!-- Output Cards for Full Pipeline -->
+        <div class="sim-split" id="outPanelEncryptMac">
+          <!-- Sender Cryptographic Output -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Sender Cryptographic Output</span>
+              <span class="badge-tag badge-blue" id="pipeSenderAlgoTag">AES-256-CBC + HMAC-SHA-256</span>
+            </div>
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="sim-label" style="margin: 0; font-size: 11px;">AES-256 Ciphertext (Base64)</span>
+                <button type="button" class="sim-copy-btn" id="btnCopyPipeCt">Copy</button>
+              </div>
+              <div id="pipeCiphertextDisplay" style="background: #18181b; color: #f4f4f5; padding: 10px 14px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all;">
+                [Click '⚡ Encrypt &amp; Generate HMAC' to produce ciphertext]
+              </div>
+            </div>
+            <div style="margin-bottom: 12px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="sim-label" style="margin: 0; font-size: 11px;">Initialization Vector (IV - Hex)</span>
+                <button type="button" class="sim-copy-btn" id="btnCopyPipeIv">Copy</button>
+              </div>
+              <div id="pipeIvDisplay" style="background: #18181b; color: #f4f4f5; padding: 8px 14px; border-radius: 8px; font-family: monospace; font-size: 12px;">--</div>
+            </div>
+            <div>
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                <span class="sim-label" style="margin: 0; font-size: 11px;">HMAC Authentication Tag (Hex)</span>
+                <button type="button" class="sim-copy-btn" id="btnCopyPipeHmac">Copy</button>
+              </div>
+              <div id="pipeHmacDisplay" style="background: #18181b; color: #34d399; padding: 8px 14px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all;">--</div>
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: #71717a; display: flex; justify-content: space-between;">
+              <span>Ciphertext: <strong id="pipeCtLen" style="color: #18181b;">0</strong> bytes</span>
+              <span>HMAC Tag: <strong id="pipeHmacLen" style="color: #18181b;">64</strong> hex chars (256 bits)</span>
+            </div>
+          </div>
+
+          <!-- Receiver Verification & Decryption Result -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Receiver Verification &amp; Decryption Result</span>
+              <span id="pipeRxStatusBadge" class="badge-tag" style="background: #f4f4f5; color: #71717a;">Pending</span>
+            </div>
+            <div id="pipeRxPendingMsg" style="text-align: center; padding: 24px 16px; background: #faf9f6; border-radius: 8px; border: 1.5px dashed #d4d4d8;">
+              <p style="color: #71717a; font-size: 13.5px; margin: 0; font-style: italic;">
+                Click <strong>⚡ Verify HMAC &amp; Decrypt</strong> to execute cryptographic integrity verification followed by plaintext decryption.
+              </p>
+            </div>
+            <!-- HMAC Success Banner -->
+            <div class="verify-banner success" id="pipeHmacSuccessBanner" style="display: none;">
+              <div class="verify-icon">✓</div>
+              <div class="verify-content">
+                <h4>Step 1: HMAC Verified</h4>
+                <p>Message integrity and authenticity confirmed. Safe to decrypt!</p>
+                <div class="verify-details" id="pipeHmacSuccessDetails"></div>
+              </div>
+            </div>
+            <!-- HMAC Failure Banner -->
+            <div class="verify-banner failure" id="pipeHmacFailureBanner" style="display: none;">
+              <div class="verify-icon">✗</div>
+              <div class="verify-content">
+                <h4>Step 1: HMAC Verification Failed</h4>
+                <p>Tampering or wrong secret key detected! Message rejected.</p>
+                <div class="verify-details" id="pipeHmacFailureDetails"></div>
+              </div>
+            </div>
+            <!-- Decrypted Plaintext Success Box -->
+            <div class="decrypted-box" id="pipeDecryptedSuccessBox" style="display: none;">
+              <div class="decrypted-header">
+                <span class="decrypted-badge">✓ Step 2: Decryption Successful</span>
+                <button type="button" class="sim-copy-btn" id="btnCopyDecrypted">Copy Plaintext</button>
+              </div>
+              <div style="font-size: 12px; font-weight: 700; color: #15803d; text-transform: uppercase;">Decrypted Plaintext:</div>
+              <div class="decrypted-text" id="pipeDecryptedTextDisplay"></div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #16a34a; margin-top: 6px;">
+                <span>Authenticity: <strong>100% Authentic</strong></span>
+                <span>Match: <strong>Identical to Sender Message</strong></span>
+              </div>
+            </div>
+            <!-- Decryption Blocked Security Banner -->
+            <div class="verify-banner failure" id="pipeDecryptedAbortedBox" style="display: none;">
+              <div class="verify-icon">⛔</div>
+              <div class="verify-content">
+                <h4>Step 2: Decryption Aborted for Security</h4>
+                <p>In secure cryptographic systems (Encrypt-then-MAC), Bob strictly halts and refuses to decrypt untrusted ciphertext when HMAC verification fails. This completely prevents Chosen-Ciphertext and Padding Oracle attacks.</p>
+              </div>
+            </div>
+            <!-- Unsafe Forced Decryption Attempt Banner -->
+            <div class="verify-banner failure" id="pipeForcedDecryptBox" style="display: none; background: #fff1f2; border-color: #ef4444;">
+              <div class="verify-icon">💥</div>
+              <div class="verify-content">
+                <h4 style="color: #991b1b;">Unsafe Force-Decryption Attempted</h4>
+                <p id="pipeForcedDecryptErrorMsg" style="color: #b91c1c; font-family: monospace; font-size: 12px; margin-top: 4px;"></p>
+                <p style="font-size: 12px; color: #991b1b; margin-top: 6px;">Educational Lesson: Bypassing HMAC verification exposes the system to cryptographic failures and padding corruption.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANEL 2: STANDARD HMAC ONLY (RFC 2104) -->
+      <div id="panelHmacOnly" style="display: none;">
+        <div class="sim-split">
+          <!-- Generator Sub-card -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>1. HMAC Generator</span>
+              <span class="badge-tag badge-blue">Generation</span>
+            </div>
+            <div class="sim-field-group">
+              <label for="genMessage" class="sim-label">Plaintext Message</label>
+              <textarea id="genMessage" class="sim-textarea" rows="2" placeholder="Enter message to authenticate...">Hello World</textarea>
+            </div>
+            <div class="sim-field-group">
+              <label for="genKey" class="sim-label">Shared Secret Key</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="password" id="genKey" class="sim-input" style="font-family: monospace;" value="mysecretkey">
+                <button type="button" class="chip-btn" id="btnToggleGenKey">Show</button>
+              </div>
+            </div>
+            <div class="sim-field-group">
+              <label for="genAlgorithm" class="sim-label">Hash Algorithm</label>
+              <select id="genAlgorithm" class="sim-select">
+                <option value="SHA-256" selected>HMAC-SHA-256 (Default)</option>
+                <option value="SHA-384">HMAC-SHA-384</option>
+                <option value="SHA-512">HMAC-SHA-512</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" id="btnGenerate" class="sim-btn-primary">
+                <span>⚡ Generate HMAC</span>
+              </button>
+              <button type="button" id="btnSendToVerify" class="sim-btn-secondary">
+                Send to Verifier &darr;
+              </button>
+            </div>
+          </div>
+
+          <!-- Verifier Sub-card -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>2. HMAC Verifier</span>
+              <span class="badge-tag badge-amber">Verification</span>
+            </div>
+            <div class="sim-field-group">
+              <label for="verMessage" class="sim-label">Message to Verify</label>
+              <textarea id="verMessage" class="sim-textarea" rows="2" placeholder="Enter message to verify...">Hello World</textarea>
+            </div>
+            <div class="sim-field-group">
+              <label for="verKey" class="sim-label">Secret Key</label>
+              <div style="display: flex; gap: 8px;">
+                <input type="password" id="verKey" class="sim-input" style="font-family: monospace;" value="mysecretkey">
+                <button type="button" class="chip-btn" id="btnToggleVerKey">Show</button>
+              </div>
+            </div>
+            <div class="sim-field-group">
+              <label for="verHmac" class="sim-label">Supplied HMAC (Hex)</label>
+              <input type="text" id="verHmac" class="sim-input" style="font-family: monospace; font-size: 12px;" placeholder="Paste hexadecimal HMAC here">
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button type="button" id="btnVerify" class="sim-btn-primary">
+                <span>⚡ Verify HMAC</span>
+              </button>
+              <button type="button" id="btnFillFromGen" class="sim-btn-secondary">
+                Copy from Generator
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output Cards for Standard HMAC -->
+        <div class="sim-split" id="outPanelHmacOnly">
+          <!-- Output Sub-Card 1: Generated HMAC -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Generated HMAC</span>
+              <span id="outputAlgoTag" class="badge-tag badge-blue">HMAC-SHA-256</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span class="sim-label" id="hexLenLabel" style="margin: 0; font-size: 11px;">Hexadecimal Digest (64 chars / 256 bits)</span>
+              <button type="button" class="sim-copy-btn" id="btnCopyGenerated">Copy Hex</button>
+            </div>
+            <div id="generatedHmacDisplay" style="background: #18181b; color: #34d399; padding: 12px 14px; border-radius: 8px; font-family: monospace; font-size: 12px; word-break: break-all;">
+              [Click '⚡ Generate HMAC' above to produce the authentication code]
+            </div>
+            <div style="margin-top: 10px; font-size: 12px; color: #71717a; display: flex; justify-content: space-between;">
+              <span>Length: <strong id="outCharCount" style="color: #18181b;">0</strong> characters</span>
+              <span>Binary length: <strong id="outBitLength" style="color: #18181b;">0</strong> bits</span>
+            </div>
+          </div>
+
+          <!-- Output Sub-Card 2: Verification Result -->
+          <div class="sub-card">
+            <div class="sub-card-title">
+              <span>Verification Result</span>
+              <span id="verifyStatusBadge" class="badge-tag" style="background: #f4f4f5; color: #71717a;">Pending</span>
+            </div>
+            <div id="verifyPendingMsg" style="text-align: center; padding: 24px 16px; background: #faf9f6; border-radius: 8px; border: 1.5px dashed #d4d4d8;">
+              <p style="color: #71717a; font-size: 13.5px; margin: 0; font-style: italic;">
+                Enter details in the verification control and click <strong>⚡ Verify HMAC</strong> to execute cryptographic recalculation.
+              </p>
+            </div>
+            <div class="verify-banner success" id="verifySuccessBanner" style="display: none;">
+              <div class="verify-icon">✓</div>
+              <div class="verify-content">
+                <h4>HMAC Verified</h4>
+                <p>Message integrity and authentication are valid.</p>
+                <div class="verify-details" id="verifySuccessDetails"></div>
+              </div>
+            </div>
+            <div class="verify-banner failure" id="verifyFailureBanner" style="display: none;">
+              <div class="verify-icon">✗</div>
+              <div class="verify-content">
+                <h4>HMAC Verification Failed</h4>
+                <p>The message or secret key may have been modified.</p>
+                <div class="verify-details" id="verifyFailureDetails"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: TAMPERING, PAD INSPECTOR & MODIFICATION ANALYSIS -->
+    <section id="tamper" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 5</span>
+      <h2 class="lab-section-title">Pad Inspector &amp; Modification Analysis</h2>
+      <div class="lab-prose">
+        <p>Inspect intermediate RFC 2104 inner/outer pad blocks, observe the Strict Avalanche Criterion bit diffusion, and explore why HMAC cannot be reversed or decrypted:</p>
+      </div>
+
+      <!-- RFC 2104 Pad Breakdown Card -->
+      <div class="sub-card" style="margin-bottom: 22px;">
+        <div class="sub-card-title">
+          <span>RFC 2104 Key Pad Inspector</span>
+          <span class="badge-tag badge-blue">iPad &amp; oPad</span>
+        </div>
+        <p style="font-size: 13px; color: #71717a; margin-bottom: 12px;">
+          Inner pad byte <code>0x36</code> and Outer pad byte <code>0x5C</code> XORed with the normalized 64-byte key K':
+        </p>
+        <div class="pad-breakdown-grid">
+          <div class="pad-box">
+            <div class="pad-box-title">Inner Pad (K' &oplus; 0x36) - 64 Bytes</div>
+            <div id="displayKipad" class="pad-box-val">[Click '⚡ Generate HMAC' or '⚡ Run Modification Analysis']</div>
+          </div>
+          <div class="pad-box">
+            <div class="pad-box-title">Outer Pad (K' &oplus; 0x5C) - 64 Bytes</div>
+            <div id="displayKopad" class="pad-box-val">[Click '⚡ Generate HMAC' or '⚡ Run Modification Analysis']</div>
+          </div>
+        </div>
+        <div class="pad-box" style="margin-top: 12px;">
+          <div class="pad-box-title">Inner Hash Pass: SHA256( (K' &oplus; ipad) || M )</div>
+          <div id="displayInnerHash" class="pad-box-val">[Click '⚡ Generate HMAC' or '⚡ Run Modification Analysis']</div>
+        </div>
+      </div>
+
+      <!-- Modification Analysis Card -->
+      <div class="sub-card" style="margin-bottom: 22px;">
+        <div class="sub-card-title">
+          <span>Modification Analysis (Avalanche Effect &amp; Diffusion)</span>
+          <span class="badge-tag badge-amber">Sensitivity Test</span>
+        </div>
+        <p style="font-size: 13px; color: #71717a; margin-bottom: 14px;">
+          Quantify how modifying even a single character in the message or secret key unpredictably scrambles the resulting digest:
+        </p>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+          <button type="button" class="chip-btn chip-active" id="btnTabModMsg">A. Modify Message</button>
+          <button type="button" class="chip-btn" id="btnTabModKey">B. Modify Secret Key</button>
+          <button type="button" class="sim-btn-primary" id="btnModAnalyze" style="margin-left: auto; padding: 6px 16px; font-size: 12px;">
+            ⚡ Calculate Modification Analysis
+          </button>
+        </div>
+
+        <!-- Section A: Modify Message -->
+        <div id="sectionModMsg">
+          <div class="sim-split">
+            <div class="sub-card" style="box-shadow: none; border-color: #e4e4e7;">
+              <span class="sim-label">Original Message &amp; HMAC (Baseline)</span>
+              <input type="text" id="modOrigMsg" class="sim-input" value="Hello World">
+              <span class="sim-label" style="margin-top: 10px;">Shared Secret Key</span>
+              <input type="text" id="modMsgSharedKey" class="sim-input" style="font-family: monospace;" value="mysecretkey">
+              <span class="sim-label" style="margin-top: 10px;">Original HMAC:</span>
+              <div id="modOrigMsgHmac" style="font-family: monospace; font-size: 11.5px; background: #18181b; color: #34d399; padding: 8px 12px; border-radius: 6px; word-break: break-all;">--</div>
+            </div>
+
+            <div class="sub-card" style="box-shadow: none; border-color: #e4e4e7;">
+              <span class="sim-label" style="color: #c2410c;">Modified Message &amp; HMAC (Tampered)</span>
+              <input type="text" id="modTamperedMsg" class="sim-input" value="Hello world">
+              <div style="display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap;">
+                <button type="button" class="chip-btn" id="quickModMsgCase">Make lowercase ('world')</button>
+                <button type="button" class="chip-btn" id="quickModMsgExcl">Add exclamation ('!')</button>
+                <button type="button" class="chip-btn" id="quickModMsgSpace">Add space</button>
+              </div>
+              <span class="sim-label" style="margin-top: 6px;">New HMAC:</span>
+              <div id="modTamperedMsgHmac" style="font-family: monospace; font-size: 11.5px; background: #18181b; color: #f87171; padding: 8px 12px; border-radius: 6px; word-break: break-all;">--</div>
+            </div>
+          </div>
+
+          <!-- Avalanche Statistics Bar -->
+          <div class="stats-bar">
+            <div class="stat-item">
+              <span class="stat-num" id="statMsgHexDiff">-- / 64</span>
+              <span class="stat-label">Hex characters changed</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="statMsgBitDiff">-- / 256</span>
+              <span class="stat-label">Bits flipped (Hamming distance)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="statMsgAvalanchePct">--%</span>
+              <span class="stat-label">Avalanche Effect (~50% target)</span>
+            </div>
+            <div class="stat-item" style="margin-left: auto; align-self: center;">
+              <span id="statMsgVerdict" class="badge-tag badge-red">Awaiting Analysis</span>
+            </div>
+          </div>
+
+          <!-- Character Diff Display -->
+          <div style="margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span class="sim-label" style="margin: 0; font-size: 11px;">Character-by-Character Digest Diff:</span>
+              <span style="font-size: 11px; color: #ef4444; font-weight: 700;">Red = Mismatched Character</span>
+            </div>
+            <div class="diff-container" id="diffDisplayMsg">[Click '⚡ Calculate Modification Analysis' to inspect diff]</div>
+          </div>
+        </div>
+
+        <!-- Section B: Modify Secret Key -->
+        <div id="sectionModKey" style="display: none;">
+          <div class="sim-split">
+            <div class="sub-card" style="box-shadow: none; border-color: #e4e4e7;">
+              <span class="sim-label">Original Key &amp; HMAC (Baseline)</span>
+              <input type="text" id="modOrigKey" class="sim-input" style="font-family: monospace;" value="mysecretkey">
+              <span class="sim-label" style="margin-top: 10px;">Shared Message</span>
+              <input type="text" id="modKeySharedMsg" class="sim-input" value="Hello World">
+              <span class="sim-label" style="margin-top: 10px;">Original HMAC:</span>
+              <div id="modOrigKeyHmac" style="font-family: monospace; font-size: 11.5px; background: #18181b; color: #34d399; padding: 8px 12px; border-radius: 6px; word-break: break-all;">--</div>
+            </div>
+
+            <div class="sub-card" style="box-shadow: none; border-color: #e4e4e7;">
+              <span class="sim-label" style="color: #c2410c;">Modified Key &amp; HMAC (Tampered)</span>
+              <input type="text" id="modTamperedKey" class="sim-input" style="font-family: monospace;" value="mysecretKey">
+              <div style="display: flex; gap: 6px; margin: 8px 0; flex-wrap: wrap;">
+                <button type="button" class="chip-btn" id="quickModKeyUpper">Capitalize 'K'</button>
+                <button type="button" class="chip-btn" id="quickModKeyAppend">Append '123'</button>
+                <button type="button" class="chip-btn" id="quickModKeyWrong">Use 'wrongkey'</button>
+              </div>
+              <span class="sim-label" style="margin-top: 6px;">New HMAC:</span>
+              <div id="modTamperedKeyHmac" style="font-family: monospace; font-size: 11.5px; background: #18181b; color: #f87171; padding: 8px 12px; border-radius: 6px; word-break: break-all;">--</div>
+            </div>
+          </div>
+
+          <!-- Key Avalanche Statistics Bar -->
+          <div class="stats-bar">
+            <div class="stat-item">
+              <span class="stat-num" id="statKeyHexDiff">-- / 64</span>
+              <span class="stat-label">Hex characters changed</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="statKeyBitDiff">-- / 256</span>
+              <span class="stat-label">Bits flipped (Hamming distance)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num" id="statKeyAvalanchePct">--%</span>
+              <span class="stat-label">Avalanche Effect (~50% target)</span>
+            </div>
+            <div class="stat-item" style="margin-left: auto; align-self: center;">
+              <span id="statKeyVerdict" class="badge-tag badge-red">Awaiting Analysis</span>
+            </div>
+          </div>
+
+          <!-- Key Character Diff Display -->
+          <div style="margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+              <span class="sim-label" style="margin: 0; font-size: 11px;">Key Modification Character Diff:</span>
+              <span style="font-size: 11px; color: #ef4444; font-weight: 700;">Red = Mismatched Character</span>
+            </div>
+            <div class="diff-container" id="diffDisplayKey">[Click '⚡ Calculate Modification Analysis' to inspect diff]</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Educational Notice: Can HMAC be decrypted? -->
+      <div style="background: #faf9f6; border: 2px solid #18181b; border-radius: 12px; padding: 20px; box-shadow: 3px 3px 0px #18181b;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <strong style="color: #92400e; font-size: 15px;">❓ Can an HMAC Digest Be Decrypted Back to the Message?</strong>
+            <p style="font-size: 13.5px; color: #52525b; margin: 4px 0 0 0;">Learn the fundamental mathematical difference between One-Way Authentication (HMAC) and Two-Way Confidentiality (Encryption/Decryption).</p>
+          </div>
+          <button type="button" class="sim-btn-primary" id="btnAttemptHmacDecrypt" style="font-size: 12.5px; padding: 8px 16px;">
+            Attempt HMAC "Decryption" 🔍
+          </button>
+        </div>
+        <div id="hmacDecryptResult" style="display: none; margin-top: 16px; padding: 18px; background: #ffffff; border-radius: 8px; border: 1.5px solid #18181b;">
+          <div style="color: #dc2626; font-weight: 800; font-size: 14.5px; margin-bottom: 8px;">❌ HMAC is Mathematically Non-Reversible (Cannot be Decrypted)</div>
+          <p style="font-size: 13.5px; color: #18181b; line-height: 1.6; margin-bottom: 10px;">
+            <strong>Why HMAC cannot be reversed or decrypted:</strong>
+          </p>
+          <ol style="font-size: 13px; color: #52525b; padding-left: 20px; line-height: 1.6; margin-bottom: 12px;">
+            <li><strong>Lossy Fixed-Size Compression:</strong> The hash function (SHA-256) compresses arbitrary input lengths down to exactly 256 bits. An infinite number of potential inputs map to the same hash (Pigeonhole principle), making one-to-one inversion mathematically impossible.</li>
+            <li><strong>One-Way Preimage Resistance:</strong> SHA-256 employs irreversible non-linear operations (modular addition mod 2^32, circular rotations, and bitwise XORs) across 64 compression rounds.</li>
+            <li><strong>Confidentiality vs. Integrity:</strong> HMAC guarantees <em>Integrity and Authenticity</em>. To achieve <em>Confidentiality (Encryption &amp; Decryption)</em>, cryptographic protocols combine HMAC with a symmetric cipher like AES-256 (Encrypt-then-MAC).</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: QUIZ -->
+    <section id="quiz" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 6</span>
+      <h2 class="lab-section-title">Knowledge Assessment Quiz</h2>
+      <div class="lab-prose">
+        <p>Test your understanding of HMAC mathematical operations, properties, and attack resistance:</p>
+      </div>
+
+      <!-- Question 1 -->
+      <div class="quiz-card">
+        <div class="quiz-prompt">1. Which IETF RFC formally standardizes the Keyed-Hash Message Authentication Code (HMAC)?</div>
+        <label class="quiz-option-label">
+          <input type="radio" name="q1" value="0"> RFC 1321
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q1" value="1"> RFC 2104
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q1" value="2"> RFC 3174
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q1" value="3"> RFC 5246
+        </label>
+        <div id="q1-feedback" class="quiz-feedback"></div>
+      </div>
+
+      <!-- Question 2 -->
+      <div class="quiz-card">
+        <div class="quiz-prompt">2. What are the standard repeating byte constants used for the inner pad (ipad) and outer pad (opad)?</div>
+        <label class="quiz-option-label">
+          <input type="radio" name="q2" value="0"> ipad = 0x00, opad = 0xFF
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q2" value="1"> ipad = 0x36, opad = 0x5C
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q2" value="2"> ipad = 0x5A, opad = 0x6E
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q2" value="3"> ipad = 0x80, opad = 0x00
+        </label>
+        <div id="q2-feedback" class="quiz-feedback"></div>
+      </div>
+
+      <!-- Question 3 -->
+      <div class="quiz-card">
+        <div class="quiz-prompt">3. What is the correct mathematical definition of HMAC for hash function H, key K, and message M?</div>
+        <label class="quiz-option-label">
+          <input type="radio" name="q3" value="0"> H(K || M)
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q3" value="1"> H(M || K)
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q3" value="2"> H((K' ^ opad) || H((K' ^ ipad) || M))
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q3" value="3"> H(K) ^ H(M)
+        </label>
+        <div id="q3-feedback" class="quiz-feedback"></div>
+      </div>
+
+      <!-- Question 4 -->
+      <div class="quiz-card">
+        <div class="quiz-prompt">4. If a secret key K is strictly longer than the hash block size B (e.g. &gt; 64 bytes for SHA-256), how is K processed?</div>
+        <label class="quiz-option-label">
+          <input type="radio" name="q4" value="0"> Truncated to the first B bytes
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q4" value="1"> Hashed using H(K) to reduce it to L bytes, then zero-padded to B bytes
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q4" value="2"> Rejected as an invalid key error
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q4" value="3"> Reversed and XORed with 0xFF
+        </label>
+        <div id="q4-feedback" class="quiz-feedback"></div>
+      </div>
+
+      <!-- Question 5 -->
+      <div class="quiz-card">
+        <div class="quiz-prompt">5. What critical attack against naive Merkle-Damgard prefix construction H(K || M) does HMAC completely prevent?</div>
+        <label class="quiz-option-label">
+          <input type="radio" name="q5" value="0"> Buffer overflow attack
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q5" value="1"> Length extension attack
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q5" value="2"> Timing side-channel attack
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q5" value="3"> Chosen-ciphertext attack
+        </label>
+        <div id="q5-feedback" class="quiz-feedback"></div>
+      </div>
+
+      <!-- Question 6 -->
+      <div class="quiz-card">
+        <div class="quiz-prompt">6. Does calculating a standard HMAC digest provide confidentiality for the plaintext message?</div>
+        <label class="quiz-option-label">
+          <input type="radio" name="q6" value="0"> Yes, it encrypts the entire plaintext
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q6" value="1"> No, it ensures message authenticity and integrity only, leaving confidentiality to encryption
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q6" value="2"> Yes, provided the key length exceeds 256 bits
+        </label>
+        <label class="quiz-option-label">
+          <input type="radio" name="q6" value="3"> Only when combined with RSA
+        </label>
+        <div id="q6-feedback" class="quiz-feedback"></div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 16px;">
+        <button type="button" id="btnSubmitQuiz" class="sim-btn-primary">Submit Quiz</button>
+        <button type="button" id="btnResetQuiz" class="sim-btn-secondary">Reset Answers</button>
+      </div>
+
+      <div id="quizScoreBanner" class="quiz-score-banner">
+        <div>
+          <h4 style="margin: 0; font-size: 16px; font-weight: 800;">Quiz Results</h4>
+          <p id="quizScoreText" style="margin: 4px 0 0; font-size: 14px; color: #52525b;"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: REFERENCES -->
+    <section id="references" class="lab-section tab-hidden">
+      <span class="lab-section-tag">Section 7</span>
+      <h2 class="lab-section-title">Authoritative References &amp; Standards</h2>
+      <div class="lab-prose">
+        <p>For official RFC specifications, NIST guidelines, and theoretical proofs:</p>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[1] RFC 2104: HMAC: Keyed-Hashing for Message Authentication</h4>
+          <p>H. Krawczyk, M. Bellare, R. Canetti. Network Working Group (February 1997)</p>
+        </div>
+        <a href="https://www.ietf.org/rfc/rfc2104.txt" target="_blank" rel="noopener noreferrer" class="ref-btn">View RFC 2104 &rarr;</a>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[2] NIST FIPS PUB 198-1: The Keyed-Hash Message Authentication Code (HMAC)</h4>
+          <p>National Institute of Standards and Technology, U.S. Department of Commerce (July 2008)</p>
+        </div>
+        <a href="https://csrc.nist.gov/publications/detail/fips/198-1/final" target="_blank" rel="noopener noreferrer" class="ref-btn">NIST FIPS 198-1 &rarr;</a>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[3] Keying Hash Functions for Message Authentication (CRYPTO '96)</h4>
+          <p>M. Bellare, R. Canetti, H. Krawczyk. Advances in Cryptology, LNCS 1109, pp. 1–15 (1996)</p>
+        </div>
+        <a href="https://doi.org/10.1007/3-540-68697-5_1" target="_blank" rel="noopener noreferrer" class="ref-btn">View Paper &rarr;</a>
+      </div>
+
+      <div class="ref-card">
+        <div class="ref-info">
+          <h4>[4] NIST SP 800-107 (Rev. 1): Recommendation for Applications Using Approved Hash Algorithms</h4>
+          <p>Special Publication 800-107 Revision 1. National Institute of Standards and Technology (2012)</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
