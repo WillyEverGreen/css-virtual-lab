@@ -77,6 +77,24 @@
   }
 }
 
+@media (max-width: 640px) {
+  .lab-experiment-container {
+    padding: 14px 8px 60px 8px !important;
+  }
+  .lab-section {
+    padding: 20px 14px !important;
+    border-radius: 12px !important;
+    margin: 12px auto !important;
+  }
+  #simulation.lab-section {
+    padding: 12px 8px !important;
+  }
+  .lab-section-title {
+    font-size: 22px !important;
+    margin-bottom: 14px !important;
+  }
+}
+
 .lab-section:first-of-type {
   margin-top: 12px;
 }

@@ -1,7 +1,7 @@
 export default function SeinfeldTooltip() {
   return (
     <>
-<div className="seinfeld-tooltip-container"><div className="seinfeld-tooltip-interior"><div className="seinfeld-tooltip-top"><div className="heading-12">Pssst...do you like Seinfeld?</div><img src="images/62ef3987ca7d115422622062_x.svg" loading="lazy" data-w-id="091830ae-d547-ef60-cc67-e4476f72142e" alt="Close the tooltip" className="seinfeld-tooltip-close" /></div><div className="seinfeld-tooltip">We sure do. Click the toggle to make the content of our site <em>Seinfeld-ized</em>.</div><div className="w-embed"><style>{`
+<div className="seinfeld-tooltip-container"><div className="seinfeld-tooltip-interior"><div className="seinfeld-tooltip-top"><div className="heading-12">Pssst...do you like Seinfeld?</div><img src="/images/62ef3987ca7d115422622062_x.svg" loading="lazy" data-w-id="091830ae-d547-ef60-cc67-e4476f72142e" alt="Close the tooltip" className="seinfeld-tooltip-close" /></div><div className="seinfeld-tooltip">We sure do. Click the toggle to make the content of our site <em>Seinfeld-ized</em>.</div><div className="w-embed"><style>{`
 .seinfeld-tooltip-container:before {
   bottom: -42px;
   content: " ";

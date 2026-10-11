@@ -16,7 +16,7 @@ export default function CheckerMarqueeTop() {
   to { transform: translateX(0%); }
 }
 
-`}</style></div><div className="track-horizontal-alt"><div className="marquee-text-alt"><img src="images/62aa117418169952c83c1dfc_checker-banner-updated.svg" loading="lazy" alt="" /></div><div className="marquee-text-alt"><img src="images/62aa117418169952c83c1dfc_checker-banner-updated.svg" loading="lazy" alt="" /></div><div className="marquee-text-alt"><img src="images/62aa117418169952c83c1dfc_checker-banner-updated.svg" loading="lazy" alt="" /></div></div></div></div></div>
+`}</style></div><div className="track-horizontal-alt"><div className="marquee-text-alt"><img src="/images/62aa117418169952c83c1dfc_checker-banner-updated.svg" loading="lazy" alt="" /></div><div className="marquee-text-alt"><img src="/images/62aa117418169952c83c1dfc_checker-banner-updated.svg" loading="lazy" alt="" /></div><div className="marquee-text-alt"><img src="/images/62aa117418169952c83c1dfc_checker-banner-updated.svg" loading="lazy" alt="" /></div></div></div></div></div>
     </>
   );
 }

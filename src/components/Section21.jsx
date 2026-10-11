@@ -16,7 +16,7 @@ export default function Section21() {
   to { transform: translateX(0%); }
 }
 
-`}</style></div><div className="track-horizontal"><div className="marquee-text-alt"><img src="images/628e7b9b9a2b1e98160537bd_checker-banner-2.svg" loading="lazy" alt="" /></div><div className="marquee-text-alt"><img src="images/628e7b9b9a2b1e98160537bd_checker-banner-2.svg" loading="lazy" alt="" className="image" /></div><div className="marquee-text-alt"><img src="images/628e7b9b9a2b1e98160537bd_checker-banner-2.svg" loading="lazy" alt="" /></div></div></div></div></div>
+`}</style></div><div className="track-horizontal"><div className="marquee-text-alt"><img src="/images/628e7b9b9a2b1e98160537bd_checker-banner-2.svg" loading="lazy" alt="" /></div><div className="marquee-text-alt"><img src="/images/628e7b9b9a2b1e98160537bd_checker-banner-2.svg" loading="lazy" alt="" className="image" /></div><div className="marquee-text-alt"><img src="/images/628e7b9b9a2b1e98160537bd_checker-banner-2.svg" loading="lazy" alt="" /></div></div></div></div></div>
     </>
   );
 }

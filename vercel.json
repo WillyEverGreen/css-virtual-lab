@@ -16,6 +16,18 @@
       "dest": "/index.html"
     },
     {
+      "src": "^/icons/(.*)$",
+      "dest": "/icons/$1"
+    },
+    {
+      "src": "^/images/(.*)$",
+      "dest": "/images/$1"
+    },
+    {
+      "src": "^/fonts/(.*)$",
+      "dest": "/fonts/$1"
+    },
+    {
       "src": "^/assets/(.*)$",
       "dest": "/assets/$1"
     },

@@ -28,7 +28,7 @@ export default function Services() {
               >
                 <div className="services-callout-bg-shape">
                   <img
-                    src="images/629b9ac155a84f4387b26c2f_services-bg-shape-red.svg"
+                    src="/images/629b9ac155a84f4387b26c2f_services-bg-shape-red.svg"
                     loading="eager"
                     alt=""
                     className="services-callout-bg-shape-img"
@@ -46,7 +46,7 @@ export default function Services() {
               >
                 <div className="services-callout-bg-shape">
                   <img
-                    src="images/629b9aeeb00da574fa41647d_services-bg-shape-yellow.svg"
+                    src="/images/629b9aeeb00da574fa41647d_services-bg-shape-yellow.svg"
                     loading="eager"
                     alt=""
                     className="services-callout-bg-shape-img"
@@ -64,7 +64,7 @@ export default function Services() {
               >
                 <div className="services-callout-bg-shape">
                   <img
-                    src="images/629b9ad38cb8b4240cda84e3_services-bg-shape-green.svg"
+                    src="/images/629b9ad38cb8b4240cda84e3_services-bg-shape-green.svg"
                     loading="eager"
                     alt=""
                     className="services-callout-bg-shape-img"
@@ -83,7 +83,7 @@ export default function Services() {
               >
                 <div className="services-callout-bg-shape">
                   <img
-                    src="images/629b94174ed1a8345a245a7f_services-bg-shape-pink.svg"
+                    src="/images/629b94174ed1a8345a245a7f_services-bg-shape-pink.svg"
                     loading="eager"
                     alt=""
                     className="services-callout-bg-shape-img"
@@ -101,7 +101,7 @@ export default function Services() {
               >
                 <div className="services-callout-bg-shape">
                   <img
-                    src="images/629b93be151de2288958bae8_services-bg-shape-purple.svg"
+                    src="/images/629b93be151de2288958bae8_services-bg-shape-purple.svg"
                     loading="eager"
                     alt=""
                     className="services-callout-bg-shape-img"
