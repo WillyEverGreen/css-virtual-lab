@@ -15,29 +15,29 @@ const SLUG_COLORS: Record<string, string> = {
 const DEFAULT_REFERENCES: Record<string, Array<{ title: string; citation: string; link?: string }>> = {
   md5: [
     {
-      title: 'RFC 1321 — The MD5 Message-Digest Algorithm',
+      title: 'RFC 1321: The MD5 Message-Digest Algorithm',
       citation: 'Rivest, R. (1992). Internet Engineering Task Force (IETF).',
       link: 'https://datatracker.ietf.org/doc/html/rfc1321',
     },
     {
-      title: 'RFC 6151 — Updated Security Considerations for MD5 and HMAC-MD5',
+      title: 'RFC 6151: Updated Security Considerations for MD5 and HMAC-MD5',
       citation: 'Turner, S., & Chen, L. (2011). IETF Standards Track.',
       link: 'https://datatracker.ietf.org/doc/html/rfc6151',
     },
     {
       title: 'How to Break MD5 and Other Hash Functions',
-      citation: 'Wang, X., & Yu, H. (2005). EUROCRYPT 2005, LNCS 3494, pp. 19–35.',
+      citation: 'Wang, X., & Yu, H. (2005). EUROCRYPT 2005, LNCS 3494, pp. 19-35.',
       link: 'https://doi.org/10.1007/11426639_2',
     },
     {
-      title: 'NIST SP 800-131A Rev. 2 — Transitioning Cryptographic Algorithms',
+      title: 'NIST SP 800-131A Rev. 2: Transitioning Cryptographic Algorithms',
       citation: 'Barker, E., & Roginsky, A. (2019). National Institute of Standards and Technology.',
       link: 'https://csrc.nist.gov/publications/detail/sp/800-131a/rev-2/final',
     },
   ],
   sha1: [
     {
-      title: 'FIPS PUB 180-1 — Secure Hash Standard (SHA-1)',
+      title: 'FIPS PUB 180-1: Secure Hash Standard (SHA-1)',
       citation: 'National Institute of Standards and Technology (NIST), 1995.',
       link: 'https://csrc.nist.gov/publications/detail/fips/180/1/archive/1995-04-17',
     },
@@ -47,19 +47,19 @@ const DEFAULT_REFERENCES: Record<string, Array<{ title: string; citation: string
       link: 'https://shattered.io/',
     },
     {
-      title: 'RFC 3174 — US Secure Hash Algorithm 1 (SHA1)',
+      title: 'RFC 3174: US Secure Hash Algorithm 1 (SHA1)',
       citation: 'Eastlake, D., & Jones, P. (2001). IETF RFC 3174.',
       link: 'https://datatracker.ietf.org/doc/html/rfc3174',
     },
   ],
   mac: [
     {
-      title: 'NIST SP 800-38B — Recommendation for Block Cipher Modes: The CMAC Mode',
+      title: 'NIST SP 800-38B: Recommendation for Block Cipher Modes: The CMAC Mode',
       citation: 'Dworkin, M. (2005 / Rev. 2016). National Institute of Standards and Technology.',
       link: 'https://csrc.nist.gov/publications/detail/sp/800-38b/final',
     },
     {
-      title: 'ISO/IEC 9797-1:2011 — Information technology — Security techniques — Message Authentication Codes',
+      title: 'ISO/IEC 9797-1:2011: Information technology: Security techniques: Message Authentication Codes',
       citation: 'International Organization for Standardization (ISO).',
       link: 'https://www.iso.org/standard/53164.html',
     },
@@ -70,34 +70,34 @@ const DEFAULT_REFERENCES: Record<string, Array<{ title: string; citation: string
   ],
   hmac: [
     {
-      title: 'RFC 2104 — HMAC: Keyed-Hashing for Message Authentication',
+      title: 'RFC 2104: HMAC: Keyed-Hashing for Message Authentication',
       citation: 'Krawczyk, H., Bellare, M., & Canetti, R. (1997). IETF Network Working Group.',
       link: 'https://datatracker.ietf.org/doc/html/rfc2104',
     },
     {
-      title: 'FIPS PUB 198-1 — The Keyed-Hash Message Authentication Code (HMAC)',
+      title: 'FIPS PUB 198-1: The Keyed-Hash Message Authentication Code (HMAC)',
       citation: 'National Institute of Standards and Technology (NIST), 2008.',
       link: 'https://csrc.nist.gov/publications/detail/fips/198/1/final',
     },
     {
-      title: 'RFC 4231 — Identifiers and Test Vectors for HMAC-SHA-224, HMAC-SHA-256, HMAC-SHA-384, and HMAC-SHA-512',
+      title: 'RFC 4231: Identifiers and Test Vectors for HMAC-SHA-224, HMAC-SHA-256, HMAC-SHA-384, and HMAC-SHA-512',
       citation: 'Nystrom, M. (2005). IETF RFC 4231.',
       link: 'https://datatracker.ietf.org/doc/html/rfc4231',
     },
   ],
   'ssl-tls': [
     {
-      title: 'RFC 8446 — The Transport Layer Security (TLS) Protocol Version 1.3',
+      title: 'RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3',
       citation: 'Rescorla, E. (2018). Internet Engineering Task Force (IETF).',
       link: 'https://datatracker.ietf.org/doc/html/rfc8446',
     },
     {
-      title: 'RFC 5246 — The Transport Layer Security (TLS) Protocol Version 1.2',
+      title: 'RFC 5246: The Transport Layer Security (TLS) Protocol Version 1.2',
       citation: 'Dierks, T., & Rescorla, E. (2008). IETF Network Working Group.',
       link: 'https://datatracker.ietf.org/doc/html/rfc5246',
     },
     {
-      title: 'NIST SP 800-52 Rev. 2 — Guidelines for TLS Implementations',
+      title: 'NIST SP 800-52 Rev. 2: Guidelines for TLS Implementations',
       citation: 'Barker, E., & McKay, K. (2019). National Institute of Standards and Technology.',
       link: 'https://csrc.nist.gov/publications/detail/sp/800-52/rev-2/final',
     },

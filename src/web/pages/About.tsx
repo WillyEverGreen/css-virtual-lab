@@ -7,25 +7,46 @@ export default function About() {
     {
       title: 'Interactive Cryptanalysis',
       color: '#ffd166',
-      icon: '⚡',
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-label="Interactive Cryptanalysis">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+        </svg>
+      ),
       desc: 'Moving beyond static equations. Students interact with living bitwise state machines, generate live collisions, simulate MitM attackers, and visually observe the Strict Avalanche Criterion (SAC).',
     },
     {
       title: '100% Client-Side Privacy',
       color: '#caffbf',
-      icon: '🛡️',
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-label="Client-Side Privacy">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          <path d="m9 12 2 2 4-4" />
+        </svg>
+      ),
       desc: 'All cryptographic hashing, message authentication, and TLS handshake operations execute exclusively in the client browser using the standard Web Crypto API and RFC bitwise logic.',
     },
     {
       title: 'Unified Retro Design System',
       color: '#9bf6ff',
-      icon: '📐',
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-label="Design System">
+          <rect width="18" height="18" x="3" y="3" rx="2" />
+          <path d="M3 9h18" />
+          <path d="M9 21V9" />
+        </svg>
+      ),
       desc: 'Engineered with high-contrast brutalist aesthetics, 2px ink borders, offset shadows, and responsive layouts to maintain strict visual and pedagogical uniformity across all modules.',
     },
     {
       title: 'Strict RFC Standards',
       color: '#ffadad',
-      icon: '📜',
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-label="RFC Standards">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <path d="m9 15 2 2 4-4" />
+        </svg>
+      ),
       desc: 'Every module is calibrated against formal international standards including RFC 1321 (MD5), RFC 3174 (SHA-1), RFC 2104 (HMAC), and RFC 8446 (TLS 1.3), verifying vectors on-demand.',
     },
   ];
@@ -162,17 +183,16 @@ export default function About() {
               >
                 <div
                   style={{
-                    width: '44px',
-                    height: '44px',
-                    borderRadius: '8px',
+                    width: '46px',
+                    height: '46px',
+                    borderRadius: '10px',
                     background: p.color,
                     border: '2px solid #000',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    fontSize: '20px',
                     marginBottom: '16px',
-                    boxShadow: '2px 2px 0px #000',
+                    boxShadow: '2.5px 2.5px 0px #000',
                   }}
                 >
                   {p.icon}
