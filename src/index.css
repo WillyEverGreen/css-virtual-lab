@@ -65,3 +65,86 @@ pre, code {
   max-width: 100%;
   overflow-x: auto;
 }
+
+/* ========================================================
+   UNIVERSAL RESPONSIVE OVERRIDES ACROSS ALL PAGES
+   ======================================================== */
+@media (max-width: 640px) {
+  /* Interactive Modules / Services grid */
+  .services-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+    width: 100% !important;
+    padding: 0 16px !important;
+    box-sizing: border-box !important;
+  }
+  .services-callout-item {
+    grid-column: span 1 !important;
+    width: 100% !important;
+    min-height: 160px !important;
+  }
+  .services-callout-card-title {
+    font-size: 32px !important;
+  }
+
+  /* Pricing / Rule blocks */
+  .pricing-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+  .pricing-cell {
+    width: 100% !important;
+  }
+  .pricing-block {
+    border-right: 2px solid #000 !important;
+    border-bottom: 2px solid #000 !important;
+  }
+
+  /* Process / CI pipeline blocks */
+  .process-blocks {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+  }
+  .process-block {
+    width: 100% !important;
+  }
+
+  /* Container padding safety */
+  .container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Headings & typography on small mobile */
+  .heading-2 {
+    font-size: clamp(26px, 6vw, 36px) !important;
+    line-height: 1.15 !important;
+  }
+  .hero-title {
+    font-size: clamp(34px, 8vw, 48px) !important;
+    line-height: 1.05 !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 900px) {
+  .services-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+    padding: 0 20px !important;
+    box-sizing: border-box !important;
+  }
+  .services-callout-item {
+    grid-column: span 1 !important;
+    min-height: 180px !important;
+  }
+  .services-callout-item:last-child {
+    grid-column: span 2 !important;
+  }
+}
+

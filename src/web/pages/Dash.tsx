@@ -365,10 +365,12 @@ Deliver complete, fully written files ready to commit and push directly to GitHu
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: '16px',
             background: '#fff',
             border: '2px solid #18181b',
             borderRadius: '16px',
-            padding: '20px 24px',
+            padding: '16px 20px',
             marginBottom: '32px',
             boxShadow: '4px 4px 0px #18181b',
           }}

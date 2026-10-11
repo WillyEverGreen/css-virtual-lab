@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { EXPERIMENTS_CONFIG } from '../shared/config/experiments';
-import { DEFAULT_ROSTER, UNASSIGNED_MEMBERS } from '../shared/config/roster';
+import { DEFAULT_ROSTER } from '../shared/config/roster';
 
 export default function Team() {
   const teams = DEFAULT_ROSTER.teams;
@@ -9,27 +9,29 @@ export default function Team() {
     <div style={{ paddingTop: '80px', minHeight: '100vh', background: '#faf9f6' }}>
       {/* Header section */}
       <div className="section padding-none" style={{ borderBottom: '2px solid #000', background: '#fff' }}>
-        <div className="container" style={{ padding: '60px 24px', textAlign: 'center' }}>
+        <div className="container" style={{ padding: '40px 16px', textAlign: 'center' }}>
           <div style={{ display: 'inline-block', background: '#ffd166', border: '2px solid #000', borderRadius: '999px', padding: '6px 18px', fontWeight: 700, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
             Academic Year 2026 • Fr. CRCE
           </div>
-          <h1 className="heading-2" style={{ margin: '0 0 16px', fontSize: '42px', fontWeight: 800 }}>
+          <h1 className="heading-2" style={{ margin: '0 0 16px', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800 }}>
             Lab Teams &amp; Working Groups
           </h1>
-          <p className="paragraph" style={{ maxWidth: '680px', margin: '0 auto', fontSize: '17px', color: '#333' }}>
+          <p className="paragraph" style={{ maxWidth: '680px', margin: '0 auto', fontSize: '16px', color: '#333' }}>
             Assigned student teams implementing interactive cryptographic simulations, vulnerability proofs, and validation suites.
           </p>
         </div>
       </div>
 
       {/* Teams Grid */}
-      <div className="section" style={{ padding: '60px 24px' }}>
+      <div className="section" style={{ padding: '36px 16px' }}>
         <div className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-              gap: '28px',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))',
+              gap: '24px',
+              width: '100%',
+              boxSizing: 'border-box',
             }}
           >
             {teams.map((t, idx) => {
@@ -55,10 +57,12 @@ export default function Team() {
                     style={{
                       background: accentColor,
                       borderBottom: '3px solid #000',
-                      padding: '20px 24px',
+                      padding: '16px 20px',
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'center',
+                      flexWrap: 'wrap',
+                      gap: '12px',
                     }}
                   >
                     <div>
@@ -78,7 +82,7 @@ export default function Team() {
                       >
                         {expConfig ? expConfig.groupLabel : `Group ${idx + 1}`}
                       </span>
-                      <h2 style={{ margin: 0, fontSize: '22px', fontWeight: 800 }}>
+                      <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 800, wordBreak: 'break-word' }}>
                         {expConfig ? expConfig.title : t.slug.toUpperCase()}
                       </h2>
                     </div>
@@ -90,12 +94,13 @@ export default function Team() {
                         textDecoration: 'none',
                         fontSize: '12px',
                         fontWeight: 700,
-                        padding: '6px 12px',
+                        padding: '6px 14px',
                         borderRadius: '8px',
                         border: '2px solid #000',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '4px',
+                        flexShrink: 0,
                       }}
                     >
                       Module &rarr;
@@ -103,12 +108,12 @@ export default function Team() {
                   </div>
 
                   {/* Card Body */}
-                  <div style={{ padding: '24px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ padding: '16px 20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <div style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#666', marginBottom: '14px' }}>
                       Assigned Members ({t.members.length})
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', flex: 1 }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', flex: 1 }}>
                       {t.members.map((m, mIdx) => (
                         <div
                           key={mIdx}
@@ -116,10 +121,12 @@ export default function Team() {
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'space-between',
-                            padding: '10px 14px',
+                            padding: '10px 12px',
                             background: '#f8f9fa',
                             border: '2px solid #000',
                             borderRadius: '10px',
+                            flexWrap: 'wrap',
+                            gap: '8px',
                           }}
                         >
                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -218,91 +225,6 @@ export default function Team() {
                 </div>
               );
             })}
-          </div>
-
-          {/* Unassigned Pool Section */}
-          <div
-            style={{
-              marginTop: '60px',
-              background: '#fff',
-              border: '3px solid #000',
-              borderRadius: '16px',
-              boxShadow: '6px 6px 0px #000',
-              padding: '32px',
-            }}
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', marginBottom: '20px' }}>
-              <div>
-                <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 800 }}>
-                  Collaborators Pool (Pending Group Assignment)
-                </h3>
-                <p style={{ margin: '6px 0 0', color: '#666', fontSize: '14px' }}>
-                  Students with GitHub accounts configured who can be allocated to project teams or future modules.
-                </p>
-              </div>
-              <span
-                style={{
-                  background: '#a0c4ff',
-                  border: '2px solid #000',
-                  borderRadius: '8px',
-                  padding: '4px 12px',
-                  fontWeight: 800,
-                  fontSize: '13px',
-                }}
-              >
-                {UNASSIGNED_MEMBERS.length} Students
-              </span>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-                gap: '12px',
-              }}
-            >
-              {UNASSIGNED_MEMBERS.map((u, i) => (
-                <div
-                  key={i}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    padding: '10px 14px',
-                    background: '#f8f9fa',
-                    border: '2px solid #000',
-                    borderRadius: '10px',
-                  }}
-                >
-                  <img
-                    src={`https://avatars.githubusercontent.com/${u.githubLogin}?s=64`}
-                    alt={u.name}
-                    onError={(e) => {
-                      e.currentTarget.style.display = 'none';
-                    }}
-                    style={{
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '50%',
-                      border: '1.5px solid #000',
-                    }}
-                  />
-                  <div style={{ overflow: 'hidden' }}>
-                    <div style={{ fontWeight: 700, fontSize: '13px', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
-                      {u.name}
-                    </div>
-                    <a
-                      href={`https://github.com/${u.githubLogin}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      style={{ fontSize: '12px', color: '#0969da', textDecoration: 'none', fontWeight: 600 }}
-                    >
-                      @{u.githubLogin}
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </div>
