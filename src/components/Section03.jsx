@@ -1,34 +1,220 @@
-export default function Section03() {
+import { memo } from 'react';
+
+const STANDARDS_BODIES = [
+  {
+    id: 'nist',
+    fullName: 'National Institute of Standards & Technology',
+    logo: (
+      <svg viewBox="0 0 646 170.3" height="28" style={{ width: 'auto', display: 'block', maxHeight: '28px' }} fill="#000000">
+        <path d="M45 0C20 0 0 20 0 45v125h40V45c0-4 5-6 8.5-3.5l104.9 115.1c29 29 77 8 77-31V-.4h-40v126c0 4-5 6-8.3 3.5L77.6 14.1c-10-10-18-14-32.5-14M250.2 0v125a45 45 0 0 0 45 45H463a52.5 52.5 0 0 0 0-105H357.8a12.5 12.5 0 0 1 0-25h177.5v130h40V40h70V0H357.8a52.5 52.5 0 0 0 0 105h105a12.5 12.5 0 0 1 0 25H295.3a5 5 0 0 1-5-5V0z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'ietf',
+    fullName: 'Internet Engineering Task Force',
+    logo: (
+      <svg viewBox="0 0 350 200" height="34" style={{ width: 'auto', display: 'block', maxHeight: '34px' }}>
+        <path d="M122.57 20.48h.07C129.42 27.26 136.23 34 143 40.84c-3 3.11-6.15 6.16-9.21 9.24l-11.11 11.09a.57.57 0 0 0-.34-.18c-.78-.68-1.48-1.46-2.22-2.18L102.3 41c-.17-.12 0-.28.08-.38q7.94-7.9 15.84-15.84c1.5-1.39 2.9-2.87 4.35-4.3M170.54 20.48h.06c4.84 4.72 9.59 9.52 14.4 14.33 1.91 1.93 3.88 3.8 5.74 5.78L170.35 61a10 10 0 0 1-.77-.71c-6.39-6.34-12.72-12.73-19.1-19.07-.09-.12-.33-.27-.18-.44 6.7-6.78 13.51-13.53 20.24-20.3M218.57 20.48h.07q8.63 8.64 17.27 17.26c1 1 2 1.92 2.9 3-6.69 6.69-13.4 13.36-20.06 20.08-1.65-1.54-3.19-3.18-4.8-4.75l-15.39-15.4a2.65 2.65 0 0 1 .77-.93ZM50.25 44.45c.14-.2.32 0 .44.11 4.33 4.37 8.72 8.7 13.08 13.06 1.4 1.44 2.87 2.8 4.23 4.28H34.75v-1.55h-.29a7 7 0 0 1 .82-.9ZM98.2 44.47c.12-.17.34-.09.45.05l20.09 20.09q-10.08 10.08-20.17 20.16-10.17-10.22-20.38-20.4l.28-.17q9.86-9.87 19.73-19.73M145.75 45c.22-.2.39-.49.68-.59a3 3 0 0 1 .69.61l11.66 11.65c2.63 2.67 5.32 5.27 7.92 8q-10.14 10.14-20.28 20.27c-3.58-3.55-7.13-7.13-10.7-10.69-3.16-3.19-6.38-6.3-9.53-9.49a1 1 0 0 1 .25-.45c6.45-6.49 12.86-12.94 19.31-19.31M274.25 60.78c5.51-5.49 11-11 16.52-16.48l13.83 13.82c.72.76 1.52 1.45 2.2 2.25h-1.16v1.78h-32.66c.37-.5.83-.92 1.27-1.37M194.35 45c.12-.21.29 0 .39.1L214.56 65c-6.66 6.74-13.41 13.4-20.09 20.13a24 24 0 0 1-1.78-1.7l-15.48-15.54c-.94-1-2-1.86-2.83-2.89q9.99-10 19.97-20M236.48 50.85c2-2 4-4 6-5.93.62.5 1.14 1.13 1.72 1.68L262.55 65q-9.65 9.69-19.33 19.35a4 4 0 0 1-.87.76c-1.1-1.18-2.27-2.29-3.4-3.44-5.54-5.56-11.11-11.08-16.64-16.66 4.69-4.73 9.43-9.46 14.17-14.16M34.75 67.4H68a3.6 3.6 0 0 1-.47.56L54.32 81.18c-1.32 1.3-2.6 2.66-4 3.92-4.8-4.84-9.64-9.64-14.45-14.47a11 11 0 0 1-1.16-1.23c.06-.67.04-1.33.04-2M273.51 67.78h32.12v1.61h.73a9 9 0 0 1-1.1 1.18l-9.47 9.47c-1.7 1.67-3.34 3.41-5.09 5q-7.63-7.65-15.3-15.3a21 21 0 0 1-1.89-1.96M218.48 68.84.27-.29c2.73 2.76 5.52 5.46 8.26 8.21l12 12c-.88 1.07-2 1.94-2.94 2.94l-12.37 12.38c-1.72 1.68-3.38 3.44-5.13 5.08Q211 101.61 203.39 94c-1.74-1.72-3.43-3.49-5.21-5.17.92-1.08 2-2 3-3 5.72-5.7 11.41-11.43 17.14-17.12ZM150.39 89q10.19-10.17 20.36-20.36c1 .82 1.83 1.8 2.76 2.68L191 88.79q-10.19 10.21-20.4 20.4c-1.86-1.79-3.65-3.65-5.48-5.45-4.91-4.92-9.83-9.82-14.73-14.74M102.42 89 122.57 68.85 142.75 89q-8.43 8.46-16.89 16.9c-1.11 1.07-2.15 2.22-3.29 3.25-5.48-5.43-10.91-10.91-16.37-16.35-1.2-1.26-2.57-2.48-3.78-3.8" fill="#a1a1aa" />
+        <path d="M33.51 145.56h12v34h-12zM107.39 145.55h25.48v7.22h-13.53v5.94h12.41v7.17h-12.4v6.45h13.76v7.17h-25.72zM191.5 145.56h33.19v8.56h-10.64v25.41h-11.91v-25.41h-10.63zM284.25 145.55h24.85v7.22h-12.89v6.1h12.13v7.21h-12.13v13.42h-11.96Z" fill="#000000" />
+        <path d="M194.57 38c1.76 1.66 3.43 3.41 5.15 5.1l18.45 18.46a2 2 0 0 0 .61.5c7.57-7.62 15.2-15.2 22.79-22.82a10 10 0 0 0 .94-1c.71.58 1.31 1.3 2 1.93 7.61 7.61 15.27 15.18 22.85 22.83h38.29v3.83h-39.88q-11.33-11.3-22.62-22.61c-.27-.16-.45-.69-.78-.58l-17.2 17.2c-2.21 2.24-4.5 4.4-6.67 6.67l-24-24q-23.66 23.61-47.26 47.25a4.3 4.3 0 0 1-.75.67c-3.22-3.31-6.53-6.55-9.79-9.83l-14.07-14h-.15Q110.6 79.51 98.72 91.4L73.89 66.58c-.22-.2-.56-.06-.83-.1H34.75v-3.69h40.49c1.11 1 2.14 2.11 3.22 3.17l12.81 12.8c2.45 2.43 4.86 4.9 7.33 7.31q11.93-11.94 23.86-23.85l24 24q21.43-21.34 42.78-42.75c1.76-1.86 3.57-3.62 5.33-5.47" fill="#f59e0b" />
+      </svg>
+    ),
+  },
+  {
+    id: 'iso',
+    fullName: 'International Organization for Standardization',
+    logo: (
+      <svg viewBox="0 0 1181 1087" height="32" style={{ width: 'auto', display: 'block', maxHeight: '32px' }} fill="#000000">
+        <path d="m0 543.5v543.5h590.5 590.5v-543.5-543.5h-590.5-590.5v543.5zm612.5-418.1c28.2 1 61.8 6.5 91.8 15.1 92.2 26.4 171.2 83.7 228 165.1 3.1 4.5 5.7 8.7 5.7 9.3 0 0.8-4.5 1.1-14.4 1.1h-14.4l-4.6-6.5c-12.7-17.6-37.5-45.2-53.8-59.7l-7-6.2-17.1 4.3c-30.6 7.5-64.3 13.6-97.9 17.7-7.6 1-13.8 2.1-13.8 2.4 0 0.4 1.4 5.2 3.1 10.6 3.9 12.9 9.9 34.5 9.9 36.1 0 1-3.1 1.3-12.5 1.3h-12.4l-1.7-5.8c-0.8-3.1-2.5-8.9-3.5-12.7-3.2-11-8.1-25.9-8.9-26.8-0.4-0.5-7-0.4-14.6 0.2-7.5 0.6-28.8 1.6-47.2 2.3-35.3 1.2-85 0.1-118.2-2.7-8.5-0.7-15.8-1-16.2-0.6-0.8 0.8-8 23.3-11.4 36l-2.7 10.1h-12.3c-11.3 0-12.4-0.2-12.4-1.8 0-2.2 5.7-23.4 10-37.1 1.7-5.2 2.7-9.8 2.2-10.2-0.4-0.3-5.4-1.2-11.2-1.8-27.3-3.1-66.9-10.4-97.2-17.8l-18.7-4.6-5.3 4.5c-16.1 13.8-42 42.2-55.3 60.5l-6 8.3h-14.7c-8.2 0-14.8-0.3-14.8-0.6 0-1.3 16-23.5 25-34.9 38.4-48.1 85.4-85.9 141-113.4 42.4-21 83.8-33.3 132.5-39.6 12.3-1.6 44.9-3.3 52.5-2.8 1.9 0.1 10.3 0.5 18.5 0.7zm-47 228.7c15.6 1.9 24.4 2.3 66.3 2.6l48.2 0.4v54 53.9h-43-42.9l-0.3-11.7-0.3-11.8-6-2.4c-17.2-6.8-40.3-10.5-66-10.6-25.3 0-36.7 2.2-47.6 9.5-11.2 7.3-12.8 22.2-3.5 31.4 9.7 9.8 21.6 12.9 74.6 19.5 45.8 5.8 63.5 9.5 85.7 18.2 10.7 4.2 24.2 12.1 32.6 19.2 12.4 10.3 22.6 27.3 27.3 45.3 3.5 13.4 4.5 39.2 2 52.9-4.3 23.4-13.1 40.2-29.2 55.5-17.4 16.6-39.8 27.5-70.7 34.4-34.1 7.7-82.4 8.9-130.8 3.4-16.6-1.8-26.2-2.2-66.1-2.5l-46.8-0.4v-53.5-53.4h43 43v11 11l3.9 2c12.7 6.4 38.8 11.1 66.3 11.7 47.4 1.2 68.7-7.2 68.8-27.2 0-7.8-2.2-12-8.8-16.6-9.6-6.8-23.1-9.9-66.2-15.4-51.8-6.7-72.3-11.4-94.8-22-35.9-17-53.6-42.9-57.2-83.7-2-21.6 1.5-41.8 10-59.4 19.1-39.5 62.8-62.2 130.5-67.8 13.6-1.1 60.6 0.4 78 2.5zm378.5-0.6c44.6 6.7 80.1 23.5 107.6 50.9 33.5 33.5 49.7 76.5 49.6 131.6 0 26.4-2.9 46.2-9.8 67-23.5 70.6-84.4 112.8-170.1 117.9-44.9 2.6-90.6-6.3-123.3-24.1-22.1-12-45.6-33.1-58.3-52.3-15.4-23.4-24.9-50.2-28.7-81.5-1.5-12.5-1.2-44.1 0.5-57.2 8.2-62 41.4-109 94.8-134.3 22.3-10.5 46.4-16.8 76.2-19.9 10-1 50.5 0.2 61.5 1.9zm-621 49v44.5h-29-29v90 90h29 29v44.5 44.5l-115.2-0.2-115.3-0.3-0.3-44.3-0.2-44.2h29 29v-90-90l-28.7-0.2-28.8-0.3-0.3-44.3-0.2-44.2h115.5 115.5v44.5zm-47 360.2c12.7 18 40.5 48.9 56.2 62.5l5.7 4.9 16.3-4c31.3-7.7 62.3-13.4 94.3-17.3 9.9-1.2 18.1-2.3 18.3-2.4s-1.1-4.6-2.8-10.1c-4.1-12.9-10-34.3-10-36.5 0-1.6 1.2-1.8 12.4-1.8h12.3l2.7 9.7c1.5 5.4 4.6 15.8 6.8 23.2l4.2 13.3 5.6-0.6c32.3-3.3 116.5-4.2 156-1.6 12.4 0.8 25.4 1.5 28.9 1.5h6.5l3.4-10.5c1.9-5.8 4.9-15.9 6.7-22.5l3.3-12 12.6-0.3c8.4-0.2 12.6 0.1 12.6 0.8 0 1.7-8.7 32.9-11.4 40.7l-2.5 7.2 3.2 0.5c1.8 0.3 8.8 1.3 15.7 2.1 29.3 3.7 65.7 10.6 93.3 17.6 14.3 3.7 16 3.9 18 2.6 4.8-3.2 26.4-24.7 36.8-36.4 6-6.9 14.8-17.6 19.5-23.9l8.7-11.4h14.3c7.9 0 14.4 0.4 14.4 0.8 0 1.3-13.2 20.3-20.9 30.2-69 88.9-170.9 145.7-283.6 158.2-18.6 2-72.4 1.7-90-0.5-91.5-11.8-168.6-47.8-235.5-110-23-21.4-51.8-56-64.4-77.5-0.6-0.9 2.5-1.2 14.2-1.2h14.9l3.3 4.7z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'owasp',
+    fullName: 'Open Worldwide Application Security Project',
+    logo: (
+      /* Official OWASP vector mark directly from owasp.org */
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+        <svg viewBox="0 0 41 40" height="32" width="32" style={{ display: 'block' }} fill="#000000">
+          <path d="M17.2561 0.219813C15.3221 0.571462 13.5638 1.15754 11.7323 2.05132C6.25247 4.73263 2.41365 9.5971 0.963096 15.7363C0.69936 16.8498 0.640752 17.5385 0.640752 19.8535C0.6261 22.2564 0.670056 22.8425 0.963096 24.1759C1.78361 27.8535 3.43929 30.9451 6.03269 33.6704C9.03636 36.8059 12.7726 38.8425 17.0364 39.6484C18.9851 40.0293 22.443 39.9854 24.3917 39.5751C29.769 38.4469 34.2671 35.4286 37.2415 30.9451C39.3953 27.7216 40.3624 24.674 40.5089 20.6594C40.6261 17.2015 40.0693 14.4616 38.6627 11.5019C35.7763 5.43593 30.4136 1.37732 23.7177 0.219813C22.1939 -0.058575 18.7506 -0.043923 17.2561 0.219813ZM23.3367 3.44326C29.6224 4.4689 34.8679 9.12824 36.6554 15.2528C38.9265 23.1356 35.2488 31.4433 27.8935 35.0183C24.2158 36.8059 20.1133 37.1868 16.084 36.1173C10.2671 34.5495 5.66639 29.7876 4.20119 23.8242C3.82024 22.2271 3.68837 19.4286 3.9228 17.6997C4.6554 12.2491 8.11328 7.4286 13.0803 4.93776C14.355 4.30773 16.6261 3.57512 17.8715 3.3993C19.3367 3.17952 21.9008 3.20882 23.3367 3.44326Z" />
+          <path d="M27.6591 7.7949C27.6591 7.88282 27.8056 8.26377 27.9668 8.61542C28.2452 9.17219 28.2598 9.33337 28.1133 9.83153C27.9521 10.3883 27.9228 10.403 27.6151 10.1832C27.0583 9.78758 26.6334 9.90479 25.8715 10.7107C25.1682 11.4286 25.1389 11.4726 25.1975 12.2052L25.2415 12.9671H24.4942C23.8056 12.9817 23.7323 12.9524 23.41 12.4542C23.1169 12.0147 23.073 11.7803 23.1023 10.8718C23.1316 9.84619 22.9558 9.43593 22.7653 10.1539C22.5162 11.1649 22.5016 12.1172 22.736 12.5715C22.8679 12.8352 22.9118 13.0403 22.8386 13.0403C22.5016 13.0403 22.0913 12.4396 21.7983 11.5312C21.4906 10.5641 21.1975 10.2418 21.2268 10.8718C21.2268 11.0623 21.3441 11.6484 21.4759 12.1759C21.7836 13.348 21.6664 13.3627 20.6114 12.2638C19.8056 11.4286 19.5125 11.4286 20.084 12.2638C20.6847 13.1575 21.1243 13.5531 21.8569 13.8315C22.9411 14.2418 22.6481 14.3297 21.1389 14.0513C16.6847 13.1868 14.692 12.9817 10.5602 12.9817C7.08764 12.9671 6.54551 12.9964 6.34039 13.2015C6.12061 13.4213 6.14991 13.4799 6.72134 13.9634C7.39533 14.5495 8.74332 15.3846 10.1939 16.1026C11.366 16.6887 13.3294 17.1575 14.692 17.1722C15.6444 17.1868 15.8495 17.1282 16.4942 16.7326C17.4466 16.1466 17.9887 16.0147 20.0547 15.8242C22.4283 15.6191 22.4576 15.6191 22.6481 16.044C22.8239 16.4103 22.8093 16.4249 22.3257 16.337C21.9741 16.2638 21.6224 16.3224 21.1389 16.5422C19.5858 17.2308 16.9484 19.7803 15.4832 22.022C14.5455 23.4286 12.3038 27.7803 12.4356 27.9121C12.5821 28.0586 16.9338 25.7876 18.443 24.7766C19.5125 24.0733 20.4503 23.2674 21.5785 22.0953C23.3953 20.2345 24.04 19.1942 24.0254 18.2271C24.0254 17.6118 24.0254 17.6118 24.377 17.7583C24.5675 17.8462 24.7287 17.9927 24.7287 18.0806C24.7287 18.1685 24.6261 19.2674 24.4942 20.5129C24.2891 22.6374 24.2452 22.8425 23.7763 23.6191C23.1316 24.718 23.0437 25.4066 23.3367 27.1795C23.5272 28.3663 23.7177 28.9524 24.3477 30.2564C25.1682 31.9268 26.3697 33.7729 26.8239 34.0513C27.1902 34.2857 27.3221 33.9927 27.4539 32.674C27.7177 29.8755 27.2928 24.6447 26.4283 19.7803C26.2378 18.696 26.0913 17.7876 26.1206 17.7583C26.1353 17.7436 26.3404 18.0953 26.5748 18.5641C26.8679 19.1356 27.2635 19.6191 27.8056 20.0586C28.8019 20.8645 29.0364 20.5861 28.0693 19.707C26.9851 18.7253 27.0437 18.6081 28.4796 18.9451C30.2818 19.37 30.399 19.0183 28.6408 18.4909C28.04 18.3151 27.6884 18.1099 27.4832 17.8315C27.1463 17.3773 27.1609 17.3627 27.8495 17.6557C28.2891 17.8315 28.5675 17.8462 29.4906 17.7143C30.0913 17.6264 30.5895 17.4945 30.5895 17.4213C30.5895 17.348 30.0913 17.2894 29.4906 17.2894C28.5968 17.2894 28.2891 17.2308 27.8935 16.9671C27.4246 16.6594 27.3953 16.5861 27.3953 15.8828L27.41 15.1209L27.8935 15.1942C28.6554 15.3114 29.1096 15.1356 29.7983 14.403C30.5016 13.6704 30.6041 13.2015 30.1646 12.7619C29.8862 12.4835 29.8862 12.4689 30.3257 12.3224C30.9704 12.0879 31.2488 12.1172 31.9375 12.4689C32.3038 12.6594 32.5821 12.718 32.6701 12.6301C32.8312 12.4689 31.4393 11.7216 30.9997 11.7216C30.8532 11.7216 30.4869 11.8242 30.1646 11.9561L29.5785 12.1905L28.1572 10.7693L28.421 10.1832C28.758 9.40663 28.758 9.27476 28.3038 8.38099C27.9521 7.66304 27.6591 7.3993 27.6591 7.7949Z" />
+        </svg>
+        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: '20px', letterSpacing: '0.04em', color: '#000000' }}>
+          OWASP
+        </span>
+      </div>
+    ),
+  },
+  {
+    id: 'ieee',
+    fullName: 'Institute of Electrical & Electronics Engineers',
+    logo: (
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+        <svg viewBox="0 0 100 100" height="30" width="30" style={{ display: 'block' }} fill="#000000">
+          <polygon points="50,4 66,22 34,22" />
+          <polygon points="50,96 34,78 66,78" />
+          <polygon points="4,50 22,34 22,66" />
+          <polygon points="96,50 78,66 78,34" />
+          <circle cx="50" cy="50" r="30" fill="none" stroke="#000000" strokeWidth="6" />
+          <circle cx="50" cy="50" r="16" fill="none" stroke="#000000" strokeWidth="5" />
+          <circle cx="50" cy="50" r="6" fill="#000000" />
+        </svg>
+        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: '20px', letterSpacing: '0.04em', color: '#000000' }}>
+          IEEE
+        </span>
+      </div>
+    ),
+  },
+  {
+    id: 'mitre',
+    fullName: 'The MITRE Corporation • CVE Repository',
+    logo: (
+      <svg viewBox="20.1 15.8 127.16 36.16" height="26" style={{ width: 'auto', display: 'block', maxHeight: '26px' }} fill="#000000">
+        <polygon points="20.12,51.94 26.50,15.97 33.71,15.97 42.16,38.47 51.04,16.11 57.83,16.11 64.34,51.80 57.27,51.80 53.39,29.44 44.94,51.39 39.81,51.39 31.35,29.31 27.05,51.80" />
+        <rect x="66.56" y="15.97" width="6.38" height="35.69" />
+        <polygon points="83.75,51.80 83.75,21.95 75.99,21.95 75.99,15.97 97.75,15.97 97.75,21.80 90.13,21.80 90.13,51.80" />
+        <polygon points="147.11,51.80 126.73,51.80 126.73,15.84 147.25,15.82 147.25,21.95 133.24,21.95 133.24,31.11 147.11,31.11 147.11,36.80 133.24,36.81 133.24,46.25 147.11,46.25" />
+        <path d="M99.83 51.94l0.14 -36.11 14.49 0c6.24,0 10.40,2.68 10.33,9.86 0.55,10.42 -8.53,11.65 -9.90,10.99l10.70 14.83 -7.40 -0.002 -10.03 -14.15 -0.14 -6.81 8.52 0c2.74,0 3.10,-8.33 -0.28,-8.34l-10.05 -0.27 0 29.72 -6.38 0.28z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'w3c',
+    fullName: 'World Wide Web Consortium • WebCrypto',
+    logo: (
+      <svg viewBox="5.01 23.88 199.99 95.24" height="28" style={{ width: 'auto', display: 'block', maxHeight: '28px' }} fill="#000000">
+        <path d="m52.352 24.412l16.955 57.643 16.953-57.643h45.964v5.73l-17.307 29.816c6.08 1.949 10.678 5.498 13.795 10.641 3.119 5.146 4.68 11.184 4.68 18.121 0 8.578-2.283 15.787-6.844 21.631s-10.465 8.768-17.713 8.768c-5.458 0-10.211-1.732-14.262-5.201-4.054-3.469-7.054-8.164-9.002-14.09l9.585-3.975c1.404 3.586 3.256 6.412 5.556 8.475 2.299 2.066 5.008 3.1 8.125 3.1 3.271 0 6.041-1.832 8.301-5.494 2.262-3.664 3.393-8.066 3.393-13.215 0-5.691-1.209-10.096-3.623-13.213-2.811-3.662-7.215-5.496-13.216-5.496h-4.674v-5.611l16.367-28.297h-19.755l-1.124 1.914-24.031 81.088h-1.169l-17.54-58.691-17.536 58.691h-1.168l-28.056-94.696h12.276l16.953 57.643 11.46-38.815-5.611-18.826h12.273v-0.004z" />
+        <path d="m180.97 23.881l1.988 12.09-7.039 13.469s-2.701-5.715-7.191-8.875c-3.781-2.664-6.246-3.244-10.1-2.449-4.949 1.021-10.561 6.938-13.01 14.234-2.93 8.727-2.959 12.953-3.063 16.832-0.164 6.223 0.816 9.896 0.816 9.896s-4.275-7.906-4.234-19.486c0.027-8.268 1.328-15.764 5.152-23.16 3.365-6.504 8.367-10.408 12.807-10.867 4.59-0.473 8.215 1.738 11.02 4.131 2.941 2.516 5.916 8.01 5.916 8.01l6.92-13.825z" />
+      </svg>
+    ),
+  },
+  {
+    id: 'iacr',
+    fullName: 'Intl. Association for Cryptologic Research',
+    logo: (
+      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+        <svg viewBox="0 0 100 100" height="30" width="30" style={{ display: 'block' }}>
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#000000" strokeWidth="6" />
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#000000" strokeWidth="2" strokeDasharray="3 3" />
+          <path d="M34 72 L50 26 L66 72 M40 58 L60 58" fill="none" stroke="#000000" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx="50" cy="26" r="4" fill="#000000" />
+        </svg>
+        <span style={{ fontFamily: "'Inter', sans-serif", fontWeight: 900, fontSize: '20px', letterSpacing: '0.04em', color: '#000000' }}>
+          IACR
+        </span>
+      </div>
+    ),
+  },
+  {
+    id: 'crce',
+    fullName: 'Fr. Conceicao Rodrigues College of Engineering',
+    logo: (
+      /* Official College Emblem Uploaded by User */
+      <img
+        src="/images/fr_crce_official_logo.png"
+        alt="Fr. CRCE Official Emblem"
+        style={{
+          height: '48px',
+          width: 'auto',
+          maxHeight: '48px',
+          display: 'block',
+          objectFit: 'contain',
+          mixBlendMode: 'multiply',
+        }}
+      />
+    ),
+  },
+];
+
+function Section03Component() {
+  const allItems = [...STANDARDS_BODIES, ...STANDARDS_BODIES];
+
   return (
-    <>
-<div className="section padding-none"><div className="container fluid padding-none w-container"><div className="marquee-horizontal relative page-break-marquee clients client-marquee"><div className="marquee-horizontal-css w-embed"><style>{`
-/*
-.track-horizontal {
-  position: absolute;
-  white-space: nowrap;
-  will-change: transform;
-  animation: marquee-horizontal 20s linear infinite;
-  /* manipulate the speed of the marquee by changing "40s" line above
-} 
+    <div
+      className="section padding-none"
+      style={{
+        borderTop: '2px solid #000000',
+        borderBottom: '2px solid #000000',
+        backgroundColor: '#ffffff',
+        overflow: 'hidden',
+        position: 'relative',
+        width: '100%',
+      }}
+    >
+      <style>{`
+        .crypto-standards-track {
+          display: flex;
+          align-items: stretch;
+          width: max-content;
+          animation: crypto-standards-marquee 38s linear infinite;
+        }
+        .crypto-standards-track:hover {
+          animation-play-state: paused;
+        }
+        @keyframes crypto-standards-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .crypto-standard-cell {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 16px 36px;
+          border-right: 1px solid #000000;
+          background: #ffffff;
+          transition: background-color 0.2s ease;
+          user-select: none;
+          min-width: 290px;
+          height: 108px;
+          color: #000000;
+          box-sizing: border-box;
+          text-align: center;
+        }
+        .crypto-standard-cell:hover {
+          background-color: #faf7f2;
+        }
+        .crypto-logo-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 48px;
+          width: 100%;
+          color: #000000;
+          background: transparent;
+        }
+      `}</style>
 
-@media only screen and (max-width: 400px) {
-  .track-horizontal.clients {
-    animation: marquee-horizontal 15s linear infinite;
-  }
-  @keyframes marquee-horizontal {
-    from { transform: translateX(0); }
-    to { transform: translateX(-70%); }
-  }
-}
+      <div className="crypto-standards-track">
+        {allItems.map((item, index) => (
+          <div key={`${item.id}-${index}`} className="crypto-standard-cell" title={item.fullName}>
+            {/* Centered Transparent Official Logo - No repetitive acronym */}
+            <div className="crypto-logo-wrapper">
+              {item.logo}
+            </div>
 
-@keyframes marquee-horizontal {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
-}
-
-*/
-
-`}</style></div><div className="track-horizontal clients"><div image="" className="marquee-text client-logo"><img src="/images/650b2aa93045f195f92780e1_inreach.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650dc46bb4a991410fe5f33e_COC.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa815c710dc1b21489e_psv.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa9a43c2fcdbbb61cda_addio.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650dbbea841de3bb9407733d_ttp.svg" loading="eager" alt="" className="client-logo-image trevor" /></div><div className="marquee-text client-logo google"><img src="/images/650b2aa90e3079d6283b64c2_Google_org_logo%201.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo reflex"><img src="/images/650b2aa99ad49b2656ab3dd0_reflex.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo nationwide"><img src="/images/655cdb0dcd38f38264b023b4_bolt-logo-nw-horizontal-full%201.svg" loading="eager" alt="" className="client-logo-image nationwide" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa9d30e76d646eb3263_jive.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa8cfd62d64a24ddc2d_formstack.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa9ee152fa2abf7f919_pano.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo cerbo"><img src="/images/650b2c0497b2d517c24633f7_cerbo.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa93045f195f92780e1_inreach.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650dc46bb4a991410fe5f33e_COC.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa815c710dc1b21489e_psv.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa9a43c2fcdbbb61cda_addio.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650dbbea841de3bb9407733d_ttp.svg" loading="eager" alt="" className="client-logo-image trevor" /></div><div className="marquee-text client-logo google"><img src="/images/650b2aa90e3079d6283b64c2_Google_org_logo%201.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo reflex"><img src="/images/650b2aa99ad49b2656ab3dd0_reflex.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo nationwide"><img src="/images/655cdb0dcd38f38264b023b4_bolt-logo-nw-horizontal-full%201.svg" loading="eager" alt="" className="client-logo-image nationwide" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa9d30e76d646eb3263_jive.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2aa9ee152fa2abf7f919_pano.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo"><img src="/images/650b2c0497b2d517c24633f7_cerbo.svg" loading="eager" alt="" className="client-logo-image" /></div><div className="marquee-text client-logo cerbo"><img src="/images/650b2aa8cfd62d64a24ddc2d_formstack.svg" loading="eager" alt="" className="client-logo-image" /></div></div></div></div></div>
-    </>
+            {/* ONLY Full Form underneath in signature Editorial New italic typography */}
+            <div
+              style={{
+                fontFamily: "'Editorial New', Georgia, serif",
+                fontStyle: 'italic',
+                fontSize: '14px',
+                color: '#333333',
+                whiteSpace: 'nowrap',
+                letterSpacing: '-0.01em',
+                lineHeight: 1.2,
+              }}
+            >
+              {item.fullName}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }
+
+const Section03 = memo(Section03Component);
+export default Section03;

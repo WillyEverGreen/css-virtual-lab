@@ -153,22 +153,23 @@ export default function Navbar() {
     >
       {/* ========================================================
           DESKTOP NAVBAR (Screen width > 820px)
+          Symmetrically balanced 1fr - auto - 1fr grid with Virtual Lab dead-centered
           ======================================================== */}
       <div
         className="lab-nav-desktop"
         style={{
           width: '100%',
           display: 'grid',
-          gridTemplateColumns: '1fr auto 1fr',
+          gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
           alignItems: 'stretch',
         }}
       >
-        {/* Left nav stack */}
+        {/* Left nav stack: Exactly 50% minus half of center logo */}
         <div
-          className="w-layout-layout nav-stack"
+          className="lab-nav-stack-left"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
             alignItems: 'stretch',
             width: '100%',
           }}
@@ -213,7 +214,7 @@ export default function Navbar() {
                 </a>
               </div>
 
-              <div style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
+              <div style={{ display: 'flex', width: '100%' }}>
                 <a
                   href="#procedure"
                   onClick={(e) => handleTabClick(e, 'procedure')}
@@ -233,8 +234,8 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            DEFAULT_GLOBAL_NAV.left.map((item) => (
-              <div key={item.to} style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
+            DEFAULT_GLOBAL_NAV.left.map((item, idx) => (
+              <div key={item.to} style={{ display: 'flex', width: '100%', borderRight: idx < 2 ? '1px solid #000' : 'none' }}>
                 <Link
                   to={item.to}
                   className={`nav-link left ${item.color} w-inline-block`}
@@ -247,29 +248,41 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Center brand logo stack - mathematically centered */}
+        {/* Center brand logo stack - mathematically centered at exact 50% */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '0 32px',
+            padding: '0 28px',
             borderRight: '1px solid #000',
             borderLeft: '1px solid #000',
-            minWidth: '280px',
+            minWidth: '260px',
+            background: '#ffffff',
           }}
         >
-          <Link to="/" aria-label="Fr. CRCE Crypto Lab home" className="brand w-nav-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Link
+            to="/"
+            aria-label="Fr. CRCE Crypto Lab home"
+            className="brand w-nav-brand"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              textDecoration: 'none',
+              padding: 0,
+            }}
+          >
             <LabLogo />
           </Link>
         </div>
 
-        {/* Right nav stack */}
+        {/* Right nav stack: Exactly 50% minus half of center logo */}
         <div
-          className="w-layout-layout nav-stack right"
+          className="lab-nav-stack-right"
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
             alignItems: 'stretch',
             width: '100%',
           }}

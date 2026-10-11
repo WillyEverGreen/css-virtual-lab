@@ -58,8 +58,10 @@ body {
 
 @media (min-width: 821px) {
   .lab-nav-desktop {
-    display: flex !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
     width: 100% !important;
+    align-items: stretch !important;
   }
   .lab-nav-mobile {
     display: none !important;
