@@ -537,7 +537,7 @@ function QuizView({ slug }: QuizProps) {
                     }}
                   >
                     <span style={{ fontWeight: 700 }}>
-                      {isCorrect ? 'Correct — ' : 'Incorrect — '}
+                      {isCorrect ? 'Correct: ' : 'Incorrect: '}
                     </span>
                     {q.explanation}
                   </div>

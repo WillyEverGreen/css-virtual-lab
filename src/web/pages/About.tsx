@@ -1,15 +1,8 @@
 import { Link } from 'react-router';
+import Process from '../../components/Process.jsx';
+import FinalCta from '../../components/FinalCta.jsx';
 
 export default function About() {
-  const compilationMembers = [
-    { roll: '10714', name: 'Ulric Ivan Collaco' },
-    { roll: '10707', name: 'Sai Dipak Balkawade', tag: 'Lead / @WillyEverGreen' },
-    { roll: '10739', name: 'Abhishek Roy Jose' },
-    { roll: '10728', name: 'Soah Alexio Fernandes' },
-    { roll: '10748', name: 'Manthan Mahendra Pagaria' },
-    { roll: '10755', name: 'Dev Dinesh Saroj' },
-  ];
-
   const pillars = [
     {
       title: 'Interactive Cryptanalysis',
@@ -38,7 +31,7 @@ export default function About() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#faf9f6', paddingBottom: '80px' }}>
+    <div style={{ minHeight: '100vh', background: '#faf9f6' }}>
       {/* Header Banner */}
       <div className="section padding-none" style={{ borderBottom: '2px solid #000', background: '#fff' }}>
         <div
@@ -193,179 +186,12 @@ export default function About() {
               </div>
             ))}
           </div>
-
-          {/* Compilation Team Section */}
-          <div
-            style={{
-              background: '#fff',
-              border: '3px solid #000',
-              borderRadius: '16px',
-              padding: '36px',
-              boxShadow: '6px 6px 0px #000',
-              marginBottom: '48px',
-            }}
-          >
-            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
-              <div
-                style={{
-                  display: 'inline-block',
-                  background: '#caffbf',
-                  border: '1.5px solid #000',
-                  borderRadius: '6px',
-                  padding: '4px 12px',
-                  fontWeight: 700,
-                  fontSize: '12px',
-                  textTransform: 'uppercase',
-                  marginBottom: '10px',
-                }}
-              >
-                Platform Compilation
-              </div>
-              <h2 style={{ margin: '0 0 10px', fontSize: '28px', fontWeight: 800 }}>
-                Integration &amp; Architecture Team
-              </h2>
-              <p style={{ margin: '0 auto', maxWidth: '680px', fontSize: '15px', color: '#555', lineHeight: 1.6 }}>
-                Appointed student engineers from TE Comp C responsible for the core application shell, navigation coordination, responsive brutalist theme, and experiment integration.
-              </p>
-            </div>
-
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-                gap: '16px',
-              }}
-            >
-              {compilationMembers.map((m, idx) => (
-                <div
-                  key={idx}
-                  style={{
-                    background: '#faf9f6',
-                    border: '2px solid #000',
-                    borderRadius: '10px',
-                    padding: '16px 20px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '14px',
-                    boxShadow: '3px 3px 0px #000',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '8px',
-                      background: '#ffd166',
-                      border: '1.5px solid #000',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontWeight: 800,
-                      fontSize: '15px',
-                    }}
-                  >
-                    {m.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div style={{ fontWeight: 800, fontSize: '14px', color: '#000' }}>
-                      {m.name}
-                    </div>
-                    <div style={{ fontSize: '12px', color: '#666', marginTop: '2px' }}>
-                      Roll No: <strong>{m.roll}</strong>
-                    </div>
-                    {m.tag && (
-                      <div
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 700,
-                          background: '#dcfce7',
-                          color: '#166534',
-                          border: '1px solid #16a34a',
-                          borderRadius: '4px',
-                          padding: '1px 6px',
-                          display: 'inline-block',
-                          marginTop: '4px',
-                        }}
-                      >
-                        {m.tag}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Action Callout */}
-          <div
-            style={{
-              background: '#18181b',
-              color: '#fff',
-              border: '3px solid #000',
-              borderRadius: '16px',
-              padding: '40px 24px',
-              textAlign: 'center',
-              boxShadow: '6px 6px 0px #ffd166',
-            }}
-          >
-            <h2 style={{ margin: '0 0 12px', fontSize: '28px', fontWeight: 800, color: '#fff' }}>
-              Ready to explore cryptographic algorithms?
-            </h2>
-            <p style={{ maxWidth: '620px', margin: '0 auto 28px', fontSize: '16px', color: '#d4d4d8', lineHeight: 1.6 }}>
-              Test your knowledge across MD5, SHA-1, MAC, HMAC, and SSL/TLS with interactive simulations and live packet analyzers.
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '14px' }}>
-              <Link
-                to="/#experiments"
-                style={{
-                  background: '#ffd166',
-                  color: '#000',
-                  border: '2px solid #000',
-                  borderRadius: '8px',
-                  padding: '12px 28px',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  textDecoration: 'none',
-                  boxShadow: '3px 3px 0px #fff',
-                }}
-              >
-                Launch Experiments →
-              </Link>
-              <Link
-                to="/instructions"
-                style={{
-                  background: '#fff',
-                  color: '#000',
-                  border: '2px solid #000',
-                  borderRadius: '8px',
-                  padding: '12px 28px',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  textDecoration: 'none',
-                  boxShadow: '3px 3px 0px #ffd166',
-                }}
-              >
-                Read ISE Guidelines
-              </Link>
-              <Link
-                to="/team"
-                style={{
-                  background: 'transparent',
-                  color: '#fff',
-                  border: '2px solid #fff',
-                  borderRadius: '8px',
-                  padding: '12px 28px',
-                  fontWeight: 800,
-                  fontSize: '15px',
-                  textDecoration: 'none',
-                }}
-              >
-                View Student Roster
-              </Link>
-            </div>
-          </div>
         </div>
       </div>
+
+      {/* Webflow Process & FinalCta Components */}
+      <Process />
+      <FinalCta />
     </div>
   );
 }

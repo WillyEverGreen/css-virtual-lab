@@ -1,22 +1,216 @@
+import { Link } from 'react-router';
+
 export default function Pricing() {
   return (
     <>
-<div id="pricing" className="section padding-bottom-none pricing"><div className="container margin-bottom-64 w-container"><div className="max-1000"><h2 className="heading-2 text-center">Validation Rules</h2><p className="paragraph text-center">Everything you need to know to get a passing grade on your module.</p></div></div><div className="marquee-horizontal-reverse shapes border"><div className="marquee-horizontal-alt-css w-embed"><style>{`
-/*
-.track-horizontal-alt {
-  position: absolute;
-  white-space: nowrap;
-  will-change: transform;
-  animation: marquee-horizontal-alt 40s linear infinite;
-  /* manipulate the speed of the marquee by changing "40s" line above
-}*/
+      <div id="pricing" className="section padding-bottom-none pricing">
+        <div className="container margin-bottom-64 w-container">
+          <div className="max-1000">
+            <h2 className="heading-2 text-center">Validation &amp; Lab Specifications</h2>
+            <p className="paragraph text-center">
+              Official technical criteria, security contracts, and repository rules required for TE Comp C virtual lab submission.
+            </p>
+          </div>
+        </div>
 
-@keyframes marquee-horizontal-alt {
-  from { transform: translateX(-46.75%); }
-  to { transform: translateX(0%); }
-}
+        {/* Marquee shapes divider */}
+        <div className="marquee-horizontal-reverse shapes border">
+          <div className="marquee-horizontal-alt-css w-embed">
+            <style>{`
+              @keyframes marquee-horizontal-alt {
+                from { transform: translateX(-46.75%); }
+                to { transform: translateX(0%); }
+              }
+            `}</style>
+          </div>
+          <div className="track-horizontal-alt">
+            <div className="marquee-text-alt">
+              <img src="/images/650cf1e85741721e194e59d1_shapes-outline.svg" loading="eager" alt="" className="marquee-text-image-shapes" />
+            </div>
+            <div className="marquee-text-alt">
+              <img src="/images/650cf1e85741721e194e59d1_shapes-outline.svg" loading="eager" alt="" className="marquee-text-image-shapes" />
+            </div>
+            <div className="marquee-text-alt">
+              <img src="/images/650cf1e85741721e194e59d1_shapes-outline.svg" loading="eager" alt="" className="marquee-text-image-shapes" />
+            </div>
+          </div>
+        </div>
 
-`}</style></div><div className="track-horizontal-alt"><div className="marquee-text-alt"><img src="/images/650cf1e85741721e194e59d1_shapes-outline.svg" loading="eager" alt="" className="marquee-text-image-shapes" /></div><div className="marquee-text-alt"><img src="/images/650cf1e85741721e194e59d1_shapes-outline.svg" loading="eager" alt="" className="marquee-text-image-shapes" /></div><div className="marquee-text-alt"><img src="/images/650cf1e85741721e194e59d1_shapes-outline.svg" loading="eager" alt="" className="marquee-text-image-shapes" /></div></div></div><div className="container fluid padding-none w-container"><div id="w-node-c4421941-9400-8f0b-37ad-2cecb964cdad-b964cd9c" className="w-layout-layout pricing-grid wf-layout-layout"><div className="w-layout-cell pricing-cell"><div className="pricing-block left"><div className="pricing-block-interior"><div className="w-layout-vflex pricing-block-top"><div className="w-layout-vflex pricing-heading-container"><h3 className="heading-2 pricing">Security</h3><p className="paragraph small margin-bottom-none">No external scripts, no analytics, no third-party CDNs.</p></div><div className="w-layout-vflex"><div className="w-layout-hflex pricing-price-container"><h4 className="heading-4 pricing-price">Must Pass</h4></div><p className="paragraph small margin-bottom-none"></p></div><div className="w-layout-vflex pricing-list"><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">Strict Content Security Policy</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No eval() or Function()</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No LocalStorage/Cookies</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No unapproved APIs</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No tracking</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No external fonts</div></div></div></div><div className="button-wrapper vertical"><a href="https://buy.stripe.com/14k294aQ2apx28ofZ7" className="button-icon emoji wide black w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text white-text">Read details</div></a><a href="/say-hey" className="button-icon emoji wide w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text">View Docs</div></a></div></div><img src="/images/650c6a0c237558a017f36a9f_blobs.svg" loading="eager" alt="" className="pricing-image basic" /></div></div><div className="w-layout-cell pricing-cell"><div className="pricing-block middle"><div className="pricing-block-interior"><div className="w-layout-vflex pricing-block-top"><div className="w-layout-vflex pricing-heading-container"><h3 className="heading-2 pricing">Structure</h3><p className="paragraph small margin-bottom-none">Exactly 5 files in the root of your repository.</p></div><div className="w-layout-vflex"><div className="w-layout-hflex pricing-price-container"><h4 className="heading-4 pricing-price">Required</h4></div><p className="paragraph small margin-bottom-none"></p></div><div className="w-layout-vflex pricing-list"><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">index.html</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">script.js</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">style.css</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No unapproved APIs</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">quiz.json</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">README.md</div></div></div></div><div className="button-wrapper vertical"><a href="https://buy.stripe.com/8wM1508HUfJRaEUeUY" className="button-icon emoji wide black w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text white-text">Read details</div></a><a href="/say-hey" className="button-icon emoji wide w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text">View Docs</div></a></div></div><img src="/images/650db3e9a0b3428bdf14f1f7_round-star-pink-bottom.svg" loading="eager" alt="" className="pricing-image standard" /></div></div><div className="w-layout-cell pricing-cell last"><div className="pricing-block right border-bottom-none"><div className="pricing-block-interior"><div className="w-layout-vflex pricing-block-top"><div className="w-layout-vflex pricing-heading-container"><h3 className="heading-2 pricing">UI Contract</h3><p className="paragraph small margin-bottom-none">A consistent look and feel using standard tokens.</p></div><div className="w-layout-vflex"><div className="w-layout-hflex pricing-price-container"><h4 className="heading-4 pricing-price">Visuals</h4></div><p className="paragraph small margin-bottom-none"></p></div><div className="w-layout-vflex pricing-list"><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text"><strong>2x</strong> active requests at a time</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">script.js</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">style.css</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">No unapproved APIs</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text"><strong>2x</strong> senior designers</div></div><div className="w-layout-hflex pricing-list-item"><img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" /><div className="pricing-list-text">Inside jokes &amp;&nbsp;cat videos</div></div></div></div><div className="button-wrapper vertical"><a href="https://buy.stripe.com/5kAaFAgameFN6oE6oo" className="button-icon emoji wide black w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text white-text">Read details</div></a><a href="/say-hey" className="button-icon emoji wide w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text">View Docs</div></a></div></div><img src="/images/650c6e903befcf89afa335dc_red-rounded-star.svg" loading="eager" alt="" className="image-8" /></div></div></div><div id="w-node-_1ffbcad0-7dc3-a2f2-5eac-4005a70d1bdc-b964cd9c" className="w-layout-layout pricing-grid pricing-grid-2-col wf-layout-layout"><div className="w-layout-cell pricing-cell pricing-cell-2-col"><div className="pricing-block left border-right-none"><div className="pricing-block-interior full-roast"><div className="w-layout-vflex pricing-block-top"><div className="w-layout-vflex pricing-heading-container"><div className="w-layout-hflex design-roast-heading"><h4 className="heading-4 pricing-small">Lab Help</h4><div className="w-layout-hflex pricing-price-container small"><h4 className="heading-4 pricing-price small">$995</h4><p className="caps small">USD</p></div></div><p className="paragraph small margin-bottom-none">Need a quick design consult for your brand, website, or app? Get a <strong>2 hour</strong> one-time strategy session with <strong>2x</strong> senior designers to give you an action plan for your business. Once purchased, you'll receive an email to schedule your slot.<a href="https://forms.gle/E4LPHav33RhAXHER6" target="_blank"><strong><br /></strong></a></p></div></div><div className="button-wrapper vertical"><a href="https://buy.stripe.com/3cs3d82jwcxFfZe4gj" className="button-icon emoji wide black w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text white-text">Let's do it</div></a></div></div><img src="/images/65158f5624d1359c104e65d3_bubble-bum-bottom-left.svg" loading="eager" alt="" className="pricing-image basic roast" /></div></div><div className="w-layout-cell pricing-cell pricing-cell-2-col"><div className="pricing-block right"><div className="pricing-block-interior full-roast"><div className="w-layout-vflex pricing-block-top"><div className="w-layout-vflex pricing-heading-container"><h4 className="heading-4 pricing-small">Contributing</h4><p className="paragraph small margin-bottom-none">Found a bug in the lab platform? Submit a pull request or an issue on the lab repository.<a href="https://forms.gle/E4LPHav33RhAXHER6" target="_blank"><strong><br /></strong></a></p></div></div><div className="button-wrapper vertical"><a href="mailto:hey@heyjay.studio?subject=Referral" className="button-icon smaller-black w-inline-block"><div className="emoji"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:'inline-block',verticalAlign:'middle'}}><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3" /><path d="M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3" /><path d="M14 9a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" /></svg></div><div className="button-text white-text">Reach out</div></a></div></div><img src="/images/6515903b786688439d63a4b2_star-small-right.svg" loading="eager" alt="" className="image-8 refer" /></div></div></div></div><div className="w-layout-blockcontainer container call-out w-container"><div className="max-1000 climate"><img src="/images/659d6bfcbf16ed959de3db05_Stripe%20Climate%20Badge.svg" loading="lazy" alt="" className="image x-small" /><p className="paragraph smaller margin-bottom-none climate">We donate a portion of each subscription to <a href="https://climate.stripe.com/EcXMDf" target="_blank">removing CO₂ from the atmosphere</a>.</p></div></div></div>
+        {/* 3-Column Specification Cards */}
+        <div className="container fluid padding-none w-container">
+          <div id="w-node-c4421941-9400-8f0b-37ad-2cecb964cdad-b964cd9c" className="w-layout-layout pricing-grid wf-layout-layout">
+            
+            {/* Column 1: Security Contract */}
+            <div className="w-layout-cell pricing-cell">
+              <div className="pricing-block left">
+                <div className="pricing-block-interior">
+                  <div className="w-layout-vflex pricing-block-top">
+                    <div className="w-layout-vflex pricing-heading-container">
+                      <h3 className="heading-2 pricing">Security</h3>
+                      <p className="paragraph small margin-bottom-none">
+                        Strict client-side isolation and cryptographic privacy.
+                      </p>
+                    </div>
+                    <div className="w-layout-vflex">
+                      <div className="w-layout-hflex pricing-price-container">
+                        <h4 className="heading-4 pricing-price">Must Pass</h4>
+                      </div>
+                    </div>
+                    <div className="w-layout-vflex pricing-list">
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">Strict Content Security Policy</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">No eval() or Function()</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">No LocalStorage/Cookies</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">100% Client-Side Web Crypto</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">No external tracking/telemetry</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">Zero third-party CDNs</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="button-wrapper vertical">
+                    <Link to="/instructions" className="button-icon emoji wide black w-inline-block">
+                      <div className="button-text white-text">Read Guidelines</div>
+                    </Link>
+                    <Link to="/dash" className="button-icon emoji wide w-inline-block">
+                      <div className="button-text">Test in Sandbox</div>
+                    </Link>
+                  </div>
+                </div>
+                <img src="/images/650c6a0c237558a017f36a9f_blobs.svg" loading="eager" alt="" className="pricing-image basic" />
+              </div>
+            </div>
+
+            {/* Column 2: Structure Contract */}
+            <div className="w-layout-cell pricing-cell">
+              <div className="pricing-block middle">
+                <div className="pricing-block-interior">
+                  <div className="w-layout-vflex pricing-block-top">
+                    <div className="w-layout-vflex pricing-heading-container">
+                      <h3 className="heading-2 pricing">Structure</h3>
+                      <p className="paragraph small margin-bottom-none">
+                        Self-contained module repository contract.
+                      </p>
+                    </div>
+                    <div className="w-layout-vflex">
+                      <div className="w-layout-hflex pricing-price-container">
+                        <h4 className="heading-4 pricing-price">Mandatory</h4>
+                      </div>
+                    </div>
+                    <div className="w-layout-vflex pricing-list">
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">index.html (semantic markup)</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">script.js (algorithm engine)</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">style.css (retro design tokens)</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">README.md (RFC test vectors)</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">quiz.json (self-assessment)</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">Valid UTF-8, max 1MB per file</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="button-wrapper vertical">
+                    <Link to="/instructions" className="button-icon emoji wide black w-inline-block">
+                      <div className="button-text white-text">View Template</div>
+                    </Link>
+                    <Link to="/dash" className="button-icon emoji wide w-inline-block">
+                      <div className="button-text">Validate Module</div>
+                    </Link>
+                  </div>
+                </div>
+                <img src="/images/650db3e9a0b3428bdf14f1f7_round-star-pink-bottom.svg" loading="eager" alt="" className="pricing-image standard" />
+              </div>
+            </div>
+
+            {/* Column 3: UI Contract */}
+            <div className="w-layout-cell pricing-cell last">
+              <div className="pricing-block right border-bottom-none">
+                <div className="pricing-block-interior">
+                  <div className="w-layout-vflex pricing-block-top">
+                    <div className="w-layout-vflex pricing-heading-container">
+                      <h3 className="heading-2 pricing">UI Contract</h3>
+                      <p className="paragraph small margin-bottom-none">
+                        Uniform retro-academic design tokens.
+                      </p>
+                    </div>
+                    <div className="w-layout-vflex">
+                      <div className="w-layout-hflex pricing-price-container">
+                        <h4 className="heading-4 pricing-price">Uniformity</h4>
+                      </div>
+                    </div>
+                    <div className="w-layout-vflex pricing-list">
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">Parchment background (#f7f1eb)</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">2px solid ink black borders</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">4px brutalist box shadows</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">On-demand button computation</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">Master Navbar message bridge</div>
+                      </div>
+                      <div className="w-layout-hflex pricing-list-item">
+                        <img src="/images/650b545485db65591903bffe_arrow-price.svg" loading="eager" alt="" className="pricing-list-icon" />
+                        <div className="pricing-list-text">Zero external style pollution</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="button-wrapper vertical">
+                    <Link to="/instructions" className="button-icon emoji wide black w-inline-block">
+                      <div className="button-text white-text">Design System</div>
+                    </Link>
+                    <Link to="/#experiments" className="button-icon emoji wide w-inline-block">
+                      <div className="button-text">Explore Experiments</div>
+                    </Link>
+                  </div>
+                </div>
+                <img src="/images/650c6e903befcf89afa335dc_red-rounded-star.svg" loading="eager" alt="" className="image-8" />
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
     </>
   );
 }
