@@ -1,24 +1,42 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "cleanUrls": false,
-  "buildCommand": "echo Static build ready",
-  "outputDirectory": ".",
-  "rewrites": [
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "routes": [
     {
-      "source": "/api/(.*)",
-      "destination": "https://crypto-virtual-lab.collacou.workers.dev/api/$1"
+      "src": "^/api/(.*)$",
+      "dest": "https://crypto-virtual-lab.collacou.workers.dev/api/$1"
     },
     {
-      "source": "/experiments/:slug/index.html",
-      "destination": "/experiments/:slug/index.html"
+      "src": "^/experiments/(?<slug>[^/]+)/(?<file>.+\\.(?:html|css|js|json|png|svg|jpg|jpeg|gif|webp|woff|woff2|ttf|eot))$",
+      "dest": "/experiments/$slug/$file"
     },
     {
-      "source": "/experiments/:slug/:file",
-      "destination": "/experiments/:slug/:file"
+      "src": "^/experiments/[^/]+/?$",
+      "dest": "/index.html"
     },
     {
-      "source": "/((?!api).*)",
-      "destination": "/index.html"
+      "src": "^/assets/(.*)$",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "^/js/(.*)$",
+      "dest": "/js/$1"
+    },
+    {
+      "src": "^/css/(.*)$",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "^/favicon.*",
+      "dest": "/favicon.svg"
+    },
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "^/.*$",
+      "dest": "/index.html"
     }
   ]
 }

@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "experiment": "md5",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What is the fixed output digest length produced by the MD5 algorithm?",
+      "options": [
+        "128 bits (16 bytes)",
+        "160 bits (20 bytes)",
+        "256 bits (32 bytes)",
+        "512 bits (64 bytes)"
+      ],
+      "answerIndex": 0,
+      "explanation": "MD5 produces a fixed 128-bit (16-byte) hash digest, conventionally represented as 32 hexadecimal characters."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "What is the message block size processed in each iteration of the MD5 compression function?",
+      "options": [
+        "128 bits",
+        "256 bits",
+        "512 bits",
+        "1024 bits"
+      ],
+      "answerIndex": 2,
+      "explanation": "MD5 operates on 512-bit (64-byte) message blocks, divided into sixteen 32-bit sub-words M[0] through M[15]."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "In MD5 preprocessing, which single byte is appended immediately following the original message bytes?",
+      "options": [
+        "0x00",
+        "0x80",
+        "0xFF",
+        "0x5A"
+      ],
+      "answerIndex": 1,
+      "explanation": "A single '1' bit followed by seven '0' bits (hexadecimal byte 0x80) is appended as the padding delimiter."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "How is the original message length encoded during MD5 padding?",
+      "options": [
+        "As a 32-bit big-endian integer",
+        "As a 64-bit big-endian integer",
+        "As a 64-bit little-endian integer",
+        "As a 128-bit little-endian integer"
+      ],
+      "answerIndex": 2,
+      "explanation": "RFC 1321 specifies that the message length before padding is appended as a 64-bit little-endian integer."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "How many total step operations are executed during the 4 rounds of MD5 block compression?",
+      "options": [
+        "16 operations",
+        "32 operations",
+        "64 operations",
+        "80 operations"
+      ],
+      "answerIndex": 2,
+      "explanation": "MD5 executes 4 rounds with 16 step operations each, resulting in a total of 64 compression operations per block."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "Which boolean auxiliary function is utilized during Round 1 of MD5 compression?",
+      "options": [
+        "F(B, C, D) = (B AND C) OR ((NOT B) AND D)",
+        "G(B, C, D) = (B AND D) OR (C AND (NOT D))",
+        "H(B, C, D) = B XOR C XOR D",
+        "I(B, C, D) = C XOR (B OR (NOT D))"
+      ],
+      "answerIndex": 0,
+      "explanation": "Round 1 uses the conditional function F(B, C, D) = (B AND C) OR ((NOT B) AND D), which selects bits from C or D based on B."
+    },
+    {
+      "id": "q7",
+      "type": "mcq-single",
+      "prompt": "How are the 64 pseudo-random constant words K[i] derived in MD5?",
+      "options": [
+        "Linear Feedback Shift Registers",
+        "Integer parts of 2^32 * abs(sin(i + 1)) in radians",
+        "Fractional parts of square roots of prime numbers",
+        "MD4 state permutations"
+      ],
+      "answerIndex": 1,
+      "explanation": "Each constant K[i] is defined as floor(2^32 * abs(sin(i + 1))), where i is in radians from 0 to 63."
+    },
+    {
+      "id": "q8",
+      "type": "mcq-single",
+      "prompt": "What phenomenon ensures that changing a single input bit alters approximately 50 percent of the output digest bits?",
+      "options": [
+        "Birthday Paradox",
+        "Avalanche Effect",
+        "Padding Oracle",
+        "Length Extension"
+      ],
+      "answerIndex": 1,
+      "explanation": "The Avalanche Effect is a key cryptographic property where a minor input change causes drastic, unpredictable changes across the hash output."
+    },
+    {
+      "id": "q9",
+      "type": "mcq-single",
+      "prompt": "Why has MD5 been officially deprecated for cryptographic security per RFC 6151?",
+      "options": [
+        "It requires too much RAM to compute",
+        "Practical collision attacks allow different inputs to produce identical hashes",
+        "It cannot hash messages larger than 1 MB",
+        "The digest is too long for modern protocols"
+      ],
+      "answerIndex": 1,
+      "explanation": "MD5 suffered practical collision attacks (e.g., Wang et al., 2004, and Flame malware), making it vulnerable to forged certificates and collisions."
+    },
+    {
+      "id": "q10",
+      "type": "mcq-single",
+      "prompt": "Which initial hexadecimal constant is loaded into Register A before MD5 processing begins?",
+      "options": [
+        "0x67452301",
+        "0xefcdab89",
+        "0x98badcfe",
+        "0x10325476"
+      ],
+      "answerIndex": 0,
+      "explanation": "Register A is initialized with word constant 0x67452301 (A=0x01, 0x23, 0x45, 0x67 in little-endian order)."
+    }
+  ]
+}

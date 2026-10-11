@@ -47,12 +47,34 @@
 .lab-section {
   background: var(--lab-surface);
   border: 1px solid var(--lab-border);
+  box-sizing: border-box;
   border-radius: 16px;
-  box-shadow: 0 4px 20px -2px rgba(148, 87, 67, 0.06);
-  padding: 44px 48px;
-  max-width: 960px;
-  margin: 28px auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 24px auto;
+  padding: 40px 44px;
   transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 4px 20px -2px rgba(148, 87, 67, 0.06);
+}
+
+@media (width >= 1024px) {
+  .lab-experiment-container {
+    max-width: 1540px !important;
+    margin: 0 auto !important;
+    padding: 32px 36px 80px !important;
+  }
+  .lab-experiment-container .lab-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 40px 48px !important;
+  }
+}
+
+@media (width >= 1440px) {
+  .lab-experiment-container {
+    max-width: 1680px !important;
+    padding: 36px 48px 80px !important;
+  }
 }
 
 .lab-section:first-of-type {

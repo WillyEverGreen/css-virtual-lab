@@ -5,50 +5,67 @@
     {
       "id": "q1",
       "type": "mcq-single",
-      "prompt": "What security properties does a Message Authentication Code (MAC) provide?",
-      "options": ["Confidentiality and encryption", "Data integrity and data origin authentication", "Non-repudiation and public key verification", "Compression and error correction"],
-      "answerIndex": 1,
-      "explanation": "A MAC provides both data integrity (ensuring the message was not modified in transit) and data origin authentication (confirming the message originated from a party holding the shared key)."
+      "prompt": "What is the primary purpose of a Message Authentication Code (MAC)?",
+      "options": [
+        "To encrypt messages",
+        "To compress data",
+        "To verify data integrity and origin",
+        "To generate random numbers"
+      ],
+      "answerIndex": 2,
+      "explanation": "MAC is used to authenticate the origin of a message and ensure its integrity."
     },
     {
       "id": "q2",
       "type": "mcq-single",
-      "prompt": "What type of cryptographic key is used by both the sender and receiver in a MAC system?",
-      "options": ["A public key infrastructure certificate", "A shared symmetric secret key", "An asymmetric private key known only to the sender", "No key is required"],
-      "answerIndex": 1,
-      "explanation": "MAC algorithms rely on a symmetric shared secret key possessed by both communicating endpoints."
+      "prompt": "Which of the following is required to generate a MAC?",
+      "options": [
+        "A shared secret key",
+        "A public key",
+        "A random nonce",
+        "A digital certificate"
+      ],
+      "answerIndex": 0,
+      "explanation": "A MAC algorithm requires a shared secret key between the sender and receiver."
     },
     {
       "id": "q3",
       "type": "mcq-single",
-      "prompt": "What happens when an active attacker modifies a message in transit without knowing the secret key?",
-      "options": ["The receiver automatically decrypts the original message", "The receiver's verification computation fails and detects tampering", "The message is accepted if the attacker uses an arbitrary random key", "The transmission channel closes automatically"],
+      "prompt": "What happens if a message is altered in transit?",
+      "options": [
+        "The receiver fixes the message",
+        "The MAC verification fails",
+        "The MAC is automatically updated",
+        "Nothing, the MAC remains valid"
+      ],
       "answerIndex": 1,
-      "explanation": "Because the attacker does not have the secret key, any forged or modified tag will not match the receiver's independently computed tag, triggering a tampering alert."
+      "explanation": "Any alteration to the message will result in a different MAC, causing verification to fail."
     },
     {
       "id": "q4",
       "type": "mcq-single",
-      "prompt": "Why does a symmetric MAC NOT provide non-repudiation, unlike digital signatures?",
-      "options": ["MAC tags are too short", "Both sender and receiver possess the exact same secret key", "MAC computations are non-deterministic", "Symmetric keys cannot be hashed"],
-      "answerIndex": 1,
-      "explanation": "Because both the sender and the receiver share the identical secret key K, the receiver could technically generate any valid tag themselves, preventing third-party non-repudiation."
+      "prompt": "Why can an attacker not easily forge a MAC for a tampered message?",
+      "options": [
+        "The attacker does not have the shared secret key",
+        "MAC algorithms are too slow",
+        "The message is encrypted",
+        "The receiver uses a public key"
+      ],
+      "answerIndex": 0,
+      "explanation": "Without the shared secret key, it is computationally infeasible to generate a valid MAC."
     },
     {
       "id": "q5",
       "type": "mcq-single",
-      "prompt": "What standard cryptographic construction is commonly used to build secure MACs from hash functions like SHA-256?",
-      "options": ["Diffie-Hellman", "HMAC (Keyed-Hash Message Authentication Code)", "Caesar Cipher", "RSA OAEP"],
+      "prompt": "Does a MAC provide non-repudiation?",
+      "options": [
+        "Yes, always",
+        "No, because both parties share the same key",
+        "Yes, if used with RSA",
+        "Only when verified by a third party"
+      ],
       "answerIndex": 1,
-      "explanation": "HMAC (standardized in RFC 2104) nests hash function invocations with inner and outer padded keys to build secure MACs resistant to length extension attacks."
-    },
-    {
-      "id": "q6",
-      "type": "mcq-single",
-      "prompt": "What is transmitted over the network in a typical MAC authentication exchange?",
-      "options": ["Only the secret key and the tag", "The message M and the authentication tag T", "Only the encrypted ciphertext", "The hashed public certificate"],
-      "answerIndex": 1,
-      "explanation": "The sender transmits the message payload M concatenated with the authentication tag T (M || T). MAC provides integrity and authenticity, but does not conceal the plaintext unless combined with encryption."
+      "explanation": "Since both sender and receiver know the same symmetric key, either could have generated the MAC, meaning it does not provide non-repudiation."
     }
   ]
 }

@@ -1,72 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useLocation, Link } from 'react-router';
+import { useLocation, Link, useNavigate } from 'react-router';
 import LabLogo from './LabLogo.jsx';
 
-const EXPERIMENT_NAV_CONFIG = {
-  md5: {
-    left: [
-      { id: 'objective', label: '1. Aim', color: 'hover-red', tooltip: 'Aim & Overview' },
-      { id: 'theory', label: '2. Theory', color: 'hover-blue', tooltip: 'Theory & Rounds' },
-      { id: 'procedure', label: '3. Procedure', color: 'hover-purple', tooltip: 'Laboratory Procedure' },
-    ],
-    right: [
-      { id: 'simulation', label: '4. Simulation', color: 'hover-pink', tooltip: 'Live Simulation' },
-      { id: 'avalanche', label: '5. Avalanche', color: 'hover-yellow', tooltip: 'Strict Avalanche Criterion' },
-      { id: 'quiz', label: '6. Quiz', color: 'hover-blue', tooltip: 'Knowledge Quiz' },
-      { id: 'references', label: '7. References', color: 'hover-red', tooltip: 'Authoritative References' },
-    ],
-  },
-  sha1: {
-    left: [
-      { id: 'objective', label: '1. Aim', color: 'hover-red', tooltip: 'Aim & Overview' },
-      { id: 'theory', label: '2. Theory', color: 'hover-blue', tooltip: 'Theory & Architecture' },
-      { id: 'procedure', label: '3. Procedure', color: 'hover-purple', tooltip: 'Laboratory Procedure' },
-    ],
-    right: [
-      { id: 'simulation', label: '4. Simulation', color: 'hover-pink', tooltip: 'Live Simulation' },
-      { id: 'avalanche', label: '5. Avalanche', color: 'hover-yellow', tooltip: 'Strict Avalanche Criterion' },
-      { id: 'quiz', label: '6. Quiz', color: 'hover-blue', tooltip: 'Knowledge Quiz' },
-      { id: 'references', label: '7. References', color: 'hover-red', tooltip: 'Authoritative References' },
-    ],
-  },
-  mac: {
-    left: [
-      { id: 'objective', label: '1. Aim', color: 'hover-red', tooltip: 'Aim & Overview' },
-      { id: 'theory', label: '2. Theory', color: 'hover-blue', tooltip: 'Theory & Architecture' },
-      { id: 'procedure', label: '3. Procedure', color: 'hover-purple', tooltip: 'Laboratory Procedure' },
-    ],
-    right: [
-      { id: 'simulation', label: '4. Simulation', color: 'hover-pink', tooltip: 'Live Pipeline Simulation' },
-      { id: 'quiz', label: '5. Quiz', color: 'hover-yellow', tooltip: 'Knowledge Quiz' },
-      { id: 'references', label: '6. References', color: 'hover-blue', tooltip: 'Authoritative References' },
-    ],
-  },
-  hmac: {
-    left: [
-      { id: 'objective', label: '1. Aim', color: 'hover-red', tooltip: 'Aim & Overview' },
-      { id: 'theory', label: '2. Theory', color: 'hover-blue', tooltip: 'Theory & Architecture' },
-      { id: 'procedure', label: '3. Procedure', color: 'hover-purple', tooltip: 'Laboratory Procedure' },
-    ],
-    right: [
-      { id: 'simulation', label: '4. Generator', color: 'hover-pink', tooltip: 'HMAC Generator & Pads' },
-      { id: 'tamper', label: '5. Tamper', color: 'hover-yellow', tooltip: 'In-Transit Tamper Channel' },
-      { id: 'quiz', label: '6. Quiz', color: 'hover-blue', tooltip: 'Knowledge Quiz' },
-      { id: 'references', label: '7. References', color: 'hover-red', tooltip: 'Authoritative References' },
-    ],
-  },
-  'ssl-tls': {
-    left: [
-      { id: 'objective', label: '1. Aim', color: 'hover-red', tooltip: 'Aim & Overview' },
-      { id: 'theory', label: '2. Theory', color: 'hover-blue', tooltip: 'Theory & Handshake' },
-      { id: 'procedure', label: '3. Procedure', color: 'hover-purple', tooltip: 'Laboratory Procedure' },
-    ],
-    right: [
-      { id: 'simulation', label: '4. Simulator', color: 'hover-pink', tooltip: 'Protocol Simulator' },
-      { id: 'comparison', label: '5. Analysis', color: 'hover-yellow', tooltip: 'TLS 1.2 vs 1.3 Analysis' },
-      { id: 'quiz', label: '6. Quiz', color: 'hover-blue', tooltip: 'Knowledge Quiz' },
-      { id: 'references', label: '7. References', color: 'hover-red', tooltip: 'Authoritative References' },
-    ],
-  },
+const SLUG_COLORS = {
+  md5: '#fc411f',
+  sha1: '#3c8aff',
+  mac: '#299e00',
+  hmac: '#cd97e9',
+  'ssl-tls': '#ffbe2e',
 };
 
 const DEFAULT_GLOBAL_NAV = {
@@ -84,43 +25,112 @@ const DEFAULT_GLOBAL_NAV = {
 
 export default function Navbar() {
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState('objective');
+  const navigate = useNavigate();
+  const isExperiment = location.pathname.startsWith('/experiments/');
 
   const expMatch = location.pathname.match(/^\/experiments\/([^/]+)/);
   const currentSlug = expMatch ? expMatch[1] : null;
-  const expConfig = currentSlug && EXPERIMENT_NAV_CONFIG[currentSlug] ? EXPERIMENT_NAV_CONFIG[currentSlug] : null;
+  const accentColor = currentSlug && SLUG_COLORS[currentSlug] ? SLUG_COLORS[currentSlug] : '#fc411f';
 
-  // Reset to objective on experiment change
-  useEffect(() => {
-    setActiveTab('objective');
-  }, [location.pathname]);
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (['objective', 'theory', 'procedure', 'simulation', 'assessment', 'quiz', 'references'].includes(hash)) {
+        return hash === 'quiz' ? 'assessment' : hash;
+      }
+    }
+    return 'objective';
+  });
 
-  // Listen for active tab notifications from the iframe
+  // Keep activeTab in sync with URL hash and experiment changes
   useEffect(() => {
+    if (!isExperiment) return;
+
+    const hash = window.location.hash.replace(/^#/, '');
+    if (['objective', 'theory', 'procedure', 'simulation', 'assessment', 'quiz', 'references'].includes(hash)) {
+      setActiveTab(hash === 'quiz' ? 'assessment' : hash);
+    } else {
+      setActiveTab('objective');
+    }
+  }, [location.pathname, isExperiment]);
+
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace(/^#/, '');
+      if (['objective', 'theory', 'procedure', 'simulation', 'assessment', 'quiz', 'references'].includes(hash)) {
+        setActiveTab(hash === 'quiz' ? 'assessment' : hash);
+      }
+    };
+
+    const handleTabChange = (e) => {
+      if (e.detail) {
+        const tab = e.detail === 'quiz' ? 'assessment' : e.detail;
+        setActiveTab(tab);
+      }
+    };
+
     const handleMessage = (event) => {
       if (event.data && (event.data.type === 'ACTIVE_TAB_CHANGED' || event.data.type === 'EXPERIMENT_TAB_CHANGED')) {
         if (event.data.target) {
-          setActiveTab(event.data.target);
+          const tab = event.data.target === 'quiz' ? 'assessment' : event.data.target;
+          setActiveTab(tab);
         }
       }
     };
+
+    window.addEventListener('hashchange', handleHash);
+    window.addEventListener('lab:tab-change', handleTabChange);
     window.addEventListener('message', handleMessage);
-    return () => window.removeEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('hashchange', handleHash);
+      window.removeEventListener('lab:tab-change', handleTabChange);
+      window.removeEventListener('message', handleMessage);
+    };
   }, []);
 
   const handleTabClick = (e, tabId) => {
     e.preventDefault();
-    setActiveTab(tabId);
 
-    // Forward to any active iframes
+    if (!isExperiment) {
+      if (tabId === 'simulation') {
+        const el = document.getElementById('experiments');
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+          navigate('/#experiments');
+        }
+      }
+      return;
+    }
+
+    const normalizedTab = tabId === 'quiz' ? 'assessment' : tabId;
+    setActiveTab(normalizedTab);
+    window.location.hash = normalizedTab;
+    window.dispatchEvent(new CustomEvent('lab:tab-change', { detail: normalizedTab }));
+
+    // Send SET_TAB to any iframe
     const iframes = document.querySelectorAll('iframe');
     iframes.forEach((iframe) => {
       try {
-        iframe.contentWindow?.postMessage({ type: 'SET_TAB', target: tabId }, '*');
+        iframe.contentWindow?.postMessage({ type: 'SET_TAB', target: normalizedTab }, '*');
+        if (normalizedTab === 'assessment') {
+          iframe.contentWindow?.postMessage({ type: 'SET_TAB', target: 'quiz' }, '*');
+        }
       } catch (_) {}
     });
+  };
 
-    window.dispatchEvent(new CustomEvent('EXPERIMENT_NAV_CHANGE', { detail: { target: tabId } }));
+  const getActiveTabStyle = (tabId, activeBg, activeColor = '#ffffff') => {
+    if (!isExperiment) return {};
+    const isActive = activeTab === tabId || (tabId === 'assessment' && activeTab === 'quiz');
+    if (!isActive) return {};
+    return {
+      backgroundColor: activeBg,
+      color: activeColor,
+      fontWeight: 'bold',
+      boxShadow: 'inset 0 0 0 1px rgba(0,0,0,0.1)',
+    };
   };
 
   return (
@@ -146,55 +156,80 @@ export default function Navbar() {
         id="w-node-_41727ff4-b8be-88c2-bd24-9e52a96dc283-e7aaa9b3"
         className="w-layout-layout nav-stack wf-layout-layout"
         style={{
-          display: 'flex',
-          flexDirection: 'row',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           alignItems: 'stretch',
-          justifyContent: 'space-between',
+          width: '100%',
         }}
       >
-        {expConfig ? (
-          expConfig.left.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <div key={tab.id} className="w-layout-cell cell-2" style={{ flex: 1, minWidth: 0, display: 'flex' }}>
-                <a
-                  href={`#${tab.id}`}
-                  onClick={(e) => handleTabClick(e, tab.id)}
-                  className={`nav-link left ${tab.color} w-inline-block`}
-                  style={{
-                    width: '100%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    backgroundColor: isActive ? '#18181b' : undefined,
-                    transition: 'all 0.15s ease',
-                  }}
-                  title={tab.tooltip}
-                >
-                  <div
-                    className="nav-link-text"
-                    style={{
-                      color: isActive ? '#ffffff' : undefined,
-                      fontWeight: isActive ? 800 : undefined,
-                      fontSize: '13px',
-                    }}
-                  >
-                    {tab.label}
-                  </div>
-                </a>
-              </div>
-            );
-          })
+        {isExperiment ? (
+          <>
+            <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <a
+                href="#objective"
+                onClick={(e) => handleTabClick(e, 'objective')}
+                className="nav-link left hover-red w-inline-block"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  ...getActiveTabStyle('objective', accentColor, '#ffffff'),
+                }}
+                title="Objective & Aim"
+              >
+                <div className="nav-link-text">Objective</div>
+              </a>
+            </div>
+
+            <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <a
+                href="#theory"
+                onClick={(e) => handleTabClick(e, 'theory')}
+                className="nav-link left hover-blue w-inline-block"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  ...getActiveTabStyle('theory', '#3c8aff', '#ffffff'),
+                }}
+                title="Theory & Mathematical Formulation"
+              >
+                <div className="nav-link-text">Theory</div>
+              </a>
+            </div>
+
+            <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <a
+                href="#procedure"
+                onClick={(e) => handleTabClick(e, 'procedure')}
+                className="nav-link left hover-purple w-inline-block"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  ...getActiveTabStyle('procedure', '#8b5cf6', '#ffffff'),
+                }}
+                title="Step-by-Step Laboratory Procedure"
+              >
+                <div className="nav-link-text">Procedure</div>
+              </a>
+            </div>
+          </>
         ) : (
           DEFAULT_GLOBAL_NAV.left.map((item) => (
-            <div key={item.to} className="w-layout-cell cell-2" style={{ flex: 1, minWidth: 0, display: 'flex' }}>
+            <div key={item.to} className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
               <Link
                 to={item.to}
                 className={`nav-link left ${item.color} w-inline-block`}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <div className="nav-link-text" style={{ fontSize: '13px' }}>{item.label}</div>
+                <div className="nav-link-text">{item.label}</div>
               </Link>
             </div>
           ))
@@ -221,67 +256,86 @@ export default function Navbar() {
         id="w-node-_452cc59b-7d9c-4767-f02e-fafaccbd707f-e7aaa9b3"
         className="w-layout-layout nav-stack right wf-layout-layout"
         style={{
-          display: 'flex',
-          flexDirection: 'row',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(3, 1fr)',
           alignItems: 'stretch',
-          justifyContent: 'space-between',
+          width: '100%',
         }}
       >
-        {expConfig ? (
+        {isExperiment ? (
           <>
-            {expConfig.right.map((tab) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <div key={tab.id} className="w-layout-cell cell-2" style={{ flex: 1, minWidth: 0, display: 'flex' }}>
-                  <a
-                    href={`#${tab.id}`}
-                    onClick={(e) => handleTabClick(e, tab.id)}
-                    className={`nav-link right ${tab.color} w-inline-block`}
-                    style={{
-                      width: '100%',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      cursor: 'pointer',
-                      backgroundColor: isActive ? '#18181b' : undefined,
-                      transition: 'all 0.15s ease',
-                    }}
-                    title={tab.tooltip}
-                  >
-                    <div
-                      className="nav-link-text"
-                      style={{
-                        color: isActive ? '#ffffff' : undefined,
-                        fontWeight: isActive ? 800 : undefined,
-                        fontSize: '13px',
-                      }}
-                    >
-                      {tab.label}
-                    </div>
-                  </a>
-                </div>
-              );
-            })}
-            <div className="w-layout-cell cell-2" style={{ flex: 1, minWidth: 0, display: 'flex' }}>
-              <Link
-                to="/#experiments"
+            <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <a
+                href="#simulation"
+                onClick={(e) => handleTabClick(e, 'simulation')}
                 className="nav-link right cta w-inline-block"
-                style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                title="Return to experiments selection"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  ...getActiveTabStyle('simulation', '#18181b', '#ffffff'),
+                }}
+                title="Interactive Simulation"
               >
-                <div className="nav-link-text" style={{ fontSize: '13px' }}>Experiments</div>
-              </Link>
+                <div className="nav-link-text">Simulation</div>
+              </a>
+            </div>
+
+            <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <a
+                href="#assessment"
+                onClick={(e) => handleTabClick(e, 'assessment')}
+                className="nav-link right hover-yellow w-inline-block"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  ...getActiveTabStyle('assessment', '#eab308', '#000000'),
+                }}
+                title="Assessment & Quiz"
+              >
+                <div className="nav-link-text">Assessment</div>
+              </a>
+            </div>
+
+            <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <a
+                href="#references"
+                onClick={(e) => handleTabClick(e, 'references')}
+                className="nav-link right hover-blue w-inline-block"
+                style={{
+                  width: '100%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  ...getActiveTabStyle('references', '#0260a8', '#ffffff'),
+                }}
+                title="References & Standards"
+              >
+                <div className="nav-link-text">References</div>
+              </a>
             </div>
           </>
         ) : (
           DEFAULT_GLOBAL_NAV.right.map((item) => (
-            <div key={item.to} className="w-layout-cell cell-2" style={{ flex: 1, minWidth: 0, display: 'flex' }}>
+            <div key={item.to} className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
               <Link
                 to={item.to}
                 className={`nav-link right ${item.isCta ? 'cta' : item.color} w-inline-block`}
                 style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                onClick={(e) => {
+                  if (item.to === '/#experiments' && location.pathname === '/') {
+                    e.preventDefault();
+                    document.getElementById('experiments')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }}
               >
-                <div className="nav-link-text" style={{ fontSize: '13px' }}>{item.label}</div>
+                <div className="nav-link-text">{item.label}</div>
               </Link>
             </div>
           ))

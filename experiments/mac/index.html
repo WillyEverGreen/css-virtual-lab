@@ -349,7 +349,7 @@
           </div>
 
           <button type="button" id="btnAliceSend" class="btn-primary">
-            <span>⚡ Generate MAC &amp; Transmit</span>
+            <span>Generate MAC &amp; Transmit</span>
           </button>
 
           <div id="senderError" class="sim-toast-error" style="display: none;"></div>
@@ -359,7 +359,7 @@
               <span>Generated MAC Tag (T)</span>
               <span class="lab-badge-pill lab-badge-accent" style="padding: 2px 8px; font-size: 10px;">HMAC-SHA256</span>
             </div>
-            <div id="aliceTagDisplay" class="payload-tag">[Awaiting Generation — Click '⚡ Generate MAC &amp; Transmit']</div>
+            <div id="aliceTagDisplay" class="payload-tag">[Awaiting Generation — Click 'Generate MAC &amp; Transmit']</div>
             <div id="aliceTagMeta" style="font-size: 11.5px; color: #94a3b8; margin-top: 6px; display: none;"></div>
           </div>
 
@@ -373,7 +373,7 @@
         <div class="channel-strip">
           <div class="channel-line"></div>
           <div class="channel-hub">
-            <span id="channelStatusText" class="channel-hub-text">🛡️ Secure Direct Channel</span>
+            <span id="channelStatusText" class="channel-hub-text">Secure Direct Channel</span>
             <div class="switch-wrapper">
               <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
                 <input type="checkbox" id="attackerToggle" style="accent-color: #e11d48; width: 18px; height: 18px;">
@@ -415,10 +415,10 @@
 
           <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
             <button type="button" id="btnTamperAmount" class="btn-danger" style="font-size: 13px; padding: 8px 16px;">
-              ⚡ Tamper: $5,000 &rarr; $95,000
+              Tamper: $5,000 &rarr; $95,000
             </button>
             <button type="button" id="btnEveForge" class="btn-secondary" style="font-size: 13px;">
-              ⚡ Forge Tag with Random Key &amp; Forward
+              Forge Tag with Random Key &amp; Forward
             </button>
           </div>
 
@@ -468,13 +468,13 @@
 
           <div style="margin-top: 14px;">
             <button type="button" id="btnBobVerify" class="btn-primary" style="background: #15803d;">
-              ⚡ Verify Cryptographic Integrity
+              Verify Cryptographic Integrity
             </button>
           </div>
 
           <!-- SUCCESS BANNER -->
           <div id="bobVerifySuccess" class="verify-banner verify-success" style="display: none;">
-            <span class="verify-icon">🟢</span>
+            <span class="verify-icon"></span>
             <div style="flex: 1;">
               <h4 class="verify-title">INTEGRITY VERIFIED &bull; MESSAGE AUTHENTIC</h4>
               <div id="bobSuccessDetails" class="verdict-details" style="font-family: monospace; font-size: 12px; margin-top: 4px;"></div>
@@ -487,7 +487,7 @@
 
           <!-- FAILURE BANNER -->
           <div id="bobVerifyFailure" class="verify-banner verify-failure" style="display: none;">
-            <span class="verify-icon">🚨</span>
+            <span class="verify-icon"></span>
             <div style="flex: 1;">
               <h4 class="verify-title">TAMPERING DETECTED &bull; VERIFICATION FAILED</h4>
               <div id="bobFailureDetails" class="verdict-details" style="font-family: monospace; font-size: 12px; margin-top: 4px;"></div>

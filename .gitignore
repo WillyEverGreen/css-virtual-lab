@@ -3,3 +3,9 @@ node_modules
 dist
 .DS_Store
 *.log
+.env*.local
+scratch/
+mac_slora/
+md5_ruth/
+sha1_tanush/
+ssl_jace/

@@ -29,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (_) {}
   }
 
-  function switchTab(targetId) {
+  function switchTab(rawTargetId) {
+    const targetId = (rawTargetId === 'assessment' ? 'quiz' : rawTargetId === 'aim' ? 'objective' : rawTargetId) || 'objective';
     sections.forEach((sec) => {
       if (sec.id === targetId) {
         sec.classList.remove('tab-hidden');
@@ -65,6 +66,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('resize', reportHeight);
+
+  // Initialize view mode from URL params or hash
+  const urlParams = new URLSearchParams(window.location.search);
+  const isSimMode = urlParams.get('mode') === 'sim';
+  const initialHash = window.location.hash.replace(/^#/, '');
+  const initialTab = urlParams.get('tab') || initialHash;
+
+  if (isSimMode || initialTab === 'simulation' || initialTab === 'sim') {
+    document.body.classList.add('mode-sim');
+    switchTab('simulation');
+    const header = document.querySelector('.lab-header-card');
+    if (header) header.style.display = 'none';
+    const container = document.querySelector('.lab-experiment-container');
+    if (container) container.style.padding = '12px 16px 36px';
+  } else if (initialTab) {
+    switchTab(initialTab);
+  }
   setTimeout(reportHeight, 150);
 
   /* ==========================================================================
@@ -843,10 +861,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (selected && parseInt(selected.value, 10) === item.ans) {
             score++;
             feedbackEl.className = 'quiz-feedback correct';
-            feedbackEl.innerText = '✓ Correct! Excellent grasp of the TLS specification.';
+            feedbackEl.innerText = 'Correct: Correct! Excellent grasp of the TLS specification.';
           } else {
             feedbackEl.className = 'quiz-feedback incorrect';
-            feedbackEl.innerText = `✗ Incorrect. Correct answer: "${item.options[item.ans]}"`;
+            feedbackEl.innerText = `Incorrect: Incorrect. Correct answer: "${item.options[item.ans]}"`;
           }
         }
       });

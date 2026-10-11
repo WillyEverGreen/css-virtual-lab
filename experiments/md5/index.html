@@ -173,131 +173,119 @@
 
     <!-- SECTION 4: SIMULATION -->
     <section id="simulation" class="lab-section tab-hidden">
-      <span class="lab-section-tag">Section 4</span>
-      <h2 class="lab-section-title">Interactive MD5 Simulation &amp; State Inspector</h2>
+      <span class="lab-section-tag">Section 4 &bull; Simulation</span>
+      <h2 class="lab-section-title">MD5 Interactive Simulation Engine</h2>
 
-      <div class="sim-controls-card">
-        <div class="sim-field-group">
-          <label for="md5Input" class="sim-label">Plaintext Input Message (M)</label>
-          <textarea id="md5Input" class="sim-textarea" placeholder="Type your plaintext message here..." rows="3">The quick brown fox jumps over the lazy dog</textarea>
+      <!-- Simulation Subview Switcher Pills -->
+      <div class="lab-sim-views" role="tablist" aria-label="MD5 Views" style="display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap;">
+        <button type="button" id="md5SubTabDigest" class="sim-subtab-btn active">Digest</button>
+        <button type="button" id="md5SubTabPadding" class="sim-subtab-btn">Padding</button>
+        <button type="button" id="md5SubTabRounds" class="sim-subtab-btn">Round State</button>
+        <button type="button" id="md5SubTabAvalanche" class="sim-subtab-btn">Avalanche Heatmap</button>
+      </div>
 
-          <div class="sim-presets-row">
-            <span style="font-size: 12px; font-weight: 700; color: #71717a;">Test Presets:</span>
-            <button type="button" class="sim-preset-btn" data-val="">Empty String</button>
-            <button type="button" class="sim-preset-btn" data-val="abc">"abc"</button>
-            <button type="button" class="sim-preset-btn" data-val="hello">"hello"</button>
-            <button type="button" class="sim-preset-btn" data-val="The quick brown fox jumps over the lazy dog">Quick Brown Fox</button>
+      <!-- Panel 1: Digest & State -->
+      <div id="md5PanelDigest" class="sim-panel-content">
+        <label for="md5Input" class="sim-label" style="display: block; font-size: 13px; font-weight: 700; color: #18181b; margin-bottom: 6px;">Input Message (UTF-8 Plaintext)</label>
+        <input type="text" id="md5Input" class="sim-input" value="abc" placeholder="Type your plaintext message here..." style="width: 100%; box-sizing: border-box; padding: 10px 14px; font-size: 15px; font-family: ui-monospace, monospace; border: 2px solid #18181b; border-radius: 8px; background: #fff;" autocomplete="off">
+
+        <div class="sim-presets-row" style="margin-top: 10px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <span style="font-size: 12px; font-weight: 700; color: #71717a;">Test Presets:</span>
+          <button type="button" class="sim-preset-btn" data-val="abc">"abc"</button>
+          <button type="button" class="sim-preset-btn" data-val="hello">"hello"</button>
+          <button type="button" class="sim-preset-btn" data-val="">Empty ("")</button>
+          <button type="button" class="sim-preset-btn" data-val="The quick brown fox jumps over the lazy dog">Quick Brown Fox</button>
+        </div>
+
+        <div class="sim-actions-row" style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+          <button type="button" id="btnGenerate" class="sim-btn-primary">Generate MD5 Hash</button>
+          <button type="button" id="btnClear" class="sim-btn-secondary">Clear Input</button>
+        </div>
+
+        <!-- 128-Bit Resulting Hash -->
+        <div style="margin-top: 22px;">
+          <div style="font-size: 11.5px; font-weight: 800; color: #18181b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">128-Bit Resulting Hash (Hexadecimal)</div>
+          <div id="digestDisplay" class="sim-digest-display-orange">900150983cd24fb0d6963f7d28e17f72</div>
+        </div>
+
+        <!-- Quantitative Diagnostics Stats -->
+        <div class="sim-stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-top: 16px;">
+          <div class="sim-stat-card" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase;">Input Bits</div>
+            <div id="statBits" style="font-size: 16px; font-weight: 800; color: #18181b; margin-top: 4px;">24 bits (3 bytes)</div>
+          </div>
+          <div class="sim-stat-card" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase;">512-Bit Blocks</div>
+            <div id="statBlocks" style="font-size: 16px; font-weight: 800; color: #18181b; margin-top: 4px;">1 block(s) (512 bits ea)</div>
+          </div>
+          <div class="sim-stat-card" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase;">Digest Length</div>
+            <div style="font-size: 16px; font-weight: 800; color: #18181b; margin-top: 4px;">128 bits (16 bytes)</div>
+          </div>
+          <div class="sim-stat-card" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div style="font-size: 11px; font-weight: 700; color: #71717a; text-transform: uppercase;">Security Status</div>
+            <div style="font-size: 15px; font-weight: 800; color: #c2410c; margin-top: 4px;">Broken (Collision vulnerabilities)</div>
+          </div>
+        </div>
+
+        <!-- Chaining Registers A, B, C, D -->
+        <div style="margin-top: 20px;">
+          <div style="font-size: 11.5px; font-weight: 800; color: #18181b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Final 32-Bit Internal Registers (A, B, C, D)</div>
+          <div class="sim-reg-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px;">
+            <div class="sim-reg-box" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 10px 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #71717a;">Register A</div>
+              <div id="regA" style="font-family: ui-monospace, monospace; font-size: 14px; font-weight: 800; color: #18181b; margin-top: 4px;">0x98500190</div>
+            </div>
+            <div class="sim-reg-box" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 10px 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #71717a;">Register B</div>
+              <div id="regB" style="font-family: ui-monospace, monospace; font-size: 14px; font-weight: 800; color: #18181b; margin-top: 4px;">0x4b2fcd3c</div>
+            </div>
+            <div class="sim-reg-box" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 10px 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #71717a;">Register C</div>
+              <div id="regC" style="font-family: ui-monospace, monospace; font-size: 14px; font-weight: 800; color: #18181b; margin-top: 4px;">0x7d3f96d6</div>
+            </div>
+            <div class="sim-reg-box" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 10px 14px;">
+              <div style="font-size: 11px; font-weight: 700; color: #71717a;">Register D</div>
+              <div id="regD" style="font-family: ui-monospace, monospace; font-size: 14px; font-weight: 800; color: #18181b; margin-top: 4px;">0x727fe128</div>
+            </div>
           </div>
         </div>
 
         <!-- Optional Salt Engine -->
-        <div style="margin: 16px 0; padding: 12px 16px; background: #faf9f6; border: 1.5px solid #18181b; border-radius: 8px;">
-          <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13.5px; cursor: pointer;">
+        <div style="margin-top: 20px; padding: 12px 16px; background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px;">
+          <label style="display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; cursor: pointer; color: #18181b;">
             <input type="checkbox" id="saltToggle">
             Enable Cryptographic Salt / Nonce Prefix
           </label>
-          <div style="margin-top: 8px;">
-            <input type="text" id="saltInput" style="width: 100%; padding: 8px 12px; border: 1.5px solid #18181b; border-radius: 6px; font-family: monospace; font-size: 13px;" placeholder="Optional salt value (e.g. s@lt_984)" value="salt_">
-          </div>
-        </div>
-
-        <div class="sim-actions-row">
-          <button type="button" id="btnGenerate" class="sim-btn-primary">
-            <span>⚡ Generate MD5 Hash</span>
-          </button>
-          <button type="button" id="btnClear" class="sim-btn-secondary">Clear Input</button>
-        </div>
-      </div>
-
-      <!-- Simulation Subview Switcher -->
-      <div style="display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;">
-        <button type="button" id="md5SubTabDigest" class="sim-subtab-btn active" style="padding: 8px 16px; border: 2px solid #18181b; border-radius: 8px; background: #18181b; color: #fff; font-weight: 700; font-size: 13px; cursor: pointer;">1. Digest &amp; State</button>
-        <button type="button" id="md5SubTabPadding" class="sim-subtab-btn" style="padding: 8px 16px; border: 2px solid #18181b; border-radius: 8px; background: #faf9f6; color: #18181b; font-weight: 700; font-size: 13px; cursor: pointer;">2. RFC 1321 Padding Layout</button>
-        <button type="button" id="md5SubTabRounds" class="sim-subtab-btn" style="padding: 8px 16px; border: 2px solid #18181b; border-radius: 8px; background: #faf9f6; color: #18181b; font-weight: 700; font-size: 13px; cursor: pointer;">3. 4-Round State Tracing</button>
-      </div>
-
-      <!-- Output Box 1: Digest & Registers -->
-      <div id="md5PanelDigest" class="sim-output-box">
-        <div class="sim-output-header">
-          <span class="sim-output-title">128-Bit Hexadecimal Digest (32 Hex Characters)</span>
-          <button type="button" id="btnCopyDigest" class="sim-copy-btn">Copy Hash</button>
-        </div>
-
-        <div id="digestDisplay" class="sim-digest-display">[Click '⚡ Generate MD5 Hash' to calculate]</div>
-
-        <!-- Preprocessing Metrics -->
-        <div class="sim-stats-grid">
-          <div class="sim-stat-card">
-            <div class="sim-stat-label">Characters</div>
-            <div id="statChars" class="sim-stat-val">--</div>
-          </div>
-          <div class="sim-stat-card">
-            <div class="sim-stat-label">UTF-8 Bytes</div>
-            <div id="statBytes" class="sim-stat-val">--</div>
-          </div>
-          <div class="sim-stat-card">
-            <div class="sim-stat-label">Bit Length (L)</div>
-            <div id="statBits" class="sim-stat-val">--</div>
-          </div>
-          <div class="sim-stat-card">
-            <div class="sim-stat-label">512-Bit Blocks</div>
-            <div id="statBlocks" class="sim-stat-val">--</div>
-          </div>
-        </div>
-
-        <!-- Register Final State -->
-        <div style="margin-top: 18px;">
-          <div style="font-size: 12px; font-weight: 800; color: #ffda8b; text-transform: uppercase;">
-            Final 32-Bit Internal Registers (A, B, C, D):
-          </div>
-          <div class="sim-reg-grid">
-            <div class="sim-reg-box">
-              <div class="sim-reg-name">Register A</div>
-              <div id="regA" class="sim-reg-hex">--</div>
-            </div>
-            <div class="sim-reg-box">
-              <div class="sim-reg-name">Register B</div>
-              <div id="regB" class="sim-reg-hex">--</div>
-            </div>
-            <div class="sim-reg-box">
-              <div class="sim-reg-name">Register C</div>
-              <div id="regC" class="sim-reg-hex">--</div>
-            </div>
-            <div class="sim-reg-box">
-              <div class="sim-reg-name">Register D</div>
-              <div id="regD" class="sim-reg-hex">--</div>
-            </div>
+          <div id="saltWrap" style="margin-top: 8px; display: none;">
+            <input type="text" id="saltInput" style="width: 100%; box-sizing: border-box; padding: 8px 12px; border: 1.5px solid #18181b; border-radius: 6px; font-family: monospace; font-size: 13px;" placeholder="Optional salt value (e.g. s@lt_984)" value="salt_">
           </div>
         </div>
       </div>
 
-      <!-- Output Box 2: Padding Layout -->
-      <div id="md5PanelPadding" class="sim-output-box" style="display: none; background: #18181b; color: #f4f4f5;">
-        <div class="sim-output-header">
-          <span class="sim-output-title" style="color: #38bdf8;">RFC 1321 Padding Breakdown &amp; Block Layout</span>
-        </div>
-        <p style="font-size: 13px; color: #a1a1aa; margin-bottom: 12px;">
+      <!-- Panel 2: Padding Layout -->
+      <div id="md5PanelPadding" class="sim-panel-content" style="display: none;">
+        <div style="font-size: 11.5px; font-weight: 800; color: #18181b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">RFC 1321 Padding Breakdown &amp; Block Layout</div>
+        <p style="font-size: 13.5px; color: #52525b; margin-bottom: 12px; line-height: 1.5;">
           MD5 appends a single '1' bit (0x80 byte), pads with zeros until length &equiv; 448 (mod 512), and appends the 64-bit original bit length in little-endian format:
         </p>
-        <pre id="md5PaddingTerminal" style="background: #09090b; border: 1px solid #27272a; border-radius: 8px; padding: 14px; font-family: monospace; font-size: 13px; color: #34d399; overflow-x: auto; margin-bottom: 16px;">[Click '⚡ Generate MD5 Hash' to inspect padding]</pre>
-        <div style="background: #27272a; padding: 12px 16px; border-radius: 8px;">
-          <div style="font-size: 12px; font-weight: 800; color: #ffda8b; text-transform: uppercase; margin-bottom: 8px;">512-Bit Block 0 Segment Structure</div>
+        <pre id="md5PaddingTerminal" style="background: #18181b; border: 1.5px solid #18181b; border-radius: 8px; padding: 16px; font-family: ui-monospace, monospace; font-size: 13px; color: #34d399; overflow-x: auto; margin-bottom: 16px; line-height: 1.55;">[Click 'Generate MD5 Hash' to inspect padding]</pre>
+        <div style="background: #faf9f6; border: 1.5px solid #e4e4e7; padding: 14px 18px; border-radius: 8px;">
+          <div style="font-size: 11.5px; font-weight: 800; color: #18181b; text-transform: uppercase; margin-bottom: 8px;">512-Bit Block 0 Segment Structure</div>
           <div id="md5PadSegments" style="display: flex; gap: 8px; flex-wrap: wrap;">
             <span style="padding: 4px 10px; background: #3b82f6; color: #fff; border-radius: 6px; font-size: 12px; font-weight: 700;">Awaiting Calculation</span>
           </div>
         </div>
       </div>
 
-      <!-- Output Box 3: Round Tracing -->
-      <div id="md5PanelRounds" class="sim-output-box" style="display: none; background: #faf9f6; color: #18181b; border: 2px solid #18181b;">
-        <div class="sim-output-header">
-          <span class="sim-output-title" style="color: #18181b;">64-Step Intermediate Register States (4 Non-Linear Rounds)</span>
-        </div>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 12px;">
+      <!-- Panel 3: Round Tracing -->
+      <div id="md5PanelRounds" class="sim-panel-content" style="display: none;">
+        <div style="font-size: 11.5px; font-weight: 800; color: #18181b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">64-Step Intermediate Register States (4 Non-Linear Rounds)</div>
+        <p style="font-size: 13.5px; color: #52525b; margin-bottom: 12px;">
           State of 32-bit registers A, B, C, D after each of the 4 non-linear compression rounds for the current message block:
         </p>
         <div class="lab-table-wrapper" style="border: 1.5px solid #18181b; border-radius: 8px; overflow: hidden;">
-          <table class="lab-table" style="margin: 0; font-family: monospace; font-size: 13px;">
+          <table class="lab-table" style="margin: 0; font-family: ui-monospace, monospace; font-size: 13px; width: 100%;">
             <thead>
               <tr style="background: #18181b; color: #fff;">
                 <th style="padding: 10px 12px; text-align: left;">Round / Non-Linear Logic</th>
@@ -309,78 +297,73 @@
             </thead>
             <tbody id="md5RoundsTbody">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 20px; color: #71717a;">Click '⚡ Generate MD5 Hash' to trace round compression states.</td>
+                <td colspan="5" style="text-align: center; padding: 20px; color: #71717a;">Click 'Generate MD5 Hash' to trace round compression states.</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
-    </section>
 
-    <!-- SECTION 5: AVALANCHE VISUALIZER -->
-    <section id="avalanche" class="lab-section tab-hidden">
-      <span class="lab-section-tag">Section 5</span>
-      <h2 class="lab-section-title">Strict Avalanche Criterion (SAC) Visualizer</h2>
-      <div class="lab-prose">
-        <p>
-          The <strong>Strict Avalanche Criterion</strong> specifies that if any single input bit is inverted, each output bit of the hash digest must change with a probability of 50%. Compare two slightly differing inputs below to observe live bit diffusion.
+      <!-- Panel 4: Avalanche SAC Heatmap -->
+      <div id="md5PanelAvalanche" class="sim-panel-content" style="display: none;">
+        <div style="font-size: 11.5px; font-weight: 800; color: #18181b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px;">Strict Avalanche Criterion (SAC) &amp; 128-Bit Heatmap</div>
+        <p style="font-size: 13.5px; color: #52525b; margin-bottom: 16px; line-height: 1.5;">
+          Compare two messages differing by as little as 1 character. The Strict Avalanche Criterion guarantees that flipping a single bit propagates through 64 non-linear compression operations to flip approximately <strong>50% (64 out of 128)</strong> of the digest bits.
         </p>
-      </div>
 
-      <div class="avalanche-container">
-        <div class="avalanche-inputs-grid">
-          <div class="avalanche-box">
-            <label for="avInput1" class="sim-label">Message 1</label>
-            <textarea id="avInput1" class="sim-textarea" rows="2">The quick brown fox jumps over the lazy dog</textarea>
+        <div class="avalanche-inputs-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-bottom: 14px;">
+          <div class="avalanche-box" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 14px;">
+            <label for="avInput1" class="sim-label" style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">Message 1</label>
+            <input type="text" id="avInput1" class="sim-input" value="The quick brown fox jumps over the lazy dog" style="width: 100%; box-sizing: border-box; padding: 8px 12px; font-family: monospace; font-size: 13px; border: 1.5px solid #18181b; border-radius: 6px;">
             <div style="margin-top: 8px; font-size: 11px; font-family: monospace; color: #52525b; word-break: break-all;">
-              Hash 1: <strong id="avHash1" style="color: #18181b;">[Click '⚡ Calculate Avalanche Diffusion']</strong>
+              Hash 1: <strong id="avHash1" style="color: #18181b;">--</strong>
             </div>
           </div>
 
-          <div class="avalanche-box">
-            <label for="avInput2" class="sim-label">Message 2 (Single Period Added)</label>
-            <textarea id="avInput2" class="sim-textarea" rows="2">The quick brown fox jumps over the lazy dog.</textarea>
+          <div class="avalanche-box" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 14px;">
+            <label for="avInput2" class="sim-label" style="display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px;">Message 2 (Single Period Added)</label>
+            <input type="text" id="avInput2" class="sim-input" value="The quick brown fox jumps over the lazy dog." style="width: 100%; box-sizing: border-box; padding: 8px 12px; font-family: monospace; font-size: 13px; border: 1.5px solid #18181b; border-radius: 6px;">
             <div style="margin-top: 8px; font-size: 11px; font-family: monospace; color: #52525b; word-break: break-all;">
-              Hash 2: <strong id="avHash2" style="color: #18181b;">[Click '⚡ Calculate Avalanche Diffusion']</strong>
+              Hash 2: <strong id="avHash2" style="color: #18181b;">--</strong>
             </div>
           </div>
         </div>
 
-        <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+        <div style="display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap;">
           <button type="button" id="btnFlipBit" class="sim-btn-secondary" style="font-size: 13px;">
             Set Sample 1-Char Difference
           </button>
           <button type="button" id="btnRunAvalanche" class="sim-btn-primary" style="font-size: 13px; padding: 8px 16px;">
-            ⚡ Calculate Avalanche Diffusion
+            Calculate Avalanche Diffusion
           </button>
         </div>
 
         <!-- Scorecard Metrics -->
-        <div class="avalanche-scorecard">
-          <div class="scorecard-metric">
-            <div id="avFlippedCount" class="num">--</div>
-            <div class="desc">Bits Flipped (Out of 128)</div>
+        <div class="avalanche-scorecard" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-bottom: 18px;">
+          <div class="scorecard-metric" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div id="avFlippedCount" class="num" style="font-size: 20px; font-weight: 800; color: #18181b;">--</div>
+            <div class="desc" style="font-size: 11px; color: #71717a; text-transform: uppercase;">Bits Flipped (Out of 128)</div>
           </div>
-          <div class="scorecard-metric">
-            <div id="avPercent" class="num">--%</div>
-            <div class="desc">Avalanche Diffusion Ratio</div>
+          <div class="scorecard-metric" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div id="avPercent" class="num" style="font-size: 20px; font-weight: 800; color: #18181b;">--%</div>
+            <div class="desc" style="font-size: 11px; color: #71717a; text-transform: uppercase;">Avalanche Diffusion Ratio</div>
           </div>
-          <div class="scorecard-metric">
-            <div class="num" style="color: #15803d;">~50%</div>
-            <div class="desc">Theoretical Ideal SAC</div>
+          <div class="scorecard-metric" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 12px 16px;">
+            <div class="num" style="font-size: 20px; font-weight: 800; color: #15803d;">~50%</div>
+            <div class="desc" style="font-size: 11px; color: #71717a; text-transform: uppercase;">Theoretical Ideal SAC</div>
           </div>
         </div>
 
         <!-- 128-Bit Diff Grid -->
-        <div class="bit-diff-wrapper">
-          <div class="bit-diff-title">
-            <span>128-Bit Difference Map (Green = Identical Bit, Red = Inverted Bit)</span>
-            <div class="bit-diff-legend">
-              <span class="legend-chip"><span class="legend-dot match"></span> Unchanged</span>
-              <span class="legend-chip"><span class="legend-dot diff"></span> Flipped</span>
+        <div class="bit-diff-wrapper" style="background: #faf9f6; border: 1.5px solid #e4e4e7; border-radius: 8px; padding: 16px;">
+          <div class="bit-diff-title" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+            <span style="font-size: 12px; font-weight: 800; color: #18181b; text-transform: uppercase;">128-Bit Difference Map (Green = Identical Bit, Red = Inverted Bit)</span>
+            <div class="bit-diff-legend" style="display: flex; gap: 12px; font-size: 12px;">
+              <span class="legend-chip"><span class="legend-dot match" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #15803d; margin-right: 4px;"></span> Unchanged</span>
+              <span class="legend-chip"><span class="legend-dot diff" style="display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: #dc2626; margin-right: 4px;"></span> Flipped</span>
             </div>
           </div>
-          <div id="avBitGrid" class="bit-grid">
+          <div id="avBitGrid" class="bit-grid" style="display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px;">
             <!-- Rendered by script.js -->
           </div>
         </div>

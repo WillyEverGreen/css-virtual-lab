@@ -1,540 +1,423 @@
-/**
- * ============================================================================
- * Fr. Conceicao Rodrigues College of Engineering (Fr. CRCE)
- * Cryptography Virtual Laboratory - Experiment 02: SHA-1 Hash Algorithm
- * ============================================================================
- * Collaborative Implementation by Group B:
- * - Member 1: Aaron Deniz  (Preprocessing, UTF-8 Encoding, 512-bit Big-Endian Padding)
- * - Member 2: Tanush Chavan (State Registers A,B,C,D,E, 80-Step Expansion & Compression)
- * - Member 3: Swar         (Strict Avalanche Criterion Engine, 160-Bit Diff Matrix)
- * - Member 4: Asher        (Simulation UI, State Inspector, Interactive Test Vectors & Quiz)
- * ============================================================================
- */
+"use strict";
 
-/* ============================================================================
-   MEMBER 1: PREPROCESSING, PADDING & 512-BIT BLOCK PARSING (Aaron Deniz)
-   ============================================================================ */
+(function () {
+  var H_INIT = [0x67452301, 0xefcdab89, 0x98badcfe, 0x10325476, 0xc3d2e1f0];
+  var K = [0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xca62c1d6];
+  var F_NAMES = ["Ch", "Parity", "Maj", "Parity"];
+  var DEFAULT_A = "abc";
+  var DEFAULT_B = "abd";
 
-function preprocessSHA1(message) {
-  const bytes = [];
-
-  // Convert string to UTF-8 byte stream
-  for (let i = 0; i < message.length; i++) {
-    let code = message.charCodeAt(i);
-    if (code < 0x80) {
-      bytes.push(code);
-    } else if (code < 0x800) {
-      bytes.push(0xc0 | (code >> 6), 0x80 | (code & 0x3f));
-    } else if (code < 0xd800 || code >= 0xe000) {
-      bytes.push(
-        0xe0 | (code >> 12),
-        0x80 | ((code >> 6) & 0x3f),
-        0x80 | (code & 0x3f)
-      );
-    } else {
-      // UTF-16 surrogate pairs
-      i++;
-      const nextCode = message.charCodeAt(i);
-      const codePoint = 0x10000 + (((code & 0x3ff) << 10) | (nextCode & 0x3ff));
-      bytes.push(
-        0xf0 | (codePoint >> 18),
-        0x80 | ((codePoint >> 12) & 0x3f),
-        0x80 | ((codePoint >> 6) & 0x3f),
-        0x80 | (codePoint & 0x3f)
-      );
-    }
+  function rotl(x, n) {
+    return ((x << n) | (x >>> (32 - n))) >>> 0;
   }
 
-  const originalBitLength = bytes.length * 8;
-
-  // Append single '1' bit (0x80)
-  bytes.push(0x80);
-
-  // Append '0' bits until length = 448 mod 512 (56 bytes mod 64)
-  while ((bytes.length % 64) !== 56) {
-    bytes.push(0x00);
+  function hex8(n) {
+    return ("00000000" + (n >>> 0).toString(16)).slice(-8);
   }
 
-  // Append 64-bit original bit length in BIG-ENDIAN format (FIPS 180-1)
-  const highBits = Math.floor(originalBitLength / 0x100000000) >>> 0;
-  const lowBits = (originalBitLength & 0xffffffff) >>> 0;
-
-  bytes.push((highBits >>> 24) & 0xff);
-  bytes.push((highBits >>> 16) & 0xff);
-  bytes.push((highBits >>> 8) & 0xff);
-  bytes.push(highBits & 0xff);
-
-  bytes.push((lowBits >>> 24) & 0xff);
-  bytes.push((lowBits >>> 16) & 0xff);
-  bytes.push((lowBits >>> 8) & 0xff);
-  bytes.push(lowBits & 0xff);
-
-  // Partition into 512-bit (16 x 32-bit big-endian words) blocks
-  const blocks = [];
-  for (let blockStart = 0; blockStart < bytes.length; blockStart += 64) {
-    const words = [];
-    for (let i = 0; i < 64; i += 4) {
-      const word = (
-        (bytes[blockStart + i] << 24) |
-        (bytes[blockStart + i + 1] << 16) |
-        (bytes[blockStart + i + 2] << 8) |
-        bytes[blockStart + i + 3]
-      ) >>> 0;
-      words.push(word);
-    }
-    blocks.push(words);
+  function hex2(n) {
+    return ("0" + n.toString(16)).slice(-2);
   }
 
-  return {
-    blocks: blocks,
-    rawLength: message.length,
-    utf8ByteLength: originalBitLength / 8,
-    origBitLength: originalBitLength,
-    paddedByteLength: bytes.length,
-    paddedBitLength: bytes.length * 8,
-    blockCount: blocks.length
-  };
-}
+  function textToBytes(str) {
+    return Array.prototype.slice.call(new TextEncoder().encode(str));
+  }
 
-/* ============================================================================
-   MEMBER 2: REGISTERS, EXPANSION & 80-STEP COMPRESSION (Tanush Chavan)
-   ============================================================================ */
-
-// 32-bit left circular rotation
-function rotl(x, n) {
-  return ((x << n) | (x >>> (32 - n))) >>> 0;
-}
-
-function sha1Detailed(message) {
-  const prep = preprocessSHA1(message);
-
-  // Initial 160-bit state registers (FIPS 180-1 constants)
-  let H0 = 0x67452301;
-  let H1 = 0xEFCDAB89;
-  let H2 = 0x98BADCFE;
-  let H3 = 0x10325476;
-  let H4 = 0xC3D2E1F0;
-
-  for (let b = 0; b < prep.blocks.length; b++) {
-    const words = prep.blocks[b];
-    const W = new Uint32Array(80);
-
-    // Message schedule: W[0..15] from block
-    for (let t = 0; t < 16; t++) {
-      W[t] = words[t];
+  function roundFunction(t, b, c, d) {
+    if (t < 20) {
+      return ((b & c) | (~b & d)) >>> 0;
     }
-
-    // Message schedule expansion: W[t] = rotl(W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16], 1)
-    for (let t = 16; t < 80; t++) {
-      W[t] = rotl(W[t - 3] ^ W[t - 8] ^ W[t - 14] ^ W[t - 16], 1);
+    if (t < 40 || t >= 60) {
+      return (b ^ c ^ d) >>> 0;
     }
+    return ((b & c) | (b & d) | (c & d)) >>> 0;
+  }
 
-    // Initialize 5 working variables
-    let A = H0;
-    let B = H1;
-    let C = H2;
-    let D = H3;
-    let E = H4;
+  // RFC 3174 padding. Returns padded bytes plus the size of each part.
+  function padMessage(bytes) {
+    var len = bytes.length;
+    var zeros = (55 - len) % 64;
+    if (zeros < 0) {
+      zeros += 64;
+    }
+    var padded = bytes.slice();
+    padded.push(0x80);
+    for (var i = 0; i < zeros; i++) {
+      padded.push(0);
+    }
+    var bitLen = len * 8;
+    var high = Math.floor(bitLen / 4294967296);
+    var low = bitLen >>> 0;
+    var lenBytes = [high >>> 24, high >>> 16, high >>> 8, high, low >>> 24, low >>> 16, low >>> 8, low];
+    for (var j = 0; j < 8; j++) {
+      padded.push(lenBytes[j] & 0xff);
+    }
+    return { padded: padded, msgLen: len, zeros: zeros, bitLen: bitLen };
+  }
 
-    // 80-round compression loop
-    for (let t = 0; t < 80; t++) {
-      let f, K;
-      if (t < 20) {
-        // Round 1: Ch(B, C, D) = (B & C) | (~B & D)
-        f = (B & C) | ((~B) & D);
-        K = 0x5A827999;
-      } else if (t < 40) {
-        // Round 2: Parity(B, C, D) = B ^ C ^ D
-        f = B ^ C ^ D;
-        K = 0x6ED9EBA1;
-      } else if (t < 60) {
-        // Round 3: Maj(B, C, D) = (B & C) | (B & D) | (C & D)
-        f = (B & C) | (B & D) | (C & D);
-        K = 0x8F1BBCDC;
-      } else {
-        // Round 4: Parity(B, C, D) = B ^ C ^ D
-        f = B ^ C ^ D;
-        K = 0xCA62C1D6;
+  function expandSchedule(block, offset) {
+    var w = new Array(80);
+    for (var t = 0; t < 16; t++) {
+      var p = offset + t * 4;
+      w[t] = ((block[p] << 24) | (block[p + 1] << 16) | (block[p + 2] << 8) | block[p + 3]) >>> 0;
+    }
+    for (var u = 16; u < 80; u++) {
+      w[u] = rotl(w[u - 3] ^ w[u - 8] ^ w[u - 14] ^ w[u - 16], 1);
+    }
+    return w;
+  }
+
+  // Full SHA-1 with every intermediate value recorded for the views.
+  function computeSha1(str) {
+    var bytes = textToBytes(str);
+    var pad = padMessage(bytes);
+    var h = H_INIT.slice();
+    var blocks = [];
+
+    for (var off = 0; off < pad.padded.length; off += 64) {
+      var w = expandSchedule(pad.padded, off);
+      var a = h[0], b = h[1], c = h[2], d = h[3], e = h[4];
+      var steps = [];
+      var roundEnds = [];
+
+      for (var t = 0; t < 80; t++) {
+        var f = roundFunction(t, b, c, d);
+        var k = K[Math.floor(t / 20)];
+        var temp = (rotl(a, 5) + f + e + k + w[t]) >>> 0;
+        e = d;
+        d = c;
+        c = rotl(b, 30);
+        b = a;
+        a = temp;
+        steps.push({ t: t, f: f, k: k, w: w[t], regs: [a, b, c, d, e] });
+        if (t % 20 === 19) {
+          roundEnds.push([a, b, c, d, e]);
+        }
       }
 
-      const temp = (rotl(A, 5) + f + E + K + W[t]) >>> 0;
-      E = D;
-      D = C;
-      C = rotl(B, 30);
-      B = A;
-      A = temp;
+      h = [
+        (h[0] + a) >>> 0,
+        (h[1] + b) >>> 0,
+        (h[2] + c) >>> 0,
+        (h[3] + d) >>> 0,
+        (h[4] + e) >>> 0
+      ];
+
+      blocks.push({
+        offset: off,
+        words: w,
+        steps: steps,
+        roundEnds: roundEnds,
+        chainOut: h.slice()
+      });
     }
 
-    // Add block results back to hash accumulators (modulo 2^32)
-    H0 = (H0 + A) >>> 0;
-    H1 = (H1 + B) >>> 0;
-    H2 = (H2 + C) >>> 0;
-    H3 = (H3 + D) >>> 0;
-    H4 = (H4 + E) >>> 0;
+    var digest = h.map(hex8).join("");
+    return {
+      input: str,
+      bytes: bytes,
+      pad: pad,
+      blocks: blocks,
+      digest: digest
+    };
   }
 
-  function toHex(val) {
-    return val.toString(16).padStart(8, '0');
-  }
-
-  const digest = (toHex(H0) + toHex(H1) + toHex(H2) + toHex(H3) + toHex(H4)).toLowerCase();
-
-  return {
-    prep: prep,
-    digest: digest,
-    finalState: {
-      A: H0,
-      B: H1,
-      C: H2,
-      D: H3,
-      E: H4
+  function countBitDiffs(a, b) {
+    var diff = (a ^ b) >>> 0;
+    var count = 0;
+    while (diff) {
+      count += diff & 1;
+      diff >>>= 1;
     }
-  };
-}
-
-/* ============================================================================
-   MEMBER 3: STRICT AVALANCHE CRITERION & 160-BIT MATRIX (Swar)
-   ============================================================================ */
-
-function hexToBin160(hex) {
-  let bin = '';
-  for (let i = 0; i < hex.length; i++) {
-    bin += parseInt(hex[i], 16).toString(2).padStart(4, '0');
+    return count;
   }
-  return bin;
-}
 
-function calculateAvalanche(text1, text2) {
-  const res1 = sha1Detailed(text1);
-  const res2 = sha1Detailed(text2);
-  const bin1 = hexToBin160(res1.digest);
-  const bin2 = hexToBin160(res2.digest);
-
-  let flippedCount = 0;
-  const bitComparison = [];
-
-  for (let i = 0; i < 160; i++) {
-    const b1 = bin1[i] || '0';
-    const b2 = bin2[i] || '0';
-    const flipped = b1 !== b2;
-    if (flipped) {
-      flippedCount++;
+  function compareDigests(d1, d2) {
+    var charDiffs = 0;
+    var bitDiffs = 0;
+    var mark1 = [];
+    for (var i = 0; i < d1.length; i++) {
+      var diff = d1[i] !== d2[i];
+      if (diff) {
+        charDiffs++;
+      }
+      mark1.push(diff);
+      var v1 = parseInt(d1[i], 16);
+      var v2 = parseInt(d2[i], 16);
+      bitDiffs += countBitDiffs(v1, v2);
     }
-    bitComparison.push({
-      index: i + 1,
-      b1: b1,
-      b2: b2,
-      flipped: flipped
+    return { chars: charDiffs, bits: bitDiffs, marks: mark1 };
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
     });
   }
 
-  const percentage = ((flippedCount / 160) * 100).toFixed(2);
-
-  return {
-    hash1: res1.digest,
-    hash2: res2.digest,
-    flippedCount: flippedCount,
-    percentage: percentage,
-    bitComparison: bitComparison
-  };
-}
-
-/* ============================================================================
-   MEMBER 4: SIMULATION CONTROLS, INSPECTORS & QUIZ ENGINE (Asher)
-   ============================================================================ */
-
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Navigation Tab Switching (Master Navbar Interop)
-  const sections = document.querySelectorAll('.lab-section');
-  const tabButtons = document.querySelectorAll('.lab-tab-btn');
+  function el(id) {
+    return document.getElementById(id);
+  }
 
   function reportHeight() {
     try {
-      const container = document.querySelector('.lab-experiment-container');
-      const h = container
-        ? Math.max(container.scrollHeight, container.offsetHeight)
-        : Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      var simEl = document.getElementById("simulation") || document.querySelector(".lab-experiment-container") || document.body;
+      var h = Math.max(simEl.scrollHeight || 0, simEl.offsetHeight || 0);
       window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
     } catch (_) {}
   }
 
-  function switchTab(targetId) {
-    sections.forEach((sec) => {
-      if (sec.id === targetId) {
-        sec.classList.remove('tab-hidden');
+  // ---- Rendering views --------------------------------------------------------
+  var input = el("sim-input");
+  var input2 = el("sim-input2");
+  var schedBlock = el("sim-sched-block");
+  var stepBlock = el("sim-step-block");
+  var stepRange = el("sim-step");
+  var current = null;
+
+  function renderDigest(r) {
+    el("sim-digest").textContent = r.digest;
+    el("sim-bits").textContent = r.pad.bitLen + " bits (" + r.bytes.length + " bytes)";
+    el("sim-blocks").textContent = r.blocks.length + " block" + (r.blocks.length === 1 ? "" : "s") + " (" + r.pad.padded.length + " bytes padded)";
+  }
+
+  function renderSelfCheck() {
+    var v1 = computeSha1("abc").digest;
+    var v2 = computeSha1("").digest;
+    var ok1 = v1 === "a9993e364706816aba3e25717850c26c9cd0d89d";
+    var ok2 = v2 === "da39a3ee5e6b4b0d3255bfef95601890afd80709";
+    var lines = [
+      (ok1 ? "PASS" : "FAIL") + "  SHA1(\"abc\") = " + v1,
+      (ok2 ? "PASS" : "FAIL") + "  SHA1(\"\")    = " + v2
+    ];
+    el("sim-selfcheck").textContent = lines.join("\n");
+  }
+
+  function renderPadding(r) {
+    var p = r.pad;
+    var lines = [];
+    lines.push("Original message length: " + p.msgLen + " bytes (" + p.bitLen + " bits)");
+    lines.push("Appended: 0x80 (1 byte) + " + p.zeros + " zero bytes");
+    lines.push("Length field: 8 bytes (64-bit big-endian = " + p.bitLen + ")");
+    lines.push("Total padded length: " + p.padded.length + " bytes (" + (p.padded.length / 64) + " block" + (p.padded.length === 64 ? "" : "s") + ")");
+    el("sim-padding").textContent = lines.join("\n");
+
+    var byteHtml = [];
+    for (var i = 0; i < p.padded.length; i++) {
+      var cls = "lab-b-zero";
+      if (i < p.msgLen) {
+        cls = "lab-b-msg";
+      } else if (i === p.msgLen) {
+        cls = "lab-b-one";
+      } else if (i >= p.padded.length - 8) {
+        cls = "lab-b-len";
+      }
+      byteHtml.push('<span class="lab-byte ' + cls + '">' + hex2(p.padded[i]) + "</span>");
+    }
+    el("sim-padbytes").innerHTML = byteHtml.join("");
+  }
+
+  function fillBlockSelect(select, total) {
+    var val = select.value ? Math.min(parseInt(select.value, 10), total - 1) : 0;
+    if (val < 0) val = 0;
+    var opts = [];
+    for (var i = 0; i < total; i++) {
+      opts.push('<option value="' + i + '"' + (i === val ? " selected" : "") + ">Block " + (i + 1) + " of " + total + "</option>");
+    }
+    select.innerHTML = opts.join("");
+  }
+
+  function renderSchedule(r) {
+    var bi = parseInt(schedBlock.value, 10) || 0;
+    if (bi >= r.blocks.length) bi = 0;
+    var w = r.blocks[bi].words;
+    var rows = [];
+    for (var t = 0; t < 40; t++) {
+      var t2 = t + 40;
+      var src1 = t < 16 ? "block[" + t + "]" : "ROTL1(W[" + (t - 3) + "] ^ W[" + (t - 8) + "] ^ W[" + (t - 14) + "] ^ W[" + (t - 16) + "])";
+      var src2 = "ROTL1(W[" + (t2 - 3) + "] ^ W[" + (t2 - 8) + "] ^ W[" + (t2 - 14) + "] ^ W[" + (t2 - 16) + "])";
+      rows.push(
+        "<tr><td>" + t + "</td><td><code>" + hex8(w[t]) + "</code></td><td>" + escapeHtml(src1) + "</td>" +
+        "<td>" + t2 + "</td><td><code>" + hex8(w[t2]) + "</code></td><td>" + escapeHtml(src2) + "</td></tr>"
+      );
+    }
+    el("sim-schedule").innerHTML = rows.join("");
+  }
+
+  function renderRounds(r) {
+    var rows = [];
+    for (var bi = 0; bi < r.blocks.length; bi++) {
+      var b = r.blocks[bi];
+      for (var round = 0; round < 4; round++) {
+        var regs = b.roundEnds[round];
+        rows.push(
+          "<tr><td>Block " + (bi + 1) + ", end of round " + (round + 1) + " (" + F_NAMES[round] + ")</td>" +
+          "<td><code>" + hex8(regs[0]) + "</code></td>" +
+          "<td><code>" + hex8(regs[1]) + "</code></td>" +
+          "<td><code>" + hex8(regs[2]) + "</code></td>" +
+          "<td><code>" + hex8(regs[3]) + "</code></td>" +
+          "<td><code>" + hex8(regs[4]) + "</code></td></tr>"
+        );
+      }
+      rows.push(
+        '<tr class="lab-row-chain"><td>Block ' + (bi + 1) + " chaining output (+ initial H)</td>" +
+        "<td><code>" + hex8(b.chainOut[0]) + "</code></td>" +
+        "<td><code>" + hex8(b.chainOut[1]) + "</code></td>" +
+        "<td><code>" + hex8(b.chainOut[2]) + "</code></td>" +
+        "<td><code>" + hex8(b.chainOut[3]) + "</code></td>" +
+        "<td><code>" + hex8(b.chainOut[4]) + "</code></td></tr>"
+      );
+    }
+    el("sim-rounds").innerHTML = rows.join("");
+    renderStep(r);
+  }
+
+  function renderStep(r) {
+    var bi = parseInt(stepBlock.value, 10) || 0;
+    if (bi >= r.blocks.length) bi = 0;
+    var t = parseInt(stepRange.value, 10) || 0;
+    var s = r.blocks[bi].steps[t];
+    var round = Math.floor(t / 20);
+    el("sim-step-label").textContent = String(t);
+    el("sim-stepinfo").textContent =
+      "Block " + (bi + 1) + ", step " + t + " (round " + (round + 1) + ", f = " + F_NAMES[round] + ")\n" +
+      "f(b,c,d) = " + hex8(s.f) + "\n" +
+      "K        = " + hex8(s.k) + "\n" +
+      "W[" + t + "]" + (t < 10 ? "   " : "  ") + " = " + hex8(s.w) + "\n" +
+      "a = " + hex8(s.regs[0]) + "   b = " + hex8(s.regs[1]) + "   c = " + hex8(s.regs[2]) + "\n" +
+      "d = " + hex8(s.regs[3]) + "   e = " + hex8(s.regs[4]);
+  }
+
+  function highlight(digest, marks, invert) {
+    var out = [];
+    for (var i = 0; i < digest.length; i++) {
+      var isDiff = marks[i];
+      if (invert ? isDiff : !isDiff) {
+        out.push('<span class="lab-diff">' + digest[i] + "</span>");
       } else {
-        sec.classList.add('tab-hidden');
+        out.push(digest[i]);
       }
-    });
-    tabButtons.forEach((b) => {
-      if (b.getAttribute('data-target') === targetId) {
-        b.classList.add('active');
-      } else {
-        b.classList.remove('active');
-      }
-    });
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    try {
-      window.parent.postMessage({ type: 'ACTIVE_TAB_CHANGED', target: targetId }, '*');
-    } catch (_) {}
-    setTimeout(reportHeight, 40);
-  }
-
-  window.addEventListener('message', (event) => {
-    if (event.data && (event.data.type === 'SET_TAB' || event.data.type === 'SET_ACTIVE_TAB')) {
-      switchTab(event.data.target);
     }
-  });
+    return out.join("");
+  }
 
-  tabButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const targetId = btn.getAttribute('data-target');
-      switchTab(targetId);
-    });
-  });
-
-  window.addEventListener('resize', reportHeight);
-  setTimeout(reportHeight, 100);
-
-  // 2. SHA-1 Live Simulation
-  const sha1Input = document.getElementById('sha1Input');
-  const btnGenerate = document.getElementById('btnGenerate');
-  const btnClear = document.getElementById('btnClear');
-  const digestDisplay = document.getElementById('digestDisplay');
-  const btnCopyDigest = document.getElementById('btnCopyDigest');
-  const saltToggle = document.getElementById('saltToggle');
-  const saltInput = document.getElementById('saltInput');
-
-  // Preprocessing stats
-  const statChars = document.getElementById('statChars');
-  const statBytes = document.getElementById('statBytes');
-  const statBits = document.getElementById('statBits');
-  const statBlocks = document.getElementById('statBlocks');
-
-  // Registers A, B, C, D, E
-  const regA = document.getElementById('regA');
-  const regB = document.getElementById('regB');
-  const regC = document.getElementById('regC');
-  const regD = document.getElementById('regD');
-  const regE = document.getElementById('regE');
-
-  function updateSimulation() {
-    let rawText = sha1Input ? sha1Input.value : '';
-    if (saltToggle && saltToggle.checked && saltInput && saltInput.value) {
-      rawText = saltInput.value + rawText;
+  function renderAvalanche(r) {
+    var other = computeSha1(input2.value);
+    var cmp = compareDigests(r.digest, other.digest);
+    var percent = (cmp.bits / 160) * 100;
+    var identical = input.value === input2.value;
+    el("sim-hash-a").innerHTML = highlight(r.digest, cmp.marks, true);
+    el("sim-hash-b").innerHTML = highlight(other.digest, cmp.marks, true);
+    el("sim-changed").textContent = cmp.bits + " / 160 bits";
+    el("sim-percent").textContent = percent.toFixed(2) + " %";
+    el("sim-hexdiff").textContent = cmp.chars + " / 40";
+    var note;
+    if (identical) {
+      note = "The two messages are identical, so the digests match. Edit the modified message to see the avalanche effect.";
+    } else if (cmp.bits >= 64 && cmp.bits <= 96) {
+      note = "Close to the ideal 50 percent (about 80 bits): a small input change flipped roughly half of the digest bits.";
+    } else {
+      note = "Different from the ideal 80 bits for this sample. Statistically the average over many inputs is 50 percent; single samples vary.";
     }
-
-    const result = sha1Detailed(rawText);
-
-    if (digestDisplay) digestDisplay.textContent = result.digest;
-    if (statChars) statChars.textContent = sha1Input ? sha1Input.value.length : 0;
-    if (statBytes) statBytes.textContent = result.prep.utf8ByteLength;
-    if (statBits) statBits.textContent = result.prep.origBitLength;
-    if (statBlocks) statBlocks.textContent = result.prep.blockCount;
-
-    if (regA) regA.textContent = '0x' + result.finalState.A.toString(16).padStart(8, '0');
-    if (regB) regB.textContent = '0x' + result.finalState.B.toString(16).padStart(8, '0');
-    if (regC) regC.textContent = '0x' + result.finalState.C.toString(16).padStart(8, '0');
-    if (regD) regD.textContent = '0x' + result.finalState.D.toString(16).padStart(8, '0');
-    if (regE) regE.textContent = '0x' + result.finalState.E.toString(16).padStart(8, '0');
-
-    setTimeout(reportHeight, 40);
+    el("sim-observation").textContent = note;
   }
 
-  // Calculate ONLY on button click
-  if (btnGenerate) {
-    btnGenerate.addEventListener('click', updateSimulation);
+  function renderAll() {
+    current = computeSha1(input.value);
+    fillBlockSelect(schedBlock, current.blocks.length);
+    fillBlockSelect(stepBlock, current.blocks.length);
+    renderDigest(current);
+    renderPadding(current);
+    renderSchedule(current);
+    renderRounds(current);
+    renderAvalanche(current);
+    setTimeout(reportHeight, 30);
   }
 
-  if (btnClear && sha1Input) {
-    btnClear.addEventListener('click', () => {
-      sha1Input.value = '';
-    });
-  }
-
-  // Presets populate message only, strictly NO auto-calculation
-  const presetButtons = document.querySelectorAll('.sim-preset-btn:not(.av-preset)');
-  presetButtons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const val = btn.getAttribute('data-val');
-      if (sha1Input && val !== null) {
-        sha1Input.value = val;
-      }
+  // ---- Wiring (simulator subviews) -------------------------------------------
+  var btns = document.querySelectorAll(".lab-sim-viewbtn");
+  btns.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      btns.forEach(function (b) {
+        b.classList.remove("active");
+      });
+      btn.classList.add("active");
+      var want = btn.getAttribute("data-view");
+      document.querySelectorAll(".lab-sim-view").forEach(function (panel) {
+        panel.classList.toggle("active", panel.getAttribute("data-viewpanel") === want);
+      });
+      setTimeout(reportHeight, 30);
     });
   });
 
-  // Copy Digest
-  if (btnCopyDigest && digestDisplay) {
-    btnCopyDigest.addEventListener('click', () => {
-      const text = digestDisplay.textContent || '';
-      navigator.clipboard.writeText(text);
-      const originalText = btnCopyDigest.textContent;
-      btnCopyDigest.textContent = '✓ Copied';
-      setTimeout(() => {
-        btnCopyDigest.textContent = originalText;
-      }, 1800);
-    });
-  }
-
-  // 3. Message Padding Inspector (From Tanush's Repo)
-  const inspectorInput = document.getElementById('inspectorInput');
-  const btnInspectPadding = document.getElementById('btnInspectPadding');
-  const padOrigStr = document.getElementById('padOrigStr');
-  const padOrigLen = document.getElementById('padOrigLen');
-  const padKZeros = document.getElementById('padKZeros');
-  const padLenField = document.getElementById('padLenField');
-  const padTotalSize = document.getElementById('padTotalSize');
-
-  function inspectPadding() {
-    const str = inspectorInput ? inspectorInput.value : '';
-    const byteLen = new TextEncoder().encode(str).length;
-    const bitLen = byteLen * 8;
-    let k = (448 - (bitLen + 1) % 512) % 512;
-    if (k < 0) k += 512;
-    const totalPaddedBits = bitLen + 1 + k + 64;
-    const totalBlocks = Math.ceil(totalPaddedBits / 512);
-
-    if (padOrigStr) padOrigStr.textContent = str || '"" (Empty)';
-    if (padOrigLen) padOrigLen.textContent = `${str.length} characters = ${bitLen} bits (${byteLen} bytes)`;
-    if (padKZeros) padKZeros.textContent = `1 bit '1' + ${k} zero bits = ${k + 1} padding bits`;
-    const lenHex = '0x' + (BigInt(bitLen)).toString(16).padStart(16, '0');
-    if (padLenField) padLenField.textContent = `${lenHex} (${bitLen} in decimal)`;
-    if (padTotalSize) padTotalSize.textContent = `${totalPaddedBits} bits (${totalBlocks} block${totalBlocks > 1 ? 's' : ''} of 16 words)`;
-
-    setTimeout(reportHeight, 40);
-  }
-
-  if (btnInspectPadding) {
-    btnInspectPadding.addEventListener('click', inspectPadding);
-  }
-
-  // 4. Avalanche Effect Visualizer
-  const avInput1 = document.getElementById('avInput1');
-  const avInput2 = document.getElementById('avInput2');
-  const btnRunAvalanche = document.getElementById('btnRunAvalanche');
-  const avHash1 = document.getElementById('avHash1');
-  const avHash2 = document.getElementById('avHash2');
-  const avFlippedCount = document.getElementById('avFlippedCount');
-  const avPercent = document.getElementById('avPercent');
-  const avBitGrid = document.getElementById('avBitGrid');
-  const avObservationText = document.getElementById('avObservationText');
-
-  // Avalanche Presets (Tanush's Repo)
-  const avPresets = document.querySelectorAll('.av-preset');
-  avPresets.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (!avInput1 || !avInput2) return;
-      const action = btn.getAttribute('data-action');
-      const base = 'The quick brown fox jumps over the lazy dog';
-      avInput1.value = base;
-
-      if (action === 'case') {
-        avInput2.value = 'the quick brown fox jumps over the lazy dog';
-      } else if (action === 'add') {
-        avInput2.value = base + '!';
-      } else if (action === 'remove') {
-        avInput2.value = base.slice(0, -1);
-      } else if (action === 'character') {
-        avInput2.value = 'The quick brown fox jumps over the lazy dog.';
-      } else if (action === 'reset') {
-        avInput1.value = 'The quick brown fox jumps over the lazy dog';
-        avInput2.value = 'The quick brown fox jumps over the lazy dog.';
-      }
-    });
+  input.addEventListener("input", renderAll);
+  input2.addEventListener("input", function () {
+    renderAvalanche(current);
+    setTimeout(reportHeight, 30);
+  });
+  schedBlock.addEventListener("change", function () {
+    renderSchedule(current);
+    setTimeout(reportHeight, 30);
+  });
+  stepBlock.addEventListener("change", function () {
+    renderStep(current);
+  });
+  stepRange.addEventListener("input", function () {
+    renderStep(current);
   });
 
-  function updateAvalanche() {
-    const text1 = avInput1 ? avInput1.value : '';
-    const text2 = avInput2 ? avInput2.value : '';
+  el("sim-reset").addEventListener("click", function () {
+    input.value = DEFAULT_A;
+    input2.value = DEFAULT_B;
+    stepRange.value = "0";
+    renderAll();
+  });
 
-    const av = calculateAvalanche(text1, text2);
-
-    if (avHash1) avHash1.textContent = av.hash1;
-    if (avHash2) avHash2.textContent = av.hash2;
-    if (avFlippedCount) avFlippedCount.textContent = av.flippedCount;
-    if (avPercent) avPercent.textContent = av.percentage + '%';
-
-    // Render 160-bit difference matrix (5 rows of 32 bits)
-    if (avBitGrid) {
-      avBitGrid.innerHTML = '';
-      av.bitComparison.forEach((bit) => {
-        const cell = document.createElement('div');
-        cell.className = 'bit-cell ' + (bit.flipped ? 'diff' : 'match');
-        cell.textContent = bit.flipped ? '1' : '0';
-        cell.title = `Bit #${bit.index}: Message 1 had '${bit.b1}', Message 2 had '${bit.b2}' (${bit.flipped ? 'FLIPPED' : 'MATCH'})`;
-        avBitGrid.appendChild(cell);
-      });
+  el("sim-flip").addEventListener("click", function () {
+    var chars = Array.from(input.value);
+    if (chars.length === 0) {
+      input2.value = "\u0001";
+    } else {
+      var last = chars.length - 1;
+      chars[last] = String.fromCodePoint(chars[last].codePointAt(0) ^ 1);
+      input2.value = chars.join("");
     }
+    renderAvalanche(current);
+    setTimeout(reportHeight, 30);
+  });
 
-    if (avObservationText) {
-      const diffFrom50 = Math.abs(parseFloat(av.percentage) - 50);
-      avObservationText.textContent = `Avalanche Diffusion: ${av.flippedCount}/160 bits (${av.percentage}%). ${diffFrom50 < 10 ? 'Target achieved! Approximately 50% of the digest bits inverted, proving strong Strict Avalanche Criterion (SAC) diffusion across all 80 rounds.' : 'Significant bit dispersion observed across all 80 rounds of logical transformations.'}`;
-    }
+  el("sim-append").addEventListener("click", function () {
+    input2.value = input.value + ".";
+    renderAvalanche(current);
+    setTimeout(reportHeight, 30);
+  });
 
-    setTimeout(reportHeight, 40);
-  }
+  el("sim-copy").addEventListener("click", function () {
+    input2.value = input.value;
+    renderAvalanche(current);
+    setTimeout(reportHeight, 30);
+  });
 
-  // Calculate ONLY on button click
-  if (btnRunAvalanche) {
-    btnRunAvalanche.addEventListener('click', updateAvalanche);
-  }
+  // URL query handling for modes
+  var urlParams = new URLSearchParams(window.location.search);
+  var isSimMode = urlParams.get("mode") === "sim";
+  var initialHash = window.location.hash.replace(/^#/, "");
+  var initialTab = urlParams.get("tab") || initialHash;
 
-  // 4. Assessment Quiz Engine
-  const btnSubmitQuiz = document.getElementById('btnSubmitQuiz');
-  const quizFeedback = document.querySelectorAll('.quiz-feedback');
-  const quizScoreBanner = document.getElementById('quizScoreBanner');
-  const quizScoreText = document.getElementById('quizScoreText');
-  const btnResetQuiz = document.getElementById('btnResetQuiz');
-
-  const correctAnswers = {
-    q1: 1, // 160 bits (40 hex chars)
-    q2: 2, // 80 operations
-    q3: 1, // 5 registers (A, B, C, D, E)
-    q4: 1, // XORing four previous words and rotating left by 1 bit
-    q5: 1, // SHAttered (Stevens et al. / Google)
-    q6: 1  // Big-endian (network) byte ordering
-  };
-
-  if (btnSubmitQuiz) {
-    btnSubmitQuiz.addEventListener('click', () => {
-      let score = 0;
-      const total = Object.keys(correctAnswers).length;
-
-      Object.entries(correctAnswers).forEach(([qKey, correctIdx]) => {
-        const selected = document.querySelector(`input[name="${qKey}"]:checked`);
-        const feedbackEl = document.getElementById(`${qKey}-feedback`);
-
-        if (feedbackEl) {
-          if (selected && parseInt(selected.value, 10) === correctIdx) {
-            score++;
-            feedbackEl.className = 'quiz-feedback correct';
-            feedbackEl.textContent = '✓ Correct! Excellent grasp of the cryptographic concept.';
-          } else {
-            feedbackEl.className = 'quiz-feedback incorrect';
-            feedbackEl.textContent = '✗ Incorrect. Review the algorithm specification in Theory & Procedure.';
-          }
-        }
-      });
-
-      if (quizScoreBanner && quizScoreText) {
-        quizScoreBanner.style.display = 'flex';
-        quizScoreText.textContent = `You scored ${score} out of ${total} (${Math.round((score / total) * 100)}%)`;
-      }
+  if (isSimMode || initialTab === "simulation" || initialTab === "sim") {
+    document.body.classList.add("mode-sim");
+    var header = document.querySelector(".lab-header-card");
+    if (header) header.style.display = "none";
+    var secSim = document.getElementById("simulation");
+    if (secSim) secSim.classList.remove("tab-hidden");
+    document.querySelectorAll(".lab-section").forEach(function (s) {
+      if (s.id !== "simulation") s.classList.add("tab-hidden");
     });
   }
 
-  if (btnResetQuiz) {
-    btnResetQuiz.addEventListener('click', () => {
-      document.querySelectorAll('input[type="radio"]').forEach((r) => {
-        r.checked = false;
-      });
-      quizFeedback.forEach((f) => {
-        f.className = 'quiz-feedback';
-        f.textContent = '';
-      });
-      if (quizScoreBanner) {
-        quizScoreBanner.style.display = 'none';
-      }
-    });
-  }
-});
+  window.addEventListener("resize", reportHeight);
+
+  renderSelfCheck();
+  renderAll();
+  setTimeout(reportHeight, 150);
+})();

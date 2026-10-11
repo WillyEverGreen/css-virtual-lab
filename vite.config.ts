@@ -11,17 +11,6 @@ export default defineConfig({
         target: 'https://crypto-virtual-lab.collacou.workers.dev',
         changeOrigin: true,
       },
-      '^/experiments/[^/]+/.+': {
-        target: 'https://crypto-virtual-lab.collacou.workers.dev',
-        changeOrigin: true,
-        bypass(req) {
-          const pathname = req.url ? req.url.split('?')[0] : '';
-          const localFile = path.join(process.cwd(), 'public', pathname);
-          if (fs.existsSync(localFile) && fs.statSync(localFile).isFile()) {
-            return req.url;
-          }
-        },
-      },
     },
   },
 });

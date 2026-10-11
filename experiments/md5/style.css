@@ -807,3 +807,116 @@ html, body {
     grid-template-columns: repeat(16, 1fr);
   }
 }
+
+/* ========================================================
+   STRICT ZERO-BOX OVERRIDE WHEN EMBEDDED IN IFRAME (?mode=sim)
+   ======================================================== */
+body.mode-sim {
+  background: transparent !important;
+  overflow-x: hidden !important;
+  overflow-y: hidden !important;
+  min-height: auto !important;
+  height: auto !important;
+}
+
+body.mode-sim .lab-experiment-container {
+  max-width: 100% !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: 16px 20px 24px !important;
+  background: transparent !important;
+  min-height: auto !important;
+  height: auto !important;
+}
+
+body.mode-sim #simulation.lab-section {
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  max-width: 100% !important;
+  width: 100% !important;
+  border-radius: 0 !important;
+}
+
+body.mode-sim #simulation > .lab-section-tag,
+body.mode-sim #simulation > .lab-section-title,
+body.mode-sim .lab-header-card {
+  display: none !important;
+}
+
+.sim-subtab-btn {
+  padding: 7px 18px;
+  border: 2px solid #18181b;
+  border-radius: 8px;
+  background: #faf9f6;
+  color: #18181b;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  box-shadow: 2px 2px 0 #18181b;
+  transition: all 0.1s ease;
+}
+
+.sim-subtab-btn:hover {
+  background: #f4f4f5;
+}
+
+.sim-subtab-btn.active {
+  background: #c2410c !important;
+  color: #ffffff !important;
+  box-shadow: 1px 1px 0 #18181b;
+}
+
+.sim-digest-display-orange {
+  background: #fff7ed;
+  border: 1.5px solid #fdba74;
+  border-radius: 8px;
+  padding: 14px 18px;
+  color: #c2410c;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: clamp(18px, 2.2vw, 24px);
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin: 6px 0 16px;
+  word-break: break-all;
+}
+
+.bit-cell {
+  aspect-ratio: 1;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: monospace;
+}
+
+.bit-cell.match {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #86efac;
+}
+
+.bit-cell.diff {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+}
+
+.sim-preset-btn {
+  background: #f4f4f5;
+  border: 1.5px solid #18181b;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  color: #18181b;
+}
+
+.sim-preset-btn:hover {
+  background: #e4e4e7;
+}

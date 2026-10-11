@@ -78,7 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (_) {}
   }
 
-  function switchTab(targetId) {
+  function switchTab(rawTargetId) {
+    const targetId = (rawTargetId === 'assessment' ? 'quiz' : rawTargetId === 'aim' ? 'objective' : rawTargetId) || 'objective';
     sections.forEach((sec) => {
       if (sec.id === targetId) {
         sec.classList.remove('tab-hidden');
@@ -116,6 +117,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('resize', reportHeight);
+
+  // Initialize view mode from URL params or hash
+  const urlParams = new URLSearchParams(window.location.search);
+  const isSimMode = urlParams.get('mode') === 'sim';
+  const initialHash = window.location.hash.replace(/^#/, '');
+  const initialTab = urlParams.get('tab') || initialHash;
+
+  if (isSimMode || initialTab === 'simulation' || initialTab === 'sim') {
+    document.body.classList.add('mode-sim');
+    switchTab('simulation');
+    const header = document.querySelector('.lab-header-card');
+    if (header) header.style.display = 'none';
+    const container = document.querySelector('.lab-experiment-container');
+    if (container) container.style.padding = '12px 16px 36px';
+  } else if (initialTab) {
+    switchTab(initialTab);
+  }
   setTimeout(reportHeight, 100);
 
   // 2. DOM Elements
@@ -178,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 4. BUTTON 1: Alice "⚡ Generate MAC & Transmit"
+  // 4. BUTTON 1: Alice "Generate MAC & Transmit"
   // ONLY on this button press is Alice's HMAC computed!
   if (btnAliceSend) {
     btnAliceSend.addEventListener('click', async () => {
@@ -260,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Reset Bob's computation & verdict (Bob does NOT verify automatically!)
-        if (bobComputedTag) bobComputedTag.textContent = "[Awaiting Verification — Click '⚡ Verify Cryptographic Integrity']";
+        if (bobComputedTag) bobComputedTag.textContent = "[Awaiting Verification — Click 'Verify Cryptographic Integrity']";
         if (bobVerifySuccess) bobVerifySuccess.style.display = 'none';
         if (bobVerifyFailure) bobVerifyFailure.style.display = 'none';
 
@@ -285,8 +303,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (channelStatusText) {
         channelStatusText.textContent = active
-          ? '⚠️ Compromised Channel (Eve Active)'
-          : '🛡️ Secure Direct Channel';
+          ? 'Compromised Channel (Eve Active)'
+          : 'Secure Direct Channel';
         channelStatusText.style.color = active ? '#e11d48' : '#18181b';
       }
 
@@ -308,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Reset Bob's computation & verdict
-      if (bobComputedTag) bobComputedTag.textContent = "[Awaiting Verification — Click '⚡ Verify Cryptographic Integrity']";
+      if (bobComputedTag) bobComputedTag.textContent = "[Awaiting Verification — Click 'Verify Cryptographic Integrity']";
       if (bobVerifySuccess) bobVerifySuccess.style.display = 'none';
       if (bobVerifyFailure) bobVerifyFailure.style.display = 'none';
 
@@ -316,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 6. BUTTON 2: Eve "⚡ Tamper: $5,000 → $95,000"
+  // 6. BUTTON 2: Eve "Tamper: $5,000 → $95,000"
   // ONLY changes the text in Eve's textarea, strictly NO auto-calculation or forwarding!
   if (btnTamperAmount && eveModifiedMsg) {
     btnTamperAmount.addEventListener('click', () => {
@@ -337,14 +355,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 7. BUTTON 3: Eve "⚡ Forge Tag with Random Key & Forward"
+  // 7. BUTTON 3: Eve "Forge Tag with Random Key & Forward"
   // ONLY on this button press is the random key generated and forged MAC computed!
   if (btnEveForge) {
     btnEveForge.addEventListener('click', async () => {
       const modifiedPayload = eveModifiedMsg ? eveModifiedMsg.value : '';
 
       if (!simState.transmitted) {
-        alert('Please click "⚡ Generate MAC & Transmit" in Alice\'s panel first before forging!');
+        alert('Please click "Generate MAC & Transmit" in Alice\'s panel first before forging!');
         return;
       }
 
@@ -373,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (bobReceivedTag) bobReceivedTag.textContent = forgedTag;
 
         // Reset Bob's computation & verdict (Bob does NOT verify automatically!)
-        if (bobComputedTag) bobComputedTag.textContent = "[Awaiting Verification — Click '⚡ Verify Cryptographic Integrity']";
+        if (bobComputedTag) bobComputedTag.textContent = "[Awaiting Verification — Click 'Verify Cryptographic Integrity']";
         if (bobVerifySuccess) bobVerifySuccess.style.display = 'none';
         if (bobVerifyFailure) bobVerifyFailure.style.display = 'none';
 
@@ -387,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 8. BUTTON 4: Bob "⚡ Verify Cryptographic Integrity"
+  // 8. BUTTON 4: Bob "Verify Cryptographic Integrity"
   // ONLY on this button press does Bob recompute HMAC using shared key K and compare!
   if (btnBobVerify) {
     btnBobVerify.addEventListener('click', async () => {
@@ -474,7 +492,7 @@ document.addEventListener('DOMContentLoaded', () => {
         senderError.textContent = '';
       }
       if (aliceTagDisplay) {
-        aliceTagDisplay.textContent = "[Awaiting Generation — Click '⚡ Generate MAC & Transmit']";
+        aliceTagDisplay.textContent = "[Awaiting Generation — Click 'Generate MAC & Transmit']";
       }
       if (aliceTagMeta) aliceTagMeta.style.display = 'none';
       if (aliceTransmittedBox) aliceTransmittedBox.style.display = 'none';
@@ -483,7 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (attackerToggle) attackerToggle.checked = false;
       if (evePanel) evePanel.style.display = 'none';
       if (channelStatusText) {
-        channelStatusText.textContent = '🛡️ Secure Direct Channel';
+        channelStatusText.textContent = 'Secure Direct Channel';
         channelStatusText.style.color = '#18181b';
       }
       if (eveInterceptedMsg) eveInterceptedMsg.textContent = '[Awaiting Alice\'s Transmission]';
@@ -540,10 +558,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (selected && parseInt(selected.value, 10) === correctIdx) {
             score++;
             feedbackEl.className = 'quiz-feedback correct';
-            feedbackEl.textContent = `✓ Correct! ${quizReasons[qKey] || ''}`;
+            feedbackEl.textContent = `Correct: Correct! ${quizReasons[qKey] || ''}`;
           } else {
             feedbackEl.className = 'quiz-feedback incorrect';
-            feedbackEl.textContent = `✗ Incorrect. ${quizReasons[qKey] || ''}`;
+            feedbackEl.textContent = `Incorrect: Incorrect. ${quizReasons[qKey] || ''}`;
           }
         }
       });

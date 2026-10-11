@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "experiment": "sha1",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What is the size of a SHA-1 digest?",
+      "options": ["128 bits", "160 bits", "256 bits", "512 bits"],
+      "answerIndex": 1,
+      "explanation": "SHA-1 keeps five 32-bit registers (A to E), giving a 160-bit digest that is written as 40 hexadecimal characters. MD5 is 128 bits and SHA-256 is 256 bits."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "What block size does SHA-1 process at a time?",
+      "options": ["64 bits", "160 bits", "512 bits", "1024 bits"],
+      "answerIndex": 2,
+      "explanation": "The compression function takes a 512-bit block (sixteen 32-bit words). SHA-512 uses 1024-bit blocks, which is why the two are often confused."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "How many steps does the SHA-1 compression function run per block?",
+      "options": ["16", "64", "80", "160"],
+      "answerIndex": 2,
+      "explanation": "SHA-1 runs 80 steps, organised as four rounds of 20 steps. Each round uses its own logical function and its own constant K."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "Which sequence gives the SHA-1 round functions in order?",
+      "options": ["Ch, Parity, Maj, Parity", "Maj, Ch, Parity, Parity", "Parity, Ch, Maj, Ch", "Ch, Maj, Parity, Maj"],
+      "answerIndex": 0,
+      "explanation": "Steps 0-19 use Ch, 20-39 use Parity (XOR), 40-59 use Maj (majority), and 60-79 use Parity again."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "Which step turns the 16 message words into 80 words in SHA-1?",
+      "options": [
+        "Each new word is the sum of the previous two words",
+        "Each new word is the XOR of four earlier words rotated left by 1",
+        "Each new word is a copy of a word 16 positions earlier",
+        "Each new word is the hash of the previous block"
+      ],
+      "answerIndex": 1,
+      "explanation": "W[t] = ROTL1(W[t-3] XOR W[t-8] XOR W[t-14] XOR W[t-16]). The rotation by 1 is the key difference from the original SHA-0, which lacked it."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "A message is 3 bytes long. How many zero bytes are added after the 0x80 byte during padding?",
+      "options": ["52", "53", "55", "60"],
+      "answerIndex": 0,
+      "explanation": "Before the 8-byte length field the data must be 56 bytes long (56 mod 64). The 3 message bytes plus the 0x80 byte make 4 bytes, so 52 zero bytes are needed. You can confirm this in the Padding view for the input abc."
+    },
+    {
+      "id": "q7",
+      "type": "mcq-single",
+      "prompt": "What is appended at the very end of the padded message?",
+      "options": [
+        "The 160-bit digest of the message",
+        "A random 64-bit salt",
+        "The original message length in bits as a 64-bit big-endian integer",
+        "A checksum of the zero padding"
+      ],
+      "answerIndex": 2,
+      "explanation": "The last 8 bytes store the original length in bits, big-endian. Including the length prevents messages that differ only in trailing zeros from producing the same padded input."
+    },
+    {
+      "id": "q8",
+      "type": "mcq-single",
+      "prompt": "What does the avalanche effect require of a good hash function?",
+      "options": [
+        "Changing one input bit changes about half of the output bits",
+        "Changing one input bit changes only one output bit",
+        "The output length grows with the input length",
+        "Equal inputs give different outputs each time"
+      ],
+      "answerIndex": 0,
+      "explanation": "A good hash flips about 50 percent of its output bits for any small input change. For SHA-1 that is around 80 of the 160 bits, which you can measure in the Avalanche view."
+    },
+    {
+      "id": "q9",
+      "type": "mcq-single",
+      "prompt": "What was demonstrated by the SHAttered attack in 2017?",
+      "options": [
+        "A preimage attack that recovers any message from its digest",
+        "A practical collision: two different PDF files with the same SHA-1 digest",
+        "A way to reverse the padding step",
+        "A proof that SHA-1 is faster than SHA-256"
+      ],
+      "answerIndex": 1,
+      "explanation": "SHAttered produced two different files with an identical SHA-1 digest, the first practical collision. Preimage resistance was not broken, but collision resistance is no longer reliable."
+    },
+    {
+      "id": "q10",
+      "type": "mcq-single",
+      "prompt": "Which hash function is recommended instead of SHA-1 for new digital signatures?",
+      "options": ["MD5", "CRC32", "SHA-256", "SHA-0"],
+      "answerIndex": 2,
+      "explanation": "SHA-256 (SHA-2 family) or SHA-3 should be used. MD5 is also broken, CRC32 is only an error-detecting checksum, and SHA-0 was withdrawn because of a flaw."
+    }
+  ]
+}

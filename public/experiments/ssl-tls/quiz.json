@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "experiment": "ssl-tls",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What major performance improvement does TLS 1.3 offer over TLS 1.2 during a new handshake?",
+      "options": [
+        "0-RTT by default",
+        "1-RTT instead of 2-RTT",
+        "No handshake required",
+        "2-RTT instead of 3-RTT"
+      ],
+      "answerIndex": 1,
+      "explanation": "TLS 1.3 combines key share generation with ClientHello/ServerHello, completing the cryptographic handshake in 1-RTT rather than 2-RTT."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "Why was the RSA Key Exchange deprecated in TLS 1.3?",
+      "options": [
+        "It was too slow",
+        "It lacked Perfect Forward Secrecy",
+        "It used too much bandwidth",
+        "It was incompatible with AES-GCM"
+      ],
+      "answerIndex": 1,
+      "explanation": "Static RSA key exchange lacked Perfect Forward Secrecy (PFS): compromising the server's long-term private key enables decryption of past recorded sessions."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "What is the primary purpose of the 'Client Random' and 'Server Random' nonces?",
+      "options": [
+        "To prevent replay attacks and ensure unique session keys",
+        "To compress the payload",
+        "To authenticate the server certificate",
+        "To identify the user uniquely"
+      ],
+      "answerIndex": 0,
+      "explanation": "Random nonces ensure freshness across sessions, preventing replay attacks and guaranteeing independent session keys even if parameters match."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "In the TLS handshake, what is the role of the 'ChangeCipherSpec' message in TLS 1.2?",
+      "options": [
+        "To request a new certificate",
+        "To signal that subsequent records will be encrypted",
+        "To terminate the connection",
+        "To update the TCP port"
+      ],
+      "answerIndex": 1,
+      "explanation": "ChangeCipherSpec explicitly signaled to the receiving peer that all following records would be encrypted under negotiated session keys."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "Which cryptographic primitive is used to derive the Master Secret in TLS 1.2?",
+      "options": [
+        "AES",
+        "RSA Signature",
+        "Pseudo-Random Function (PRF)",
+        "Base64 Encoding"
+      ],
+      "answerIndex": 2,
+      "explanation": "TLS 1.2 uses HMAC-based Pseudo-Random Function (PRF) with SHA-256 to expand the Pre-Master Secret and random nonces into the 48-byte Master Secret."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "What happens if a Man-in-the-Middle (MITM) modifies the handshake messages in transit?",
+      "options": [
+        "The connection continues unencrypted",
+        "The 'Finished' message MAC verification fails",
+        "The server silently drops the client",
+        "The client sends a new ClientHello"
+      ],
+      "answerIndex": 1,
+      "explanation": "The 'Finished' message encrypts a cryptographic MAC of all previous handshake messages; any in-transit tampering causes authentication verification failure."
+    },
+    {
+      "id": "q7",
+      "type": "mcq-single",
+      "prompt": "Which of the following is typically authenticated via a Digital Certificate during the handshake?",
+      "options": [
+        "The Client",
+        "The Network Router",
+        "The Server",
+        "The DNS Provider"
+      ],
+      "answerIndex": 2,
+      "explanation": "Standard one-way TLS authenticates the Server identity using an X.509 certificate signed by a recognized Certificate Authority (CA)."
+    },
+    {
+      "id": "q8",
+      "type": "mcq-single",
+      "prompt": "What does Perfect Forward Secrecy (PFS) guarantee in modern TLS?",
+      "options": [
+        "A compromised server private key won't decrypt past recorded traffic",
+        "Keys are sent in plaintext securely",
+        "The server can forward traffic perfectly",
+        "Client anonymity is preserved"
+      ],
+      "answerIndex": 0,
+      "explanation": "PFS guarantees that ephemeral session keys (generated via ECDHE) cannot be computed retroactively even if the long-term server private key is leaked."
+    },
+    {
+      "id": "q9",
+      "type": "mcq-single",
+      "prompt": "What type of cipher is AES-128-GCM, commonly used in modern TLS?",
+      "options": [
+        "Stream cipher without authentication",
+        "Asymmetric cipher",
+        "Authenticated Encryption with Associated Data (AEAD)",
+        "Block cipher in ECB mode"
+      ],
+      "answerIndex": 2,
+      "explanation": "AES-GCM is an AEAD cipher, providing both symmetric confidentiality and built-in cryptographic authentication tag verification in a single primitive."
+    },
+    {
+      "id": "q10",
+      "type": "mcq-single",
+      "prompt": "Which IETF RFC specification defines the modern Transport Layer Security protocol version 1.3 (TLS 1.3)?",
+      "options": [
+        "RFC 2246",
+        "RFC 5246",
+        "RFC 8446",
+        "RFC 793"
+      ],
+      "answerIndex": 2,
+      "explanation": "RFC 8446 (published in August 2018) specifies TLS 1.3, superseding TLS 1.2 defined in RFC 5246."
+    }
+  ]
+}

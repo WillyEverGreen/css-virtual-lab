@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMAC Authentication and Verification | Cryptography Virtual Lab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="lab-experiment-container">
+
+    <!-- SECTION 1: OBJECTIVE (Must contain exactly one h1) -->
+    <section id="objective" class="lab-section">
+      <span class="lab-section-tag">Objective</span>
+      <h1 class="lab-section-title">HMAC Authentication and Verification</h1>
+      <p>
+        The objective of this laboratory experiment is to understand, implement, and analyze the mathematical structure and cryptographic properties of Keyed-Hash Message Authentication Codes (HMAC) as defined in <strong>RFC 2104</strong> and <strong>NIST FIPS PUB 198-1</strong>.
+      </p>
+      <div class="lab-callout">
+        <strong>Core Learning Objectives:</strong>
+        <ul>
+          <li>Understand why simple unkeyed hash functions (like raw SHA-256) and naive concatenation <code>Hash(Key || Message)</code> fail to protect against length-extension and spoofing attacks.</li>
+          <li>Trace the RFC 2104 nested two-pass construction using the derived key <code>K'</code>, inner pad constant <code>ipad (0x36)</code>, and outer pad constant <code>opad (0x5C)</code>.</li>
+          <li>Simulate message transmission across an untrusted network and observe how unauthorized message tampering or key mismatch leads to immediate verification failure.</li>
+          <li>Analyze the <strong>Avalanche Effect</strong> by quantifying bit-level Hamming distances between digests when altering single characters in the message or secret key.</li>
+          <li>Distinguish the operational boundaries between encryption (confidentiality) and HMAC (integrity and authenticity).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- SECTION 2: THEORY -->
+    <section id="theory" class="lab-section">
+      <span class="lab-section-tag">Theory</span>
+      <h2 class="lab-section-title">Cryptographic Theory &amp; RFC 2104 Construction</h2>
+
+      <h3>1. What is an HMAC?</h3>
+      <p>
+        A <strong>Keyed-Hash Message Authentication Code (HMAC)</strong> is a specific construction for calculating a message authentication code involving a cryptographic hash function in combination with a shared secret key. It verifies both data integrity and the authenticity of a message.
+      </p>
+
+      <h3>2. The RFC 2104 Mathematical Specification</h3>
+      <p>
+        Let <code>H</code> denote the underlying cryptographic hash function (such as SHA-256), <code>B</code> denote the block length of the hash function in bytes (64 bytes for SHA-256), and <code>L</code> denote the hash output length in bytes (32 bytes / 256 bits for SHA-256).
+      </p>
+      <div class="lab-monitor">
+        <code>HMAC(K, m) = H((K' ⊕ opad) ∥ H((K' ⊕ ipad) ∥ m))</code>
+      </div>
+      <p>The components of the formula operate as follows:</p>
+      <ul>
+        <li><strong>Derived Key (K'):</strong> If the shared secret key <code>K</code> is longer than block size <code>B</code> (64 bytes), it is hashed first: <code>K' = H(K)</code>. If <code>K</code> is shorter than <code>B</code>, it is padded with zeroes on the right up to <code>B</code> bytes.</li>
+        <li><strong>Inner Pad (ipad):</strong> The constant byte <code>0x36</code> repeated <code>B</code> (64) times.</li>
+        <li><strong>Outer Pad (opad):</strong> The constant byte <code>0x5C</code> repeated <code>B</code> (64) times.</li>
+        <li><strong>⊕:</strong> Bitwise Exclusive-OR (XOR) operation.</li>
+        <li><strong>∥:</strong> Data concatenation.</li>
+      </ul>
+
+      <h3>3. Why Not Just Hash <code>H(Key ∥ Message)</code>?</h3>
+      <p>
+        A naive approach to message authentication would be computing <code>H(Key ∥ Message)</code>. However, for iterated hash functions based on the <strong>Merkle-Damgård construction</strong> (such as MD5, SHA-1, SHA-256, and SHA-512), this naive concatenation is severely vulnerable to <strong>Length Extension Attacks</strong>.
+      </p>
+      <p>
+        In a length extension attack, an attacker who observes the digest <code>H(Key ∥ Message)</code> and knows the length of the original message can reconstruct the internal compression state of the hash function, append arbitrary malicious data, and compute a valid digest for the extended message without knowing the secret key.
+      </p>
+      <p>
+        The nested two-pass design of HMAC completely prevents length extension attacks because the inner hash output is wrapped and re-hashed with the outer padded key: <code>H((K' ⊕ opad) ∥ inner_hash)</code>.
+      </p>
+
+      <h3>4. The Avalanche Effect</h3>
+      <p>
+        Due to the diffusion and confusion properties of SHA-256, HMAC exhibits a strong <strong>Avalanche Effect</strong>: changing even a single bit in the message or secret key causes approximately 50% of the output bits to flip pseudorandomly.
+      </p>
+
+      <h3>5. Can HMAC Be Decrypted?</h3>
+      <p>
+        A common misconception is asking whether an HMAC tag can be decrypted to recover the message. The answer is <strong>NO</strong>. HMAC is a one-way mathematical digest that losslessly compresses arbitrary-length inputs into a fixed 256-bit tag. It is not an encryption cipher. To achieve both confidentiality and integrity, modern cryptographic protocols employ the <strong>Encrypt-then-MAC</strong> paradigm (e.g., AES-256-CBC followed by HMAC-SHA-256).
+      </p>
+    </section>
+
+    <!-- SECTION 3: PROCEDURE -->
+    <section id="procedure" class="lab-section">
+      <span class="lab-section-tag">Procedure</span>
+      <h2 class="lab-section-title">Laboratory Procedure</h2>
+      <p>Follow these steps to conduct the virtual laboratory simulation:</p>
+
+      <ol>
+        <li>
+          <strong>HMAC Generation:</strong>
+          <ul>
+            <li>Enter your plaintext message in the <em>Message</em> field (or click <em>Load RFC 2104 Preset</em>).</li>
+            <li>Enter a shared secret key in the <em>Secret Key</em> field.</li>
+            <li>Click <strong>Generate HMAC Tag</strong> to compute the 64-character hexadecimal HMAC-SHA-256 tag.</li>
+            <li>Observe the intermediate derived key <code>K'</code>, the inner padded key <code>(K' ⊕ ipad)</code>, and the outer padded key <code>(K' ⊕ opad)</code>.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>In-Transit Network Simulation:</strong>
+          <ul>
+            <li>Click <strong>Send Packet to Channel</strong> to transmit the packet containing the message, key, and HMAC tag across the simulated network channel.</li>
+            <li>Click <strong>Tamper Message</strong> to alter a character in the transmission, or click <strong>Tamper Key</strong> to simulate key mismatch.</li>
+            <li>Observe how the channel flags the modification.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Verification at Receiver:</strong>
+          <ul>
+            <li>Click <strong>Verify HMAC Authenticity</strong> on the receiver card.</li>
+            <li>The receiver recalculates the HMAC using the received message and received key, then compares it against the transmitted tag.</li>
+            <li>Inspect the verification verdict: green for successful match (data authentic), or red for verification failure (tampering detected).</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Avalanche Effect Analysis:</strong>
+          <ul>
+            <li>Switch to the <strong>Avalanche Effect</strong> tab.</li>
+            <li>Click <strong>Flip 1 Bit in Message</strong> and click <strong>Compute Avalanche Analysis</strong>.</li>
+            <li>Review the bit-difference count (Hamming distance) and the percentage of flipped output bits.</li>
+          </ul>
+        </li>
+        <li>
+          <strong>Self-Assessment Quiz:</strong>
+          <ul>
+            <li>Switch to the <strong>Knowledge Quiz</strong> tab.</li>
+            <li>Answer all 10 multiple-choice questions and click <strong>Submit Answers</strong> to test your mastery of HMAC theory and security mechanisms.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <!-- SECTION 4: SIMULATION -->
+    <section id="simulation" class="lab-section">
+      <span class="lab-section-tag">Simulation</span>
+      <h2 class="lab-section-title">Interactive HMAC Laboratory Simulation</h2>
+
+      <!-- Simulator Navigation Tabs -->
+      <div class="lab-tab-bar">
+        <button type="button" class="lab-tab-btn active" id="tabBtnGen">1. HMAC Generator &amp; Network Verification</button>
+        <button type="button" class="lab-tab-btn" id="tabBtnAvalanche">2. Avalanche Effect Analysis</button>
+        <button type="button" class="lab-tab-btn" id="tabBtnQuiz">3. Self-Assessment Quiz</button>
+      </div>
+
+      <!-- PANE 1: GENERATION AND VERIFICATION -->
+      <div id="paneGenerator">
+        <div class="lab-grid-2">
+          
+          <!-- SENDER (ALICE) -->
+          <div class="lab-card-sub">
+            <h4>Sender: Alice (HMAC Generation)</h4>
+            
+            <div class="lab-form-group">
+              <label class="lab-form-label" for="senderMessage">Message (m)</label>
+              <textarea id="senderMessage" rows="3" placeholder="Enter plaintext message...">The quick brown fox jumps over the lazy dog</textarea>
+            </div>
+
+            <div class="lab-form-group">
+              <label class="lab-form-label" for="senderKey">Shared Secret Key (K)</label>
+              <input type="text" id="senderKey" value="secret-key-2026" placeholder="Enter shared secret key...">
+            </div>
+
+            <div class="lab-btn-group">
+              <button type="button" class="lab-btn" id="btnGenerateHmac">Generate HMAC Tag</button>
+              <button type="button" class="btn-secondary" id="btnPresetRfc">Load Preset</button>
+              <button type="button" class="btn-secondary" id="btnClearSender">Clear</button>
+            </div>
+
+            <div class="lab-form-group">
+              <label class="lab-form-label">Computed HMAC-SHA-256 Digest</label>
+              <div class="lab-monitor" id="senderHmacDisplay">Click "Generate HMAC Tag" to calculate...</div>
+            </div>
+
+            <div class="lab-btn-group">
+              <button type="button" class="lab-btn" id="btnSendToChannel">Send Packet to Channel &rarr;</button>
+            </div>
+          </div>
+
+          <!-- NETWORK CHANNEL & RECEIVER (BOB) -->
+          <div class="lab-card-sub">
+            <h4>In-Transit Network &amp; Receiver: Bob</h4>
+            
+            <p><strong>Simulated Network Channel:</strong></p>
+            <div class="lab-callout" style="margin: 10px 0;">
+              <div><strong>Message in Transit:</strong> <span id="channelMsgText">[Not Sent Yet]</span></div>
+              <div><strong>Key in Transit:</strong> <span id="channelKeyText">[Not Sent Yet]</span></div>
+              <div><strong>HMAC Tag:</strong> <span id="channelHmacText" style="word-break: break-all;">[Not Sent Yet]</span></div>
+            </div>
+
+            <div class="lab-btn-group">
+              <button type="button" class="btn-danger" id="btnTamperMsg">Tamper Message</button>
+              <button type="button" class="btn-danger" id="btnTamperKey">Tamper Key</button>
+              <button type="button" class="btn-danger" id="btnTamperTag">Corrupt HMAC Tag</button>
+              <button type="button" class="btn-secondary" id="btnResetPacket">Reset Packet</button>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #18181b; margin: 18px 0;">
+
+            <h4>Bob's Verification Station</h4>
+            <div class="lab-btn-group">
+              <button type="button" class="lab-btn" id="btnVerifyHmac">Verify HMAC Authenticity</button>
+            </div>
+
+            <div id="receiverVerdictBadge" class="lab-status-badge lab-status-neutral">
+              Status: Awaiting Verification
+            </div>
+
+            <div class="lab-form-group">
+              <label class="lab-form-label">Receiver Recalculated HMAC</label>
+              <div class="lab-monitor" id="receiverRecalculatedHmac">---</div>
+            </div>
+
+            <div class="lab-form-group">
+              <label class="lab-form-label">Transmitted HMAC in Packet</label>
+              <div class="lab-monitor" id="receiverTransmittedHmac">---</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Intermediate Math Breakdown -->
+        <div class="lab-card-sub" style="margin-top: 20px;">
+          <h4>RFC 2104 Step-by-Step Mathematical State Trace</h4>
+          <div class="lab-callout">
+            <div><strong>Derived Key K' (padded to 64 bytes):</strong></div>
+            <div class="lab-monitor" id="traceDerivedKey">---</div>
+            <div><strong>Inner Padded Key (K' ⊕ ipad):</strong></div>
+            <div class="lab-monitor" id="traceInnerPadKey">---</div>
+            <div><strong>Outer Padded Key (K' ⊕ opad):</strong></div>
+            <div class="lab-monitor" id="traceOuterPadKey">---</div>
+            <div><strong>Inner Hash H((K' ⊕ ipad) ∥ m):</strong></div>
+            <div class="lab-monitor" id="traceInnerHash">---</div>
+            <div><strong>Final HMAC Digest H((K' ⊕ opad) ∥ inner_hash):</strong></div>
+            <div class="lab-monitor" id="traceFinalDigest">---</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PANE 2: AVALANCHE EFFECT -->
+      <div id="paneAvalanche" style="display: none;">
+        <div class="lab-grid-2">
+          
+          <div class="lab-card-sub">
+            <h4>Sample A (Baseline)</h4>
+            <div class="lab-form-group">
+              <label class="lab-form-label" for="avMsgA">Message A</label>
+              <input type="text" id="avMsgA" value="The quick brown fox jumps over the lazy dog">
+            </div>
+            <div class="lab-form-group">
+              <label class="lab-form-label" for="avKeyA">Key A</label>
+              <input type="text" id="avKeyA" value="cryptography-lab-key">
+            </div>
+            <div class="lab-form-group">
+              <label class="lab-form-label">HMAC Digest A (Hex)</label>
+              <div class="lab-monitor" id="avDigestA">---</div>
+            </div>
+          </div>
+
+          <div class="lab-card-sub">
+            <h4>Sample B (Modified)</h4>
+            <div class="lab-form-group">
+              <label class="lab-form-label" for="avMsgB">Message B</label>
+              <input type="text" id="avMsgB" value="The quick brown fox jumps over the lazy cog">
+            </div>
+            <div class="lab-form-group">
+              <label class="lab-form-label" for="avKeyB">Key B</label>
+              <input type="text" id="avKeyB" value="cryptography-lab-key">
+            </div>
+            <div class="lab-form-group">
+              <label class="lab-form-label">HMAC Digest B (Hex)</label>
+              <div class="lab-monitor" id="avDigestB">---</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="lab-btn-group">
+          <button type="button" class="lab-btn" id="btnRunAvalanche">Compute Avalanche Analysis</button>
+          <button type="button" class="btn-secondary" id="btnFlipSingleChar">Flip 1 Character ('d' &rarr; 'c')</button>
+          <button type="button" class="btn-secondary" id="btnAlterKeyOnly">Alter Key Only</button>
+        </div>
+
+        <div class="lab-card-sub" style="margin-top: 20px;">
+          <h4>Avalanche Effect Metrics</h4>
+          <div class="lab-callout">
+            <p><strong>Hamming Distance (Bit Differences):</strong> <span id="avBitDiffCount" style="font-size: 18px; font-weight: bold; color: #c2410c;">---</span></p>
+            <p><strong>Avalanche Percentage:</strong> <span id="avPercentage" style="font-size: 18px; font-weight: bold; color: #c2410c;">---</span></p>
+            <p><em>Theoretical expected cryptographic diffusion is approximately 50.0% (128 out of 256 bits).</em></p>
+          </div>
+
+          <label class="lab-form-label">Hex Digest Character Comparison (Red indicates mismatch)</label>
+          <div class="lab-diff-box" id="avHexDiffBox">Click "Compute Avalanche Analysis" to inspect diff...</div>
+        </div>
+      </div>
+
+      <!-- PANE 3: QUIZ -->
+      <div id="paneQuiz" style="display: none;">
+        <div class="lab-callout">
+          <strong>Self-Assessment Instructions:</strong> Test your understanding of HMAC theory, RFC 2104 constants, security mechanisms, and operational properties. Select one option for each question and click <strong>Submit Answers</strong>.
+        </div>
+
+        <div id="quizContainer">
+          <!-- Dynamically populated or scripted questions -->
+        </div>
+
+        <div class="lab-btn-group">
+          <button type="button" class="lab-btn" id="btnSubmitQuiz">Submit Answers</button>
+          <button type="button" class="btn-secondary" id="btnResetQuiz">Reset Quiz</button>
+        </div>
+
+        <div class="lab-quiz-results-banner" id="quizResultsBanner">
+          <h3 style="margin-top: 0; color: #18181b;">Quiz Results</h3>
+          <p style="font-size: 18px;">Your Score: <strong id="quizScoreText" style="color: #c2410c;">0 / 10</strong></p>
+          <p id="quizScoreFeedbackText" style="color: #27272a;"></p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECTION 5: REFERENCES (External links permitted with target="_blank" rel="noopener") -->
+    <section id="references" class="lab-section">
+      <span class="lab-section-tag">References</span>
+      <h2 class="lab-section-title">References &amp; Standards</h2>
+      <ul class="lab-reference-list">
+        <li class="lab-reference-item">
+          <strong>IETF RFC 2104:</strong> Bellare, M., Canetti, R., and Krawczyk, H., <em>"HMAC: Keyed-Hashing for Message Authentication"</em>, Internet Engineering Task Force, February 1997.
+          <br>
+          <a href="https://datatracker.ietf.org/doc/html/rfc2104" target="_blank" rel="noopener">https://datatracker.ietf.org/doc/html/rfc2104</a>
+        </li>
+        <li class="lab-reference-item">
+          <strong>NIST FIPS PUB 198-1:</strong> National Institute of Standards and Technology, <em>"The Keyed-Hash Message Authentication Code (HMAC)"</em>, Federal Information Processing Standards Publication 198-1, July 2008.
+          <br>
+          <a href="https://csrc.nist.gov/pubs/fips/198-1/final" target="_blank" rel="noopener">https://csrc.nist.gov/pubs/fips/198-1/final</a>
+        </li>
+        <li class="lab-reference-item">
+          <strong>NIST FIPS PUB 180-4:</strong> National Institute of Standards and Technology, <em>"Secure Hash Standard (SHS)"</em>, Federal Information Processing Standards Publication 180-4, August 2015.
+          <br>
+          <a href="https://csrc.nist.gov/pubs/fips/180-4/upd1/final" target="_blank" rel="noopener">https://csrc.nist.gov/pubs/fips/180-4/upd1/final</a>
+        </li>
+        <li class="lab-reference-item">
+          <strong>W3C Web Cryptography API Recommendation:</strong> World Wide Web Consortium, <em>"Web Cryptography API - HMAC Algorithm"</em>, January 2017.
+          <br>
+          <a href="https://www.w3.org/TR/WebCryptoAPI/" target="_blank" rel="noopener">https://www.w3.org/TR/WebCryptoAPI/</a>
+        </li>
+      </ul>
+    </section>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

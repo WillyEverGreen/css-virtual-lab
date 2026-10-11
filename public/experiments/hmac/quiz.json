@@ -1,0 +1,136 @@
+{
+  "schemaVersion": 1,
+  "experiment": "hmac",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What primary security properties are provided by HMAC?",
+      "options": [
+        "Confidentiality and encryption",
+        "Data integrity and message authenticity",
+        "Non-repudiation and public key exchange",
+        "Key generation and certificate distribution"
+      ],
+      "answerIndex": 1,
+      "explanation": "HMAC verifies that a message has not been altered in transit (integrity) and confirms that it originated from a sender possessing the shared secret key (authenticity). It does not encrypt data for confidentiality."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "Which RFC standard officially specifies Keyed-Hashing for Message Authentication (HMAC)?",
+      "options": [
+        "RFC 793",
+        "RFC 2104",
+        "RFC 2616",
+        "RFC 5246"
+      ],
+      "answerIndex": 1,
+      "explanation": "RFC 2104, published in 1997, defines the standard HMAC construction and operational guidelines."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "Why is naive concatenation Hash(Key || Message) vulnerable in Merkle-Damgard hash algorithms?",
+      "options": [
+        "It is vulnerable to length extension attacks",
+        "It cannot be computed in linear time",
+        "It produces variable length outputs",
+        "It requires asymmetric private keys"
+      ],
+      "answerIndex": 0,
+      "explanation": "In Merkle-Damgard hash functions like MD5, SHA-1, and SHA-256, an attacker knowing Hash(Key || Message) and the message length can append data and compute the new valid hash without knowing the secret key."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "What constant byte value is repeated B times to form the inner pad (ipad) in RFC 2104?",
+      "options": [
+        "0x00",
+        "0x36",
+        "0x5C",
+        "0xFF"
+      ],
+      "answerIndex": 1,
+      "explanation": "The inner padding byte ipad is 0x36 repeated B times (64 times for SHA-256) and XORed with the derived key."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "What constant byte value is repeated B times to form the outer pad (opad) in RFC 2104?",
+      "options": [
+        "0x36",
+        "0x5C",
+        "0xAA",
+        "0x00"
+      ],
+      "answerIndex": 1,
+      "explanation": "The outer padding byte opad is 0x5C repeated B times (64 times for SHA-256) and XORed with the derived key for the second hash pass."
+    },
+    {
+      "id": "q6",
+      "type": "mcq-single",
+      "prompt": "If a secret key K is longer than the hash block size B (64 bytes for SHA-256), how is it processed?",
+      "options": [
+        "It is truncated to the first 16 bytes",
+        "It is hashed using the underlying hash function to produce a shorter key",
+        "It is rejected as an invalid key error",
+        "It is padded with ones to double block size"
+      ],
+      "answerIndex": 1,
+      "explanation": "When key K is longer than block size B, HMAC pre-hashes it so that K prime equals H(K), then pads it with zeroes to block size B."
+    },
+    {
+      "id": "q7",
+      "type": "mcq-single",
+      "prompt": "What is the expected avalanche effect when altering a single bit in the message or key?",
+      "options": [
+        "0 percent of output bits change",
+        "Approximately 10 percent of output bits change",
+        "Approximately 50 percent of output bits change",
+        "Exactly 100 percent of output bits are inverted"
+      ],
+      "answerIndex": 2,
+      "explanation": "A high-quality cryptographic hash exhibits the avalanche effect, flipping roughly 50 percent of the output bits on average when a single input bit changes."
+    },
+    {
+      "id": "q8",
+      "type": "mcq-single",
+      "prompt": "Can a receiver decrypt an HMAC digest to recover the original plaintext message?",
+      "options": [
+        "Yes, using the secret key in reverse",
+        "Yes, using RSA asymmetric decryption",
+        "No, because HMAC is a lossy one-way hash digest and not an encryption cipher",
+        "No, unless an initialization vector was used"
+      ],
+      "answerIndex": 2,
+      "explanation": "HMAC is a one-way cryptographic hash construction that compresses messages into a fixed digest. It is not an encryption cipher and cannot be inverted or decrypted."
+    },
+    {
+      "id": "q9",
+      "type": "mcq-single",
+      "prompt": "In the Encrypt-then-MAC authenticated encryption scheme, what does the HMAC tag authenticate?",
+      "options": [
+        "Only the shared secret key",
+        "The initialization vector and the ciphertext",
+        "Only the unencrypted plaintext",
+        "The salt and user password"
+      ],
+      "answerIndex": 1,
+      "explanation": "In Encrypt-then-MAC, HMAC authenticates the IV and ciphertext, allowing the receiver to verify message integrity before attempting any decryption."
+    },
+    {
+      "id": "q10",
+      "type": "mcq-single",
+      "prompt": "During HMAC verification, what happens if an attacker modifies one byte of the ciphertext during transmission?",
+      "options": [
+        "The verification succeeds because the key was unchanged",
+        "The receiver computes a completely different HMAC tag, causing verification to fail",
+        "The hash function automatically corrects the corrupted byte",
+        "The digest length expands to indicate tampering"
+      ],
+      "answerIndex": 1,
+      "explanation": "Due to the avalanche effect, modifying even one byte in transit produces an entirely different HMAC at the receiver, causing verification to fail and alerting the receiver of tampering."
+    }
+  ]
+}

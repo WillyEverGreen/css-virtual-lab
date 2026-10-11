@@ -329,7 +329,8 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (_) {}
   }
 
-  function switchTab(targetId) {
+  function switchTab(rawTargetId) {
+    const targetId = (rawTargetId === 'assessment' ? 'quiz' : rawTargetId === 'aim' ? 'objective' : rawTargetId) || 'objective';
     sections.forEach((sec) => {
       if (sec.id === targetId) {
         sec.classList.remove('tab-hidden');
@@ -365,40 +366,52 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   window.addEventListener('resize', reportHeight);
+
+  // Initialize view mode from URL params or hash
+  const urlParams = new URLSearchParams(window.location.search);
+  const isSimMode = urlParams.get('mode') === 'sim';
+  const initialHash = window.location.hash.replace(/^#/, '');
+  const initialTab = urlParams.get('tab') || initialHash;
+
+  if (isSimMode || initialTab === 'simulation' || initialTab === 'sim') {
+    document.body.classList.add('mode-sim');
+    switchTab('simulation');
+    const header = document.querySelector('.lab-header-card');
+    if (header) header.style.display = 'none';
+    const container = document.querySelector('.lab-experiment-container');
+    if (container) container.style.padding = '12px 16px 36px';
+  } else if (initialTab) {
+    switchTab(initialTab);
+  }
   setTimeout(reportHeight, 100);
 
   // 2. MD5 Live Simulation Subtab Switching
   const subTabDigest = document.getElementById('md5SubTabDigest');
   const subTabPadding = document.getElementById('md5SubTabPadding');
   const subTabRounds = document.getElementById('md5SubTabRounds');
+  const subTabAvalanche = document.getElementById('md5SubTabAvalanche');
   const panelDigest = document.getElementById('md5PanelDigest');
   const panelPadding = document.getElementById('md5PanelPadding');
   const panelRounds = document.getElementById('md5PanelRounds');
+  const panelAvalanche = document.getElementById('md5PanelAvalanche');
 
   function setSubTab(activeTab, activePanel) {
-    [subTabDigest, subTabPadding, subTabRounds].forEach((btn) => {
-      if (btn) {
-        btn.style.background = '#faf9f6';
-        btn.style.color = '#18181b';
-      }
+    [subTabDigest, subTabPadding, subTabRounds, subTabAvalanche].forEach((btn) => {
+      if (btn) btn.classList.remove('active');
     });
-    [panelDigest, panelPadding, panelRounds].forEach((p) => {
+    [panelDigest, panelPadding, panelRounds, panelAvalanche].forEach((p) => {
       if (p) p.style.display = 'none';
     });
 
-    if (activeTab) {
-      activeTab.style.background = '#18181b';
-      activeTab.style.color = '#fff';
-    }
-    if (activePanel) {
-      activePanel.style.display = 'block';
-    }
+    if (activeTab) activeTab.classList.add('active');
+    if (activePanel) activePanel.style.display = 'block';
     reportHeight();
   }
 
   if (subTabDigest) subTabDigest.addEventListener('click', () => setSubTab(subTabDigest, panelDigest));
   if (subTabPadding) subTabPadding.addEventListener('click', () => setSubTab(subTabPadding, panelPadding));
   if (subTabRounds) subTabRounds.addEventListener('click', () => setSubTab(subTabRounds, panelRounds));
+  if (subTabAvalanche) subTabAvalanche.addEventListener('click', () => setSubTab(subTabAvalanche, panelAvalanche));
 
   // Simulation Controls & Output Elements
   const md5Input = document.getElementById('md5Input');
@@ -407,7 +420,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const digestDisplay = document.getElementById('digestDisplay');
   const btnCopyDigest = document.getElementById('btnCopyDigest');
   const saltToggle = document.getElementById('saltToggle');
+  const saltWrap = document.getElementById('saltWrap');
   const saltInput = document.getElementById('saltInput');
+
+  if (saltToggle) {
+    saltToggle.addEventListener('change', () => {
+      if (saltWrap) saltWrap.style.display = saltToggle.checked ? 'block' : 'none';
+      updateSimulation();
+    });
+  }
+  if (saltInput) {
+    saltInput.addEventListener('input', updateSimulation);
+  }
 
   // Stats
   const statChars = document.getElementById('statChars');
@@ -491,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnClear && md5Input) {
     btnClear.addEventListener('click', () => {
       md5Input.value = '';
-      if (digestDisplay) digestDisplay.textContent = '[Click \'⚡ Generate MD5 Hash\' to calculate]';
+      if (digestDisplay) digestDisplay.textContent = '[Click \'Generate MD5 Hash\' to calculate]';
       if (statChars) statChars.textContent = '--';
       if (statBytes) statBytes.textContent = '--';
       if (statBits) statBits.textContent = '--';
@@ -500,9 +524,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (regB) regB.textContent = '--';
       if (regC) regC.textContent = '--';
       if (regD) regD.textContent = '--';
-      if (paddingTerminal) paddingTerminal.textContent = '[Click \'⚡ Generate MD5 Hash\' to inspect padding]';
+      if (paddingTerminal) paddingTerminal.textContent = '[Click \'Generate MD5 Hash\' to inspect padding]';
       if (padSegments) padSegments.innerHTML = '<span style="padding: 4px 10px; background: #3b82f6; color: #fff; border-radius: 6px; font-size: 12px; font-weight: 700;">Awaiting Calculation</span>';
-      if (roundsTbody) roundsTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #71717a;">Click \'⚡ Generate MD5 Hash\' to trace round compression states.</td></tr>';
+      if (roundsTbody) roundsTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px; color: #71717a;">Click \'Generate MD5 Hash\' to trace round compression states.</td></tr>';
       reportHeight();
     });
   }
@@ -514,6 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const val = btn.getAttribute('data-val');
       if (md5Input) {
         md5Input.value = val !== undefined ? val : '';
+        updateSimulation();
       }
     });
   });
@@ -525,7 +550,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (text.includes('Click')) return;
       navigator.clipboard.writeText(text);
       const originalText = btnCopyDigest.textContent;
-      btnCopyDigest.textContent = '✓ Copied';
+      btnCopyDigest.textContent = 'Correct: Copied';
       setTimeout(() => {
         btnCopyDigest.textContent = originalText;
       }, 1800);
@@ -609,10 +634,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (selected && parseInt(selected.value, 10) === correctIdx) {
             score++;
             feedbackEl.className = 'quiz-feedback correct';
-            feedbackEl.textContent = '✓ Correct! Excellent grasp of the cryptographic concept.';
+            feedbackEl.textContent = 'Correct: Correct! Excellent grasp of the cryptographic concept.';
           } else {
             feedbackEl.className = 'quiz-feedback incorrect';
-            feedbackEl.textContent = '✗ Incorrect. Review the algorithm specification in Theory & Procedure.';
+            feedbackEl.textContent = 'Incorrect: Incorrect. Review the algorithm specification in Theory & Procedure.';
           }
         }
       });
@@ -638,5 +663,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // Initial calculation on load
+  updateSimulation();
+  updateAvalanche();
+  setTimeout(reportHeight, 150);
 
 });

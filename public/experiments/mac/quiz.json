@@ -1,0 +1,71 @@
+{
+  "schemaVersion": 1,
+  "experiment": "mac",
+  "questions": [
+    {
+      "id": "q1",
+      "type": "mcq-single",
+      "prompt": "What is the primary purpose of a Message Authentication Code (MAC)?",
+      "options": [
+        "To encrypt messages",
+        "To compress data",
+        "To verify data integrity and origin",
+        "To generate random numbers"
+      ],
+      "answerIndex": 2,
+      "explanation": "MAC is used to authenticate the origin of a message and ensure its integrity."
+    },
+    {
+      "id": "q2",
+      "type": "mcq-single",
+      "prompt": "Which of the following is required to generate a MAC?",
+      "options": [
+        "A shared secret key",
+        "A public key",
+        "A random nonce",
+        "A digital certificate"
+      ],
+      "answerIndex": 0,
+      "explanation": "A MAC algorithm requires a shared secret key between the sender and receiver."
+    },
+    {
+      "id": "q3",
+      "type": "mcq-single",
+      "prompt": "What happens if a message is altered in transit?",
+      "options": [
+        "The receiver fixes the message",
+        "The MAC verification fails",
+        "The MAC is automatically updated",
+        "Nothing, the MAC remains valid"
+      ],
+      "answerIndex": 1,
+      "explanation": "Any alteration to the message will result in a different MAC, causing verification to fail."
+    },
+    {
+      "id": "q4",
+      "type": "mcq-single",
+      "prompt": "Why can an attacker not easily forge a MAC for a tampered message?",
+      "options": [
+        "The attacker does not have the shared secret key",
+        "MAC algorithms are too slow",
+        "The message is encrypted",
+        "The receiver uses a public key"
+      ],
+      "answerIndex": 0,
+      "explanation": "Without the shared secret key, it is computationally infeasible to generate a valid MAC."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "Does a MAC provide non-repudiation?",
+      "options": [
+        "Yes, always",
+        "No, because both parties share the same key",
+        "Yes, if used with RSA",
+        "Only when verified by a third party"
+      ],
+      "answerIndex": 1,
+      "explanation": "Since both sender and receiver know the same symmetric key, either could have generated the MAC, meaning it does not provide non-repudiation."
+    }
+  ]
+}
