@@ -154,11 +154,18 @@ export default function Navbar() {
       {/* ========================================================
           DESKTOP NAVBAR (Screen width > 820px)
           ======================================================== */}
-      <div className="lab-nav-desktop" style={{ width: '100%', alignItems: 'stretch' }}>
+      <div
+        className="lab-nav-desktop"
+        style={{
+          width: '100%',
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
+          alignItems: 'stretch',
+        }}
+      >
         {/* Left nav stack */}
         <div
-          id="w-node-_41727ff4-b8be-88c2-bd24-9e52a96dc283-e7aaa9b3"
-          className="w-layout-layout nav-stack wf-layout-layout"
+          className="w-layout-layout nav-stack"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -168,7 +175,7 @@ export default function Navbar() {
         >
           {isExperiment ? (
             <>
-              <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
                 <a
                   href="#objective"
                   onClick={(e) => handleTabClick(e, 'objective')}
@@ -187,7 +194,7 @@ export default function Navbar() {
                 </a>
               </div>
 
-              <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
                 <a
                   href="#theory"
                   onClick={(e) => handleTabClick(e, 'theory')}
@@ -206,7 +213,7 @@ export default function Navbar() {
                 </a>
               </div>
 
-              <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
                 <a
                   href="#procedure"
                   onClick={(e) => handleTabClick(e, 'procedure')}
@@ -227,7 +234,7 @@ export default function Navbar() {
             </>
           ) : (
             DEFAULT_GLOBAL_NAV.left.map((item) => (
-              <div key={item.to} className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div key={item.to} style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
                 <Link
                   to={item.to}
                   className={`nav-link left ${item.color} w-inline-block`}
@@ -240,25 +247,26 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Center brand logo stack */}
+        {/* Center brand logo stack - mathematically centered */}
         <div
-          id="w-node-_0045fa72-ac34-d7e0-0e83-215a84c1777d-e7aaa9b3"
-          className="w-layout-layout nav-logo-stack-container nav-logo-stack wf-layout-layout"
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 32px',
+            borderRight: '1px solid #000',
+            borderLeft: '1px solid #000',
+            minWidth: '280px',
+          }}
         >
-          <div className="w-layout-cell nav-logo-cell" style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
-            <div className="brand-wrapper">
-              <Link to="/" aria-label="Fr. CRCE Crypto Lab home" className="brand w-nav-brand">
-                <LabLogo />
-              </Link>
-            </div>
-          </div>
+          <Link to="/" aria-label="Fr. CRCE Crypto Lab home" className="brand w-nav-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <LabLogo />
+          </Link>
         </div>
 
         {/* Right nav stack */}
         <div
-          id="w-node-_452cc59b-7d9c-4767-f02e-fafaccbd707f-e7aaa9b3"
-          className="w-layout-layout nav-stack right wf-layout-layout"
+          className="w-layout-layout nav-stack right"
           style={{
             display: 'grid',
             gridTemplateColumns: 'repeat(3, 1fr)',
@@ -268,7 +276,7 @@ export default function Navbar() {
         >
           {isExperiment ? (
             <>
-              <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
                 <a
                   href="#simulation"
                   onClick={(e) => handleTabClick(e, 'simulation')}
@@ -287,7 +295,7 @@ export default function Navbar() {
                 </a>
               </div>
 
-              <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '100%', borderRight: '1px solid #000' }}>
                 <a
                   href="#assessment"
                   onClick={(e) => handleTabClick(e, 'assessment')}
@@ -306,7 +314,7 @@ export default function Navbar() {
                 </a>
               </div>
 
-              <div className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+              <div style={{ display: 'flex', width: '100%' }}>
                 <a
                   href="#references"
                   onClick={(e) => handleTabClick(e, 'references')}
@@ -326,8 +334,8 @@ export default function Navbar() {
               </div>
             </>
           ) : (
-            DEFAULT_GLOBAL_NAV.right.map((item) => (
-              <div key={item.to} className="w-layout-cell cell-2" style={{ display: 'flex', width: '100%' }}>
+            DEFAULT_GLOBAL_NAV.right.map((item, idx) => (
+              <div key={item.to} style={{ display: 'flex', width: '100%', borderRight: idx < 2 ? '1px solid #000' : 'none' }}>
                 <Link
                   to={item.to}
                   className={`nav-link right ${item.isCta ? 'cta' : item.color} w-inline-block`}
@@ -349,78 +357,48 @@ export default function Navbar() {
 
       {/* ========================================================
           MOBILE & TABLET NAVBAR (Screen width <= 820px)
+          Covers whole screen width, Virtual Lab centered, theme matched
           ======================================================== */}
       <div className="lab-nav-mobile" style={{ width: '100%', flexDirection: 'column' }}>
-        {/* Mobile Header Bar */}
+        {/* Row 1: Full-width bar with Virtual Lab strictly centered */}
         <div
           style={{
+            width: '100%',
+            height: '56px',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '8px 14px',
-            borderBottom: '1px solid #e5e7eb',
+            justifyContent: 'center',
+            borderBottom: '1px solid #000000',
             background: '#ffffff',
-            minHeight: '48px',
           }}
         >
-          <Link to="/" aria-label="Fr. CRCE Crypto Lab home" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+          <Link
+            to="/"
+            aria-label="Fr. CRCE Crypto Lab home"
+            style={{
+              textDecoration: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
             <LabLogo />
           </Link>
-          {isExperiment ? (
-            <Link
-              to="/#experiments"
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                background: '#18181b',
-                color: '#ffffff',
-                padding: '5px 12px',
-                borderRadius: '999px',
-                textDecoration: 'none',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '4px',
-              }}
-            >
-              <span>All Labs</span>
-              <span>→</span>
-            </Link>
-          ) : (
-            <a
-              href="/#experiments"
-              onClick={(e) => {
-                if (location.pathname === '/') {
-                  e.preventDefault();
-                  document.getElementById('experiments')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-              }}
-              style={{
-                fontSize: '12px',
-                fontWeight: 700,
-                background: '#fc411f',
-                color: '#ffffff',
-                padding: '5px 12px',
-                borderRadius: '999px',
-                textDecoration: 'none',
-              }}
-            >
-              Explore Labs
-            </a>
-          )}
         </div>
 
-        {/* Mobile Horizontal Scrollable Tab Bar */}
+        {/* Row 2: Full-width themed editorial navigation strip */}
         <div
-          className="lab-mobile-tabs-scroll"
+          className="lab-editorial-nav-ribbon"
           style={{
             display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
+            alignItems: 'stretch',
+            width: '100%',
             overflowX: 'auto',
             WebkitOverflowScrolling: 'touch',
-            padding: '7px 12px',
-            background: '#fafafa',
-            borderBottom: '1px solid #e5e7eb',
+            background: '#ffffff',
+            borderBottom: '2px solid #000000',
+            scrollbarWidth: 'none',
+            msOverflowStyle: 'none',
           }}
         >
           {isExperiment ? (
@@ -430,9 +408,9 @@ export default function Navbar() {
                 { id: 'theory', label: 'Theory', color: '#3c8aff' },
                 { id: 'procedure', label: 'Procedure', color: '#8b5cf6' },
                 { id: 'simulation', label: 'Simulation', color: '#18181b' },
-                { id: 'assessment', label: 'Assessment', color: '#ca8a04' },
+                { id: 'assessment', label: 'Assessment', color: '#ffd166', textColor: '#000000' },
                 { id: 'references', label: 'References', color: '#0260a8' },
-              ].map((tab) => {
+              ].map((tab, idx, arr) => {
                 const isActive = activeTab === tab.id || (tab.id === 'assessment' && activeTab === 'quiz');
                 return (
                   <a
@@ -440,21 +418,21 @@ export default function Navbar() {
                     href={`#${tab.id}`}
                     onClick={(e) => handleTabClick(e, tab.id)}
                     style={{
-                      display: 'inline-flex',
+                      flex: '1 0 auto',
+                      display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: '5px 14px',
-                      borderRadius: '999px',
-                      fontSize: '12.5px',
-                      fontWeight: isActive ? 700 : 500,
+                      padding: '12px 18px',
+                      borderRight: idx === arr.length - 1 ? 'none' : '1px solid #000000',
+                      fontFamily: "'Editorial New', Georgia, serif",
+                      fontStyle: 'italic',
+                      fontSize: '17px',
                       textDecoration: 'none',
                       whiteSpace: 'nowrap',
-                      flexShrink: 0,
-                      background: isActive ? tab.color : '#ffffff',
-                      color: isActive ? '#ffffff' : '#3f3f46',
-                      border: isActive ? `1.5px solid ${tab.color}` : '1.5px solid #e4e4e7',
-                      boxShadow: isActive ? '0 1px 3px rgba(0,0,0,0.1)' : 'none',
-                      transition: 'all 0.15s ease',
+                      background: isActive ? tab.color : 'transparent',
+                      color: isActive ? (tab.textColor || '#ffffff') : '#000000',
+                      fontWeight: isActive ? 700 : 400,
+                      transition: 'background-color 0.2s, color 0.2s',
                     }}
                   >
                     {tab.label}
@@ -465,13 +443,13 @@ export default function Navbar() {
           ) : (
             <>
               {[
-                { to: '/', label: 'Home' },
-                { to: '/dash', label: 'Dashboard' },
-                { to: '/about', label: 'About' },
-                { to: '/team', label: 'Team' },
-                { to: '/instructions', label: 'Instructions' },
-                { to: '/#experiments', label: 'Experiments', isCta: true },
-              ].map((item) => {
+                { to: '/', label: 'Home', hoverColor: '#fc411f' },
+                { to: '/dash', label: 'Dashboard', hoverColor: '#3c8aff' },
+                { to: '/about', label: 'About', hoverColor: '#8b5cf6' },
+                { to: '/team', label: 'Team', hoverColor: '#ff70a6' },
+                { to: '/instructions', label: 'Instructions', hoverColor: '#ffd166', textColor: '#000000' },
+                { to: '/#experiments', label: 'Experiments', isCta: true, hoverColor: '#299e00' },
+              ].map((item, idx, arr) => {
                 const isCurrent = location.pathname === item.to;
                 return (
                   <Link
@@ -484,20 +462,21 @@ export default function Navbar() {
                       }
                     }}
                     style={{
-                      display: 'inline-flex',
+                      flex: '1 0 auto',
+                      display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      padding: '5px 14px',
-                      borderRadius: '999px',
-                      fontSize: '12.5px',
-                      fontWeight: isCurrent || item.isCta ? 700 : 500,
+                      padding: '12px 18px',
+                      borderRight: idx === arr.length - 1 ? 'none' : '1px solid #000000',
+                      fontFamily: "'Editorial New', Georgia, serif",
+                      fontStyle: 'italic',
+                      fontSize: '17px',
                       textDecoration: 'none',
                       whiteSpace: 'nowrap',
-                      flexShrink: 0,
-                      background: item.isCta ? '#fc411f' : isCurrent ? '#18181b' : '#ffffff',
-                      color: item.isCta || isCurrent ? '#ffffff' : '#3f3f46',
-                      border: item.isCta ? '1.5px solid #fc411f' : isCurrent ? '1.5px solid #18181b' : '1.5px solid #e4e4e7',
-                      transition: 'all 0.15s ease',
+                      background: isCurrent ? item.hoverColor : item.isCta ? '#299e00' : 'transparent',
+                      color: isCurrent || item.isCta ? (item.textColor || '#ffffff') : '#000000',
+                      fontWeight: isCurrent || item.isCta ? 700 : 400,
+                      transition: 'background-color 0.2s, color 0.2s',
                     }}
                   >
                     {item.label}
