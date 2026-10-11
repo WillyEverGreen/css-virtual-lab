@@ -33,7 +33,7 @@ export const DEFAULT_ROSTER: Roster = {
         { name: 'Slora Bar', rollNo: 'TBD', githubLogin: 'Slora123' },
         { name: 'Arya Chavan', rollNo: 'TBD', githubLogin: 'ryachavan' },
         { name: 'Cajetan Dsouza', rollNo: 'TBD', githubLogin: 'Cajetan02' },
-        { name: 'Shreyas Divekar', rollNo: 'TBD', githubLogin: null },
+        { name: 'Shreyas Divekar', rollNo: 'TBD', githubLogin: 'Shreyas-fr' },
       ],
     },
     {
@@ -41,7 +41,7 @@ export const DEFAULT_ROSTER: Roster = {
       members: [
         { name: 'Jadern Crasto', rollNo: 'TBD', githubLogin: 'jadencrasto' },
         { name: 'Wendell Dsouza', rollNo: 'TBD', githubLogin: 'Wendellpy' },
-        { name: 'Rohit Ahir', rollNo: 'TBD', githubLogin: null },
+        { name: 'Rohit Ahir', rollNo: 'TBD', githubLogin: 'Rohit-Ahir' },
       ],
     },
     {
@@ -49,6 +49,7 @@ export const DEFAULT_ROSTER: Roster = {
       members: [
         { name: 'Jace Jaison', rollNo: 'TBD', githubLogin: 'Jace-4' },
         { name: 'Ahamed Wafiq', rollNo: 'TBD', githubLogin: 'ahamed-wafiq' },
+        { name: 'Sai Balkawade', rollNo: 'TBD', githubLogin: 'WillyEverGreen' },
       ],
     },
   ],

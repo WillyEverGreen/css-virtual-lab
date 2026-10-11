@@ -5,6 +5,7 @@ import { useWebflow } from './web/webflow/useWebflow';
 import Home from './web/pages/Home';
 import ExperimentView from './web/pages/ExperimentView';
 import About from './web/pages/About';
+import Instructions from './web/pages/Instructions';
 import Team from './components/Team';
 
 import Dash from './web/pages/Dash';
@@ -44,7 +45,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/dash" element={<Dash />} />
           <Route path="/about" element={<About />} />
-          <Route path="/instructions" element={<About />} />
+          <Route path="/instructions" element={<Instructions />} />
           <Route path="/experiments/:slug" element={<ExperimentView />} />
           <Route path="/team" element={<Team />} />
           <Route path="*" element={<Home />} />

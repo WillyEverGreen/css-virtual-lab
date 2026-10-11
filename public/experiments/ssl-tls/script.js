@@ -8,6 +8,7 @@
  *                Interactive Application Data Channel, Packet Inspector
  * - Ahamed Wafiq: TLS 1.2 vs 1.3 Handshake Sequences, Attack Scenarios (MITM,
  *                 Expired Cert, MAC Tampering), Metrics & Observations Table, Quiz
+ * - Sai Balkawade: Protocol Architecture, Security Parameter Verification, Integration
  * ============================================================================
  */
 
@@ -906,7 +907,7 @@ document.addEventListener('DOMContentLoaded', () => {
       doc.text("Experiment 05: SSL/TLS Protocol Overview & Handshake Analysis", 14, 23);
       
       doc.setFontSize(10);
-      doc.text(`Engineered by: Jace Jaison, Ahamed Wafiq`, 14, 30);
+      doc.text(`Engineered by: Jace Jaison, Ahamed Wafiq, Sai Balkawade`, 14, 30);
       doc.text(`Report Generated: ${new Date().toLocaleString()}`, 14, 36);
       
       doc.setDrawColor(24, 24, 27);

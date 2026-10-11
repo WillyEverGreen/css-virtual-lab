@@ -6,29 +6,81 @@ export default function Team() {
   const teams = DEFAULT_ROSTER.teams;
 
   return (
-    <div style={{ paddingTop: '80px', minHeight: '100vh', background: '#faf9f6' }}>
+    <div style={{ minHeight: '100vh', background: '#faf9f6' }}>
       {/* Header section */}
       <div className="section padding-none" style={{ borderBottom: '2px solid #000', background: '#fff' }}>
-        <div className="container" style={{ padding: '40px 16px', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: '#ffd166', border: '2px solid #000', borderRadius: '999px', padding: '6px 18px', fontWeight: 700, fontSize: '13px', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '16px' }}>
+        <div
+          className="container"
+          style={{
+            padding: '48px 20px',
+            textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            maxWidth: '1200px',
+            margin: '0 auto',
+          }}
+        >
+          <div
+            style={{
+              display: 'inline-block',
+              background: '#ffd166',
+              border: '2px solid #000',
+              borderRadius: '999px',
+              padding: '6px 18px',
+              fontWeight: 700,
+              fontSize: '13px',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              marginBottom: '16px',
+            }}
+          >
             Academic Year 2026 • Fr. CRCE
           </div>
-          <h1 className="heading-2" style={{ margin: '0 0 16px', fontSize: 'clamp(28px, 4vw, 42px)', fontWeight: 800 }}>
+          <h1
+            className="heading-2"
+            style={{
+              margin: '0 0 16px',
+              fontSize: 'clamp(28px, 4vw, 42px)',
+              fontWeight: 800,
+              textAlign: 'center',
+            }}
+          >
             Lab Teams &amp; Working Groups
           </h1>
-          <p className="paragraph" style={{ maxWidth: '680px', margin: '0 auto', fontSize: '16px', color: '#333' }}>
+          <p
+            className="paragraph"
+            style={{
+              maxWidth: '680px',
+              margin: '0 auto',
+              fontSize: '16px',
+              color: '#333',
+              textAlign: 'center',
+              lineHeight: 1.6,
+            }}
+          >
             Assigned student teams implementing interactive cryptographic simulations, vulnerability proofs, and validation suites.
           </p>
         </div>
       </div>
 
       {/* Teams Grid */}
-      <div className="section" style={{ padding: '36px 16px' }}>
-        <div className="container" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div className="section" style={{ padding: '48px 20px', background: '#faf9f6' }}>
+        <div
+          className="container"
+          style={{
+            maxWidth: '1240px',
+            margin: '0 auto',
+            padding: 0,
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))',
+              display: 'flex',
+              flexWrap: 'wrap',
+              justifyContent: 'center',
               gap: '24px',
               width: '100%',
               boxSizing: 'border-box',
@@ -50,6 +102,10 @@ export default function Team() {
                     display: 'flex',
                     flexDirection: 'column',
                     overflow: 'hidden',
+                    flex: '1 1 340px',
+                    maxWidth: '380px',
+                    minWidth: 'min(100%, 300px)',
+                    boxSizing: 'border-box',
                   }}
                 >
                   {/* Card Header */}
@@ -225,6 +281,148 @@ export default function Team() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Compilation & Integration Team Section */}
+          <div
+            style={{
+              marginTop: '56px',
+              width: '100%',
+              background: '#fff',
+              border: '3px solid #000',
+              borderRadius: '16px',
+              boxShadow: '6px 6px 0px #000',
+              padding: '36px 28px',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+              <div
+                style={{
+                  display: 'inline-block',
+                  background: '#9bf6ff',
+                  border: '2px solid #000',
+                  borderRadius: '999px',
+                  padding: '4px 14px',
+                  fontWeight: 700,
+                  fontSize: '12px',
+                  textTransform: 'uppercase',
+                  marginBottom: '10px',
+                }}
+              >
+                Platform Compilation
+              </div>
+              <h2
+                style={{
+                  margin: '0 0 10px',
+                  fontSize: 'clamp(24px, 3vw, 32px)',
+                  fontWeight: 800,
+                  color: '#000',
+                }}
+              >
+                Integration &amp; Architecture Team
+              </h2>
+              <p
+                style={{
+                  maxWidth: '700px',
+                  margin: '0 auto',
+                  fontSize: '15px',
+                  color: '#555',
+                  lineHeight: 1.6,
+                }}
+              >
+                Appointed student engineers from TE Comp C responsible for the core application shell, navigation coordination, responsive brutalist theme, and experiment integration.
+              </p>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                gap: '16px',
+              }}
+            >
+              {[
+                { roll: '10714', name: 'Ulric Ivan Collaco', role: 'Architecture & Shell' },
+                { roll: '10707', name: 'Sai Dipak Balkawade', role: 'Lead Integration', githubLogin: 'WillyEverGreen' },
+                { roll: '10739', name: 'Abhishek Roy Jose', role: 'UI Tokens & Styling' },
+                { roll: '10728', name: 'Soah Alexio Fernandes', role: 'Routing & Navigation' },
+                { roll: '10748', name: 'Manthan Mahendra Pagaria', role: 'Testing & Verification' },
+                { roll: '10755', name: 'Dev Dinesh Saroj', role: 'Assessment Framework' },
+              ].map((m, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    background: '#faf9f6',
+                    border: '2px solid #000',
+                    borderRadius: '10px',
+                    padding: '16px 20px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    boxShadow: '3px 3px 0px #000',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                    <div
+                      style={{
+                        width: '42px',
+                        height: '42px',
+                        borderRadius: '8px',
+                        background: '#ffd166',
+                        border: '1.5px solid #000',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 800,
+                        fontSize: '15px',
+                      }}
+                    >
+                      {m.name.charAt(0)}
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: 800, fontSize: '14px', color: '#000', lineHeight: 1.2 }}>
+                        {m.name}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#666', marginTop: '3px' }}>
+                        Roll No: <strong>{m.roll}</strong> • {m.role}
+                      </div>
+                      {m.githubLogin && (
+                        <a
+                          href={`https://github.com/${m.githubLogin}`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            fontSize: '11px',
+                            color: '#0969da',
+                            textDecoration: 'none',
+                            fontWeight: 600,
+                            display: 'inline-block',
+                            marginTop: '2px',
+                          }}
+                        >
+                          @{m.githubLogin}
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      background: '#dcfce7',
+                      color: '#166534',
+                      border: '1.5px solid #16a34a',
+                      borderRadius: '6px',
+                      padding: '2px 8px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    Core Lead
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
