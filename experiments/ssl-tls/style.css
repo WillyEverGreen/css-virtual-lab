@@ -15,7 +15,10 @@ html, body {
   min-height: auto;
   background-color: transparent;
   color: #18181b;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   line-height: 1.6;
   padding: 0 0 60px 0;
   box-sizing: border-box;
@@ -158,12 +161,20 @@ html, body {
   margin-bottom: 14px;
 }
 
-.lab-section-title {
-  font-size: 26px;
+.lab-section-title,
+.lab-experiment-container h1,
+.lab-experiment-container h2,
+.lab-experiment-container h3,
+.lab-experiment-container h4 {
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight: 800;
   color: #18181b;
+  letter-spacing: -0.025em;
+}
+
+.lab-section-title {
+  font-size: 26px;
   margin: 0 0 20px 0;
-  letter-spacing: -0.02em;
 }
 
 /* Typography & Prose */

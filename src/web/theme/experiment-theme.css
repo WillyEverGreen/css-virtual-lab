@@ -30,15 +30,18 @@
   --lab-blue: #0260a8;
   
   /* Clean modern textbook typography */
-  --lab-font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --lab-font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --lab-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace;
+  --lab-font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --lab-font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --lab-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 .lab-experiment-container {
   background-color: var(--lab-bg);
   color: var(--lab-text);
-  font-family: var(--lab-font-body);
+  font-family: var(--lab-font-body) !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   line-height: 1.6;
   min-height: 100vh;
   padding: 32px 20px 80px 20px;
@@ -115,20 +118,30 @@
   margin-bottom: 16px;
 }
 
-.lab-section-title {
-  font-family: var(--lab-font-body);
-  font-size: clamp(28px, 3.2vw, 36px);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 24px 0;
+.lab-section-title,
+.lab-experiment-container h1,
+.lab-experiment-container h2,
+.lab-experiment-container h3,
+.lab-experiment-container h4,
+.lab-experiment-container h5,
+.lab-experiment-container h6,
+.lab-prose h1,
+.lab-prose h2,
+.lab-prose h3,
+.lab-prose h4 {
+  font-family: var(--lab-font-display) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em;
   color: var(--lab-text);
 }
 
+.lab-section-title {
+  font-size: clamp(28px, 3.2vw, 36px);
+  margin: 0 0 24px 0;
+}
+
 .lab-prose h3 {
-  font-family: var(--lab-font-body);
   font-size: 20px;
-  font-weight: 700;
-  color: var(--lab-text);
   margin: 28px 0 12px 0;
   letter-spacing: -0.01em;
 }

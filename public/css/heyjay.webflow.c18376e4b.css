@@ -2177,69 +2177,27 @@ body {
   line-height: 140%;
 }
 
-h1 {
-  color: var(--black);
-  letter-spacing: -.04em;
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-family: Editorial New, sans-serif;
-  font-size: 64px;
-  font-weight: 200;
+-weight: 800;
   line-height: 120%;
 }
 
-h2 {
-  color: var(--black);
-  letter-spacing: -.03em;
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-family: Editorial New, sans-serif;
-  font-size: 64px;
-  font-weight: 200;
+-weight: 800;
   line-height: 120%;
 }
 
-h3 {
-  color: var(--black);
-  letter-spacing: 0;
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-family: Editorial New, sans-serif;
-  font-size: 48px;
-  font-weight: 200;
+-weight: 700;
   line-height: 120%;
 }
 
-h4 {
-  color: var(--black);
-  letter-spacing: -.02em;
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-family: Editorial New, sans-serif;
-  font-size: 48px;
-  font-weight: 200;
+-weight: 700;
   line-height: 120%;
 }
 
-h5 {
-  color: var(--black);
-  letter-spacing: -.03em;
-  margin-top: 0;
-  margin-bottom: 8px;
-  font-family: Editorial New, sans-serif;
-  font-size: 32px;
-  font-weight: 200;
+-weight: 700;
   line-height: 40px;
 }
 
-h6 {
-  color: var(--black);
-  letter-spacing: -.03em;
-  margin-top: 0;
-  margin-bottom: 0;
-  font-family: Editorial New, sans-serif;
-  font-size: 24px;
-  font-weight: 200;
+-weight: 700;
   line-height: 120%;
 }
 
@@ -2530,7 +2488,7 @@ blockquote {
 .heading-white {
   color: #fff;
   margin-bottom: 12px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .container-large {
@@ -2687,7 +2645,7 @@ blockquote {
   justify-content: center;
   align-items: center;
   padding: 14px 48px 12px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
   font-style: italic;
   font-weight: 200;
@@ -2766,7 +2724,7 @@ blockquote {
   justify-content: center;
   padding-top: 8px;
   padding-bottom: 8px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
 .color-base {
@@ -2856,7 +2814,7 @@ blockquote {
   margin-left: 0;
   margin-right: 0;
   padding: 24px 16px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
   font-style: italic;
   font-weight: 200;
@@ -3590,7 +3548,7 @@ blockquote {
   justify-content: center;
   align-items: center;
   padding: 14px 32px 12px 48px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
   font-style: italic;
   font-weight: 200;
@@ -3744,13 +3702,7 @@ blockquote {
   display: flex;
 }
 
-.faq-title {
-  color: var(--black);
-  letter-spacing: -.02em;
-  margin-top: 2px;
-  font-family: Editorial New, sans-serif;
-  font-size: 28px;
-  font-weight: 200;
+-weight: 700;
   line-height: 120%;
 }
 
@@ -3861,14 +3813,7 @@ blockquote {
   height: 100%;
 }
 
-.blog-title {
-  color: var(--black);
-  letter-spacing: 0;
-  margin-top: 8px;
-  margin-bottom: 24px;
-  font-family: Editorial New, sans-serif;
-  font-size: 32px;
-  font-weight: 200;
+-weight: 700;
   line-height: 120%;
 }
 
@@ -4102,7 +4047,7 @@ blockquote {
 }
 
 .button-text-remove {
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 18px;
   font-style: italic;
   font-weight: 200;
@@ -4693,12 +4638,7 @@ blockquote {
   color: var(--black);
 }
 
-.hero-paragraph {
-  text-align: center;
-  letter-spacing: -.01em;
-  font-family: Editorial New, sans-serif;
-  font-size: 24px;
-  font-weight: 200;
+-weight: 500;
   line-height: 150%;
 }
 
@@ -4790,7 +4730,7 @@ blockquote {
   margin-left: 4px;
   margin-right: 4px;
   padding: 8px 32px 8px 16px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
   font-style: italic;
   font-weight: 400;
@@ -5063,7 +5003,7 @@ blockquote {
 
 .paragraph.display-paragraph {
   letter-spacing: -.02em;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 32px;
 }
 
@@ -5078,7 +5018,7 @@ blockquote {
 }
 
 .paragraph.bullet-list-heading {
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 40px;
   display: none;
 }
@@ -5183,11 +5123,7 @@ blockquote {
   color: var(--black);
 }
 
-.heading-3.pricing {
-  margin-bottom: 16px;
-  font-family: Editorial New, sans-serif;
-  font-size: 28px;
-  font-weight: 200;
+-weight: 700;
   line-height: 32px;
 }
 
@@ -6806,7 +6742,7 @@ blockquote {
   letter-spacing: -.01em;
   width: 100%;
   padding: 4px 16px 3px;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 18px;
   font-style: italic;
   font-weight: 200;
@@ -6918,7 +6854,7 @@ blockquote {
 .heading-12 {
   color: var(--black);
   margin-bottom: 0;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
 }
 
@@ -7271,7 +7207,7 @@ blockquote {
 .form-message {
   background-color: #0000;
   padding: 0;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 24px;
   line-height: 150%;
 }
@@ -7518,7 +7454,7 @@ blockquote {
 }
 
 .text-block-5 {
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 23px;
 }
 
@@ -7616,7 +7552,7 @@ blockquote {
   max-width: 1020px;
   margin-left: auto;
   margin-right: auto;
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 48px;
   font-weight: 300;
   line-height: 140%;
@@ -7901,7 +7837,7 @@ blockquote {
 }
 
 .pricing-math-tab-price-number {
-  font-family: Editorial New, sans-serif;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 48px;
   line-height: 100%;
 }
@@ -10446,7 +10382,7 @@ blockquote {
 }
 
 @font-face {
-  font-family: 'Editorial New';
+  font-family: 'Plus Jakarta Sans';
   src: url('../fonts/628e41a201efac6f1a9bba32_EditorialNew-Ultralight.woff2') format('woff2'), url('../fonts/628e41a2d1e857e6ece72767_EditorialNew-Ultralight.eot') format('embedded-opentype'), url('../fonts/628e41a29f45140ca51671cf_EditorialNew-Ultralight.woff') format('woff'), url('../fonts/628e41a2f0a568662c830d5f_EditorialNew-Ultralight.ttf') format('truetype'), url('../fonts/628e41a264bf99be8c5ef85e_EditorialNew-Ultralight.otf') format('opentype');
   font-weight: 200;
   font-style: normal;

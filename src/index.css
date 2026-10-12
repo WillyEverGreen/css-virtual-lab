@@ -1,16 +1,29 @@
 /* ========================================================
-   GLOBAL SMOOTH SCROLLING & ELEGANT SCROLLBAR
+   UNIVERSAL HIGH-DEFINITION TYPOGRAPHY
    ======================================================== */
-html {
-  scroll-behavior: smooth;
-  overflow-x: clip;
-}
-
-body {
-  overflow-x: clip;
-  min-height: 100vh;
+*, *::before, *::after {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+html, body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  scroll-behavior: smooth;
+  overflow-x: clip;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6,
+.heading-1, .heading-2, .heading-3, .heading-4, .heading-5, .heading-6,
+.hero-title, .lab-section-title {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+}
+
+pre, code, .mono, .font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
 }
 
 /* Elegant, responsive custom scrollbar for desktop */
