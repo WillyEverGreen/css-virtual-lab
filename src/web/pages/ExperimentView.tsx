@@ -757,13 +757,14 @@ export default function ExperimentView() {
   const [bundleHtml, setBundleHtml] = useState<string | null>(null);
   const [cacheBuster, setCacheBuster] = useState<number>(() => Date.now());
   const [copySuccess, setCopySuccess] = useState(false);
-  const [iframeHeight, setIframeHeight] = useState<number>(1050);
+  const [iframeHeight, setIframeHeight] = useState<number>(620);
 
-  // Auto-resize iframe when child reports its height
+  // Auto-resize iframe when child reports its height (anti-ratchet protection, expands fully without cropping)
   useEffect(() => {
     const handleMsg = (e: MessageEvent) => {
       if (e.data?.type === 'RESIZE_IFRAME' && typeof e.data?.height === 'number') {
-        setIframeHeight(Math.max(900, Math.min(3600, e.data.height + 32)));
+        const target = Math.max(480, Math.min(3200, Math.ceil(e.data.height) + 20));
+        setIframeHeight((prev) => (Math.abs(prev - target) > 6 ? target : prev));
       }
     };
     window.addEventListener('message', handleMsg);
@@ -841,24 +842,6 @@ export default function ExperimentView() {
 
     return () => {
       canceled = true;
-    };
-  }, [validSlug, cacheBuster]);
-
-  // Inject student stylesheet dynamically
-  useEffect(() => {
-    const linkId = 'student-experiment-styles';
-    let link = document.getElementById(linkId) as HTMLLinkElement | null;
-    if (!link) {
-      link = document.createElement('link');
-      link.id = linkId;
-      link.rel = 'stylesheet';
-      document.head.appendChild(link);
-    }
-    link.href = `/experiments/${validSlug}/style.css?v=${cacheBuster}`;
-
-    return () => {
-      const el = document.getElementById(linkId);
-      if (el) el.remove();
     };
   }, [validSlug, cacheBuster]);
 
@@ -991,12 +974,16 @@ export default function ExperimentView() {
               >
                 <span
                   style={{
-                    display: 'inline-block',
+                    display: 'inline-flex',
+                    alignItems: 'center',
                     transform: refreshing ? 'rotate(180deg)' : 'none',
                     transition: 'transform 0.4s ease',
                   }}
                 >
-                  ↻
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                    <path d="M3 3v5h5" />
+                  </svg>
                 </span>
                 {refreshing ? 'Refreshing...' : 'Refresh'}
               </button>
@@ -1120,7 +1107,7 @@ export default function ExperimentView() {
                   style={{
                     width: '100%',
                     height: `${iframeHeight}px`,
-                    minHeight: '850px',
+                    minHeight: '480px',
                     border: 'none',
                     display: 'block',
                     background: 'transparent',
@@ -1184,7 +1171,15 @@ export default function ExperimentView() {
                               fontSize: '13.5px',
                             }}
                           >
-                            [External Link ↗]
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
+                              <span>[External Link</span>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                <polyline points="15 3 21 3 21 9" />
+                                <line x1="10" y1="14" x2="21" y2="3" />
+                              </svg>
+                              <span>]</span>
+                            </span>
                           </a>
                         )}
                       </li>

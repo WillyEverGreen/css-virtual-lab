@@ -319,13 +319,24 @@ document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('.lab-section');
   const tabButtons = document.querySelectorAll('.lab-tab-btn');
 
+  let lastReportedHeight = 0;
   function reportHeight() {
     try {
-      const container = document.querySelector('.lab-experiment-container');
-      const h = container
-        ? Math.max(container.scrollHeight, container.offsetHeight)
-        : Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
-      window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      const activeEl = document.getElementById('simulation') || document.querySelector('.lab-section:not(.tab-hidden)') || document.querySelector('.lab-experiment-container') || document.body;
+      if (!activeEl) return;
+      const h = Math.ceil(Math.max(activeEl.scrollHeight || 0, activeEl.offsetHeight || 0, activeEl.getBoundingClientRect().height || 0)) + 32;
+      if (Math.abs(h - lastReportedHeight) > 6) {
+        lastReportedHeight = h;
+        window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      }
+    } catch (_) {}
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    try {
+      const ro = new ResizeObserver(() => reportHeight());
+      const simSection = document.getElementById('simulation') || document.querySelector('.lab-experiment-container');
+      if (simSection) ro.observe(simSection);
     } catch (_) {}
   }
 

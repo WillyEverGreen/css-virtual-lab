@@ -159,11 +159,24 @@
     return document.getElementById(id);
   }
 
+  var lastReportedHeight = 0;
   function reportHeight() {
     try {
       var simEl = document.getElementById("simulation") || document.querySelector(".lab-experiment-container") || document.body;
-      var h = Math.max(simEl.scrollHeight || 0, simEl.offsetHeight || 0);
-      window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      if (!simEl) return;
+      var h = Math.ceil(Math.max(simEl.scrollHeight || 0, simEl.offsetHeight || 0, simEl.getBoundingClientRect().height || 0)) + 32;
+      if (Math.abs(h - lastReportedHeight) > 6) {
+        lastReportedHeight = h;
+        window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      }
+    } catch (_) {}
+  }
+
+  if (typeof ResizeObserver !== 'undefined') {
+    try {
+      var ro = new ResizeObserver(function() { reportHeight(); });
+      var simSection = document.getElementById('simulation') || document.querySelector('.lab-experiment-container');
+      if (simSection) ro.observe(simSection);
     } catch (_) {}
   }
 

@@ -351,16 +351,28 @@
     generateSenderHmac();
   });
 
-  // --- TAB NAVIGATION ---
-  
+  // --- TAB NAVIGATION & HEIGHT AUTO-REPORTING ---
+  var lastReportedHeight = 0;
   function reportHeight() {
     try {
       var simEl = document.getElementById("simulation") || document.querySelector(".lab-experiment-container") || document.body;
-      var h = Math.max(simEl.scrollHeight || 0, simEl.offsetHeight || 0);
-      window.parent.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      if (!simEl) return;
+      var h = Math.ceil(Math.max(simEl.scrollHeight || 0, simEl.offsetHeight || 0, simEl.getBoundingClientRect().height || 0)) + 36;
+      if (Math.abs(h - lastReportedHeight) > 6) {
+        lastReportedHeight = h;
+        window.parent.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      }
     } catch (_) {}
   }
   window.addEventListener('resize', reportHeight);
+
+  if (typeof ResizeObserver !== 'undefined') {
+    try {
+      var ro = new ResizeObserver(function() { reportHeight(); });
+      var simSection = document.getElementById('simulation') || document.querySelector('.lab-experiment-container');
+      if (simSection) ro.observe(simSection);
+    } catch (_) {}
+  }
 
   var urlParams = new URLSearchParams(window.location.search);
   var isSimMode = urlParams.get('mode') === 'sim';
@@ -374,7 +386,8 @@
       else allSecs[s].style.display = 'block';
     }
   }
-  setTimeout(reportHeight, 100);
+  setTimeout(reportHeight, 50);
+  setTimeout(reportHeight, 200);
 
   function initTabs() {
     var btnGen = document.getElementById('tabBtnGen');
@@ -394,6 +407,7 @@
       paneGen.style.display = 'block';
       paneAv.style.display = 'none';
       paneQ.style.display = 'none';
+      setTimeout(reportHeight, 30);
     });
 
     btnAv.addEventListener('click', function () {
@@ -404,6 +418,7 @@
       paneAv.style.display = 'block';
       paneQ.style.display = 'none';
       runAvalancheAnalysis();
+      setTimeout(reportHeight, 30);
     });
 
     btnQ.addEventListener('click', function () {
@@ -413,6 +428,7 @@
       paneGen.style.display = 'none';
       paneAv.style.display = 'none';
       paneQ.style.display = 'block';
+      setTimeout(reportHeight, 30);
     });
   }
 

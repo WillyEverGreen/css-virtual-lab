@@ -108,7 +108,7 @@
         <p>Follow these experimental steps to evaluate the TLS handshake state machine:</p>
         <ol style="padding-left: 20px; line-height: 1.8;">
           <li><strong>Step 1: Configuration Setup.</strong> Navigate to the <em>Simulator</em> tab. Select protocol version (TLS 1.3 or TLS 1.2), Key Exchange algorithm (ECDHE or RSA), and Execution Scenario (Normal, Expired Certificate, MITM Forged Cert, or Tampered Finished Message).</li>
-          <li><strong>Step 2: Start Handshake Simulation.</strong> Click <strong>▶ Play Auto-Run</strong> to watch the live animated packet flight across the network channel, or click <strong>⏭ Step Forward</strong> to advance through the protocol messages one by one.</li>
+          <li><strong>Step 2: Start Handshake Simulation.</strong> Click <strong>Play Auto-Run</strong> to watch the live animated packet flight across the network channel, or click <strong>Step Forward</strong> to advance through the protocol messages one by one.</li>
           <li><strong>Step 3: Packet Inspection.</strong> Click any message packet in the central network channel to examine its structured JSON payload (protocol version, randoms, cipher suites, key shares, or verification tags) in the <em>Packet Inspector</em>.</li>
           <li><strong>Step 4: Interactive Application Data Exchange.</strong> Once the handshake completes with status <code>Established</code>, enter a plaintext application message in the Client terminal and click <strong>Send Encrypted Record</strong>. Observe AES-GCM ciphertext transmission and automatic server-side decryption.</li>
           <li><strong>Step 5: Attack Scenario Evaluation.</strong> Test the failure scenarios (Expired Certificate, MITM Attacker, Tampered MAC) to observe how TLS triggers fatal alerts and terminates without exposing application data.</li>
@@ -157,9 +157,26 @@
 
         <div class="sim-deck-row sim-deck-actions">
           <div class="sim-action-btns">
-            <button id="btnPlay" class="sim-btn-primary">▶ Play Auto-Run</button>
-            <button id="btnStepFwd" class="sim-btn-secondary">⏭ Step Forward</button>
-            <button id="btnReset" class="sim-btn-danger">↺ Reset</button>
+            <button id="btnPlay" class="sim-btn-primary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <polygon points="5 3 19 12 5 21"></polygon>
+              </svg>
+              <span>Play Auto-Run</span>
+            </button>
+            <button id="btnStepFwd" class="sim-btn-secondary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="5 4 15 12 5 20 5 4" fill="currentColor"></polygon>
+                <line x1="19" y1="5" x2="19" y2="19"></line>
+              </svg>
+              <span>Step Forward</span>
+            </button>
+            <button id="btnReset" class="sim-btn-danger">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                <path d="M3 3v5h5"></path>
+              </svg>
+              <span>Reset</span>
+            </button>
           </div>
           <div class="sim-speed-control">
             <label for="simSpeed">Animation Speed:</label>
@@ -209,7 +226,10 @@
         <div class="sim-telemetry-aside">
           <div class="dock-card-header">
             <div class="dock-card-title">
-              <span>⚡ Protocol State &amp; Telemetry</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+              </svg>
+              <span>Protocol State &amp; Telemetry</span>
             </div>
             <div class="dock-badges-row">
               <span class="dock-badge-rtt">RTT: <strong id="rttCount">0</strong></span>
@@ -232,7 +252,12 @@
       <div class="sim-inspector-panel">
         <div class="dock-card-header">
           <div class="dock-card-title">
-            <span>📦 Packet Inspector</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0d9488" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+              <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+              <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <span>Packet Inspector</span>
             <span class="dock-hint">Click any packet above to inspect cryptographic JSON payload</span>
           </div>
         </div>

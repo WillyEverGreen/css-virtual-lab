@@ -20,16 +20,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const sections = document.querySelectorAll('.lab-section');
   const tabButtons = document.querySelectorAll('.lab-tab-btn');
 
+  let lastReportedHeight = 0;
   function reportHeight() {
     try {
-      const container = document.querySelector('.lab-experiment-container') || document.body;
-      const h = Math.max(
-        container.scrollHeight || 0,
-        container.offsetHeight || 0,
-        document.body.scrollHeight || 0,
-        document.documentElement.scrollHeight || 0
-      );
-      window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      const activeEl = document.getElementById('simulation') || document.querySelector('.lab-section:not(.tab-hidden)') || document.querySelector('.lab-experiment-container');
+      if (!activeEl) return;
+      const rect = activeEl.getBoundingClientRect();
+      const contentH = Math.ceil(rect.height || activeEl.offsetHeight || activeEl.scrollHeight);
+      const h = contentH + 16;
+      if (Math.abs(h - lastReportedHeight) > 6) {
+        lastReportedHeight = h;
+        window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
+      }
     } catch (_) {}
   }
 
@@ -71,13 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', reportHeight);
 
-  // Auto-resize observer so changes in packet inspector or logs instantly notify parent
+  // Auto-resize observer so changes in packet inspector or logs notify parent without ratchet loop
   if (typeof ResizeObserver !== 'undefined') {
     try {
       const ro = new ResizeObserver(() => reportHeight());
-      ro.observe(document.body);
-      const containerEl = document.querySelector('.lab-experiment-container');
-      if (containerEl) ro.observe(containerEl);
+      const simSection = document.getElementById('simulation');
+      if (simSection) ro.observe(simSection);
     } catch (_) {}
   }
 
@@ -147,6 +148,25 @@ document.addEventListener('DOMContentLoaded', () => {
     serverOutputBox: document.getElementById('serverOutputBox'),
     btnExportLog: document.getElementById('btnExportLog')
   };
+
+  function setPlayButtonState(isPlaying) {
+    if (isPlaying) {
+      Elements.btnPlay.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+          <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+        </svg>
+        <span>Pause</span>
+      `;
+    } else {
+      Elements.btnPlay.innerHTML = `
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21"></polygon>
+        </svg>
+        <span>Play Auto-Run</span>
+      `;
+    }
+  }
 
   /* ==========================================================================
      3. REAL CRYPTOGRAPHY ENGINE (Web Crypto API)
@@ -612,7 +632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (payload.error || payload.alert) {
       State.isPlaying = false;
       State.isFailed = true;
-      Elements.btnPlay.innerText = "▶ Play Auto-Run";
+      setPlayButtonState(false);
       animatePacket(step, payload, true);
       
       Elements.hsStatusBadge.innerText = "FAILED (ALERT)";
@@ -731,7 +751,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function completeHandshake() {
     State.isPlaying = false;
-    Elements.btnPlay.innerText = "▶ Play Auto-Run";
+    setPlayButtonState(false);
     
     Elements.hsStatusBadge.innerText = "ESTABLISHED";
     Elements.hsStatusBadge.style.background = "#dcfce7";
@@ -834,11 +854,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (State.isPlaying) {
       State.isPlaying = false;
-      Elements.btnPlay.innerText = "▶ Play Auto-Run";
+      setPlayButtonState(false);
       clearTimeout(State.autoPlayTimeout);
     } else {
       State.isPlaying = true;
-      Elements.btnPlay.innerText = "⏸ Pause";
+      setPlayButtonState(true);
       executeStep();
     }
   };
@@ -849,7 +869,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await prepareSimulation();
     }
     State.isPlaying = false;
-    Elements.btnPlay.innerText = "▶ Play Auto-Run";
+    setPlayButtonState(false);
     clearTimeout(State.autoPlayTimeout);
     executeStep();
   };
@@ -857,7 +877,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Reset Button
   Elements.btnReset.onclick = () => {
     State.isPlaying = false;
-    Elements.btnPlay.innerText = "▶ Play Auto-Run";
+    setPlayButtonState(false);
     clearTimeout(State.autoPlayTimeout);
     clearUI();
   };

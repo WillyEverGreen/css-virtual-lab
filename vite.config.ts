@@ -10,22 +10,21 @@ function experimentsPlugin() {
       server.middlewares.use((req: any, res: any, next: any) => {
         if (req.url && req.url.startsWith('/experiments/')) {
           const cleanUrl = decodeURIComponent(req.url.split('?')[0]);
-          let targetPath = path.join(process.cwd(), cleanUrl);
-          if (fs.existsSync(targetPath) && fs.statSync(targetPath).isDirectory()) {
-            targetPath = path.join(targetPath, 'index.html');
-          }
-          if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
-            const ext = path.extname(targetPath);
-            const mimeTypes: Record<string, string> = {
-              '.html': 'text/html; charset=utf-8',
-              '.css': 'text/css; charset=utf-8',
-              '.js': 'application/javascript; charset=utf-8',
-              '.json': 'application/json; charset=utf-8',
-              '.svg': 'image/svg+xml',
-              '.png': 'image/png',
-            };
-            res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
-            return fs.createReadStream(targetPath).pipe(res);
+          const ext = path.extname(cleanUrl);
+          if (ext && ['.html', '.css', '.js', '.json', '.svg', '.png'].includes(ext)) {
+            const targetPath = path.join(process.cwd(), cleanUrl);
+            if (fs.existsSync(targetPath) && fs.statSync(targetPath).isFile()) {
+              const mimeTypes: Record<string, string> = {
+                '.html': 'text/html; charset=utf-8',
+                '.css': 'text/css; charset=utf-8',
+                '.js': 'application/javascript; charset=utf-8',
+                '.json': 'application/json; charset=utf-8',
+                '.svg': 'image/svg+xml',
+                '.png': 'image/png',
+              };
+              res.setHeader('Content-Type', mimeTypes[ext] || 'application/octet-stream');
+              return fs.createReadStream(targetPath).pipe(res);
+            }
           }
         }
         next();
