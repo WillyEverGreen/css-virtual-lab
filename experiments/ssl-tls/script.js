@@ -22,10 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function reportHeight() {
     try {
-      const container = document.querySelector('.lab-experiment-container');
-      const h = container
-        ? Math.max(container.scrollHeight, container.offsetHeight)
-        : Math.max(document.body.scrollHeight, document.documentElement.scrollHeight);
+      const container = document.querySelector('.lab-experiment-container') || document.body;
+      const h = Math.max(
+        container.scrollHeight || 0,
+        container.offsetHeight || 0,
+        document.body.scrollHeight || 0,
+        document.documentElement.scrollHeight || 0
+      );
       window.parent?.postMessage({ type: 'RESIZE_IFRAME', height: h }, '*');
     } catch (_) {}
   }
@@ -68,6 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.addEventListener('resize', reportHeight);
 
+  // Auto-resize observer so changes in packet inspector or logs instantly notify parent
+  if (typeof ResizeObserver !== 'undefined') {
+    try {
+      const ro = new ResizeObserver(() => reportHeight());
+      ro.observe(document.body);
+      const containerEl = document.querySelector('.lab-experiment-container');
+      if (containerEl) ro.observe(containerEl);
+    } catch (_) {}
+  }
+
   // Initialize view mode from URL params or hash
   const urlParams = new URLSearchParams(window.location.search);
   const isSimMode = urlParams.get('mode') === 'sim';
@@ -84,7 +97,8 @@ document.addEventListener('DOMContentLoaded', () => {
   } else if (initialTab) {
     switchTab(initialTab);
   }
-  setTimeout(reportHeight, 150);
+  setTimeout(reportHeight, 100);
+  setTimeout(reportHeight, 400);
 
   /* ==========================================================================
      2. STATE MANAGEMENT & DOM ELEMENTS
@@ -518,21 +532,50 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function updateCryptoUI() {
     if (!State.clientCrypto.random) return;
+    const clientSec = State.clientCrypto.sharedSecret
+      ? `<span style="color: #4ade80; font-weight: 700;">${State.clientCrypto.sharedSecret.substring(0, 24)}...</span>`
+      : `<span style="color: #64748b; font-style: italic;">Awaiting KeyShare</span>`;
     Elements.clientCrypto.innerHTML = `
-      <strong>Client Random:</strong><br>${State.clientCrypto.random.substring(0, 16)}...<br><br>
-      <strong>Shared Secret (Z):</strong><br>${State.clientCrypto.sharedSecret ? State.clientCrypto.sharedSecret.substring(0, 24) + '...' : 'Awaiting Exchange'}
+      <div style="margin-bottom: 10px;">
+        <strong style="color: #38bdf8;">Client Nonce:</strong><br>
+        <span style="color: #fde047;">${State.clientCrypto.random.substring(0, 22)}...</span>
+      </div>
+      <div>
+        <strong style="color: #38bdf8;">Shared Secret (Z):</strong><br>
+        ${clientSec}
+      </div>
     `;
+
+    const serverSec = State.serverCrypto.sharedSecret
+      ? `<span style="color: #4ade80; font-weight: 700;">${State.serverCrypto.sharedSecret.substring(0, 24)}...</span>`
+      : `<span style="color: #64748b; font-style: italic;">Awaiting KeyShare</span>`;
     Elements.serverCrypto.innerHTML = `
-      <strong>Server Random:</strong><br>${State.serverCrypto.random.substring(0, 16)}...<br><br>
-      <strong>Shared Secret (Z):</strong><br>${State.serverCrypto.sharedSecret ? State.serverCrypto.sharedSecret.substring(0, 24) + '...' : 'Awaiting Exchange'}
+      <div style="margin-bottom: 10px;">
+        <strong style="color: #38bdf8;">Server Nonce:</strong><br>
+        <span style="color: #fde047;">${State.serverCrypto.random.substring(0, 22)}...</span>
+      </div>
+      <div>
+        <strong style="color: #38bdf8;">Shared Secret (Z):</strong><br>
+        ${serverSec}
+      </div>
     `;
+    reportHeight();
   }
 
   function logEvent(msg) {
     const li = document.createElement('li');
     const time = new Date().toLocaleTimeString();
-    li.innerText = `[${time}] ${msg}`;
+    let tag = '<span style="color: #60a5fa; font-weight: 700;">[INFO]</span> ';
+    if (msg.includes('FATAL') || msg.includes('ALERT')) {
+      tag = '<span style="color: #ef4444; font-weight: 800;">[ALERT]</span> ';
+      li.style.color = '#fca5a5';
+    } else if (msg.includes('decrypted') || msg.includes('established') || msg.includes('Complete')) {
+      tag = '<span style="color: #22c55e; font-weight: 800;">[OK]</span> ';
+      li.style.color = '#86efac';
+    }
+    li.innerHTML = `<span style="color: #64748b; font-size: 10.5px;">[${time}]</span> ${tag}${msg}`;
     Elements.eventLog.prepend(li);
+    reportHeight();
   }
 
   function recordObservation(step) {
@@ -611,12 +654,18 @@ document.addEventListener('DOMContentLoaded', () => {
     
     pkt.dataset.payload = JSON.stringify(payload, null, 2);
     pkt.onclick = () => {
-      Elements.inspectorContent.innerHTML = `<pre style="margin: 0; font-family: inherit;">${pkt.dataset.payload}</pre>`;
+      document.querySelectorAll('.msg-packet').forEach(p => p.style.outline = 'none');
+      pkt.style.outline = '2px solid #38bdf8';
+      Elements.inspectorContent.innerHTML = `<div style="margin-bottom: 8px; color: #38bdf8; font-weight: 700; font-size: 11.5px; border-bottom: 1px solid #1e293b; padding-bottom: 6px;">[PACKET: ${step.name.toUpperCase()}]</div><pre style="margin: 0; font-family: inherit; color: #e2e8f0;">${pkt.dataset.payload}</pre>`;
+      reportHeight();
     };
+
+    // Auto-display current payload in inspector
+    Elements.inspectorContent.innerHTML = `<div style="margin-bottom: 8px; color: #38bdf8; font-weight: 700; font-size: 11.5px; border-bottom: 1px solid #1e293b; padding-bottom: 6px;">[PACKET: ${step.name.toUpperCase()}]</div><pre style="margin: 0; font-family: inherit; color: #e2e8f0;">${pkt.dataset.payload}</pre>`;
 
     Elements.messagesContainer.appendChild(pkt);
     
-    const startY = 12 + (State.stepIndex * 36);
+    const startY = 16 + (State.stepIndex * 40);
     pkt.style.top = startY + 'px';
     
     if (step.dir === 'c2s') {
@@ -722,8 +771,13 @@ document.addEventListener('DOMContentLoaded', () => {
       authenticatedPayload: plaintext
     }, null, 2);
     pkt.onclick = () => { 
-      Elements.inspectorContent.innerHTML = `<pre style="margin: 0; font-family: inherit;">${pkt.dataset.payload}</pre>`; 
+      document.querySelectorAll('.msg-packet').forEach(p => p.style.outline = 'none');
+      pkt.style.outline = '2px solid #38bdf8';
+      Elements.inspectorContent.innerHTML = `<div style="margin-bottom: 8px; color: #38bdf8; font-weight: 700; font-size: 11.5px; border-bottom: 1px solid #1e293b; padding-bottom: 6px;">[RECORD: APPLICATION DATA]</div><pre style="margin: 0; font-family: inherit; color: #e2e8f0;">${pkt.dataset.payload}</pre>`; 
+      reportHeight();
     };
+    Elements.inspectorContent.innerHTML = `<div style="margin-bottom: 8px; color: #38bdf8; font-weight: 700; font-size: 11.5px; border-bottom: 1px solid #1e293b; padding-bottom: 6px;">[RECORD: APPLICATION DATA]</div><pre style="margin: 0; font-family: inherit; color: #e2e8f0;">${pkt.dataset.payload}</pre>`;
+    reportHeight();
     
     const startY = 12 + ((State.stepIndex + 1) * 36);
     pkt.style.top = startY + 'px';

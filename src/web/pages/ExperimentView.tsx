@@ -757,13 +757,13 @@ export default function ExperimentView() {
   const [bundleHtml, setBundleHtml] = useState<string | null>(null);
   const [cacheBuster, setCacheBuster] = useState<number>(() => Date.now());
   const [copySuccess, setCopySuccess] = useState(false);
-  const [iframeHeight, setIframeHeight] = useState<number>(680);
+  const [iframeHeight, setIframeHeight] = useState<number>(1050);
 
   // Auto-resize iframe when child reports its height
   useEffect(() => {
     const handleMsg = (e: MessageEvent) => {
       if (e.data?.type === 'RESIZE_IFRAME' && typeof e.data?.height === 'number') {
-        setIframeHeight(Math.max(480, Math.min(2600, e.data.height + 16)));
+        setIframeHeight(Math.max(900, Math.min(3600, e.data.height + 32)));
       }
     };
     window.addEventListener('message', handleMsg);
@@ -1107,11 +1107,8 @@ export default function ExperimentView() {
 
               <div
                 style={{
-                  border: '2px solid #18181b',
-                  borderRadius: '12px',
-                  overflow: 'hidden',
-                  background: '#fff',
                   width: '100%',
+                  background: 'transparent',
                 }}
               >
                 <iframe
@@ -1119,15 +1116,14 @@ export default function ExperimentView() {
                   src={`/experiments/${validSlug}/index.html?mode=sim&v=${cacheBuster}`}
                   sandbox="allow-scripts allow-forms allow-same-origin"
                   title={`${config.title} Interactive Simulation`}
-                  scrolling="no"
+                  scrolling="auto"
                   style={{
                     width: '100%',
                     height: `${iframeHeight}px`,
-                    minHeight: '480px',
+                    minHeight: '850px',
                     border: 'none',
                     display: 'block',
-                    background: '#fff',
-                    overflow: 'hidden',
+                    background: 'transparent',
                   }}
                 />
               </div>

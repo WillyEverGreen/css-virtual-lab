@@ -259,85 +259,93 @@ html, body {
   line-height: 1.6;
 }
 
-/* Configuration Card */
-.sim-config-box {
+/* ==========================================================================
+   UNIFIED CONTROL DECK (Merged Configuration & Playback Actions)
+   ========================================================================== */
+.sim-control-deck {
   background: #ffffff;
   border: 2px solid #18181b;
   border-radius: 14px;
-  padding: 20px 24px;
+  padding: 18px 22px;
   margin-bottom: 20px;
   box-shadow: 3px 3px 0px #18181b;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.config-grid {
+.sim-deck-params {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
 }
 
-.config-grid label {
+.sim-param-group {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
-.config-label-text {
+.sim-param-label {
   font-weight: 800;
-  font-size: 12.5px;
-  color: #18181b;
-  margin-bottom: 6px;
+  font-size: 11.5px;
+  color: #52525b;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
-.sim-select, .sim-input, .sim-textarea {
+.sim-select {
   width: 100%;
-  background: #ffffff;
+  background: #fafafa;
   border: 2px solid #18181b;
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 9px 12px;
   font-size: 13.5px;
   color: #18181b;
   font-family: inherit;
   font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-.sim-select:focus, .sim-input:focus, .sim-textarea:focus {
+.sim-select:focus {
   outline: none;
+  background: #ffffff;
   border-color: #d97706;
   box-shadow: 0 0 0 3px rgba(255, 190, 46, 0.35);
 }
 
-/* Controls Strip */
-.sim-controls-strip {
+.sim-deck-divider {
+  height: 1px;
+  background: #e4e4e7;
+  margin: 0;
+}
+
+.sim-deck-actions {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
-  padding: 14px 20px;
-  background: #faf9f6;
-  border: 2px solid #18181b;
-  border-radius: 12px;
-  box-shadow: 3px 3px 0px #18181b;
 }
 
-.sim-ctrl-btns {
+.sim-action-btns {
   display: flex;
-  gap: 10px;
   align-items: center;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
-.sim-speed-box {
+.sim-speed-control {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
+  color: #52525b;
 }
 
-.sim-speed-box input[type="range"] {
+.sim-speed-control input[type="range"] {
   cursor: pointer;
   accent-color: #ffbe2e;
 }
@@ -348,11 +356,11 @@ html, body {
   color: #18181b;
   border: 2px solid #18181b;
   border-radius: 8px;
-  padding: 10px 20px;
+  padding: 9px 18px;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13.5px;
   cursor: pointer;
-  box-shadow: 3px 3px 0px #18181b;
+  box-shadow: 2px 2px 0px #18181b;
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -369,11 +377,16 @@ html, body {
   color: #18181b;
   border: 2px solid #18181b;
   border-radius: 8px;
-  padding: 10px 18px;
+  padding: 9px 16px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
   box-shadow: 2px 2px 0px #18181b;
+  transition: all 0.1s ease;
+}
+
+.sim-btn-secondary:hover {
+  background: #f4f4f5;
 }
 
 .sim-btn-danger {
@@ -381,11 +394,16 @@ html, body {
   color: #991b1b;
   border: 2px solid #18181b;
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 9px 15px;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
   box-shadow: 2px 2px 0px #18181b;
+  transition: all 0.1s ease;
+}
+
+.sim-btn-danger:hover {
+  background: #fecaca;
 }
 
 .sim-btn-outline {
@@ -393,11 +411,16 @@ html, body {
   color: #18181b;
   border: 2px solid #18181b;
   border-radius: 8px;
-  padding: 8px 14px;
+  padding: 9px 14px;
   font-weight: 700;
   font-size: 13px;
   cursor: pointer;
   box-shadow: 2px 2px 0px #18181b;
+  transition: all 0.1s ease;
+}
+
+.sim-btn-outline:hover {
+  background: #f4f4f5;
 }
 
 .sim-btn-mini {
@@ -409,7 +432,8 @@ html, body {
   font-size: 12px;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 2px 2px 0px #18181b;
+  box-shadow: 1.5px 1.5px 0px #18181b;
+  transition: all 0.1s ease;
 }
 
 .sim-btn-mini:disabled {
@@ -418,64 +442,66 @@ html, body {
   box-shadow: none;
 }
 
-/* Simulation Layout */
-.sim-layout {
+/* ==========================================================================
+   INTERACTIVE WORKSPACE & TELEMETRY ROW (Side-by-Side Architectural Stage)
+   ========================================================================== */
+.sim-stage-row {
   display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 20px;
-  align-items: start;
+  grid-template-columns: minmax(0, 2.15fr) minmax(310px, 1fr);
+  gap: 18px;
+  align-items: stretch;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
-@media (max-width: 900px) {
-  .sim-layout {
+@media (max-width: 980px) {
+  .sim-stage-row {
     grid-template-columns: 1fr;
   }
 }
 
-.sim-main-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.sim-side-col {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* Simulation Node Workspace */
 .sim-workspace {
   display: flex;
-  height: 420px;
+  height: 440px;
   border: 2px solid #18181b;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #faf9f6;
   overflow: hidden;
-  margin-bottom: 20px;
   box-shadow: 3px 3px 0px #18181b;
+  width: 100%;
+  margin-bottom: 0;
 }
 
 .node-panel {
-  flex: 0 0 230px;
+  flex: 0 0 215px;
   padding: 14px;
   display: flex;
   flex-direction: column;
   background: #ffffff;
+  gap: 10px;
+  z-index: 2;
+}
+
+.client-panel {
   border-right: 2px solid #18181b;
 }
 
 .server-panel {
-  border-right: none;
   border-left: 2px solid #18181b;
 }
 
+.node-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid #e4e4e7;
+}
+
 .node-header {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 800;
-  text-align: center;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 2px solid #18181b;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -489,63 +515,93 @@ html, body {
 }
 
 .state-indicator {
-  text-align: center;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 7px;
+  border-radius: 999px;
   background: #f4f4f5;
-  border: 1.5px solid #18181b;
+  border: 1px solid #d4d4d8;
   font-weight: 800;
-  font-size: 11px;
-  margin-bottom: 10px;
+  font-size: 9.5px;
   letter-spacing: 0.05em;
-  color: #18181b;
+  color: #52525b;
 }
 
 .crypto-state {
   flex: 1;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 11px;
-  background: #18181b;
-  color: #4ade80;
+  background: #0f172a;
+  color: #e2e8f0;
   padding: 10px;
   border-radius: 8px;
   overflow-y: auto;
   word-break: break-all;
   line-height: 1.5;
+  border: 1px solid #1e293b;
+}
+
+.crypto-state strong {
+  color: #38bdf8;
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .app-data {
-  margin-top: 10px;
   display: flex;
-  flex-direction: column;
   gap: 6px;
+  align-items: center;
 }
 
 .app-data input {
-  padding: 8px 10px;
+  flex: 1;
+  padding: 7px 8px;
   border: 2px solid #18181b;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11.5px;
   font-family: inherit;
+  font-weight: 600;
+  background: #ffffff;
+}
+
+.app-data input:focus {
+  outline: none;
+  border-color: #2563eb;
 }
 
 .server-rcvd-msg {
   margin: 0;
-  padding: 8px 10px;
-  background: #f4f4f5;
-  border: 1.5px dashed #18181b;
+  padding: 7px 8px;
+  background: #f8fafc;
+  border: 1.5px dashed #94a3b8;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 11px;
   font-style: italic;
-  color: #52525b;
+  color: #64748b;
+  text-align: center;
+  width: 100%;
 }
 
 /* Network Channel */
 .network-channel {
   flex: 1;
   position: relative;
-  background: #fffdfa;
+  background: #fdfcf9;
   overflow: hidden;
+  min-width: 220px;
+}
+
+.channel-label-watermark {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #cbd5e1;
+  text-transform: uppercase;
+  pointer-events: none;
+  z-index: 1;
 }
 
 #messagesContainer {
@@ -563,13 +619,13 @@ html, body {
   color: #18181b;
   border: 2px solid #18181b;
   padding: 4px 10px;
-  border-radius: 12px;
+  border-radius: 20px;
   font-size: 11px;
   font-weight: 800;
   box-shadow: 2px 2px 0px #18181b;
   cursor: pointer;
   white-space: nowrap;
-  transition: left 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.4s ease;
+  transition: left 0.75s cubic-bezier(0.25, 1, 0.5, 1), transform 0.75s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.3s ease;
   z-index: 10;
 }
 
@@ -590,136 +646,182 @@ html, body {
   border-color: #ef4444;
 }
 
-/* Packet Inspector */
-.inspector-panel {
+/* ==========================================================================
+   PROTOCOL STATE & TELEMETRY ASIDE CARD
+   ========================================================================== */
+.sim-telemetry-aside {
   background: #ffffff;
   border: 2px solid #18181b;
-  border-radius: 12px;
+  border-radius: 14px;
   box-shadow: 3px 3px 0px #18181b;
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
+  height: 440px;
 }
 
-.inspector-header {
-  background: #18181b;
-  color: #ffffff;
-  padding: 8px 14px;
+.dock-card-header {
+  background: #f8fafc;
+  border-bottom: 2px solid #18181b;
+  padding: 11px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.dock-card-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
   font-weight: 800;
-  font-size: 12.5px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-#inspectorContent {
-  padding: 14px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 12px;
-  white-space: pre-wrap;
-  word-break: break-all;
-  max-height: 180px;
-  overflow-y: auto;
-  background: #faf9f6;
   color: #18181b;
-}
-
-/* Explanation & Metrics Panels */
-.explanation-panel {
-  background: #eff6ff;
-  border: 2px solid #18181b;
-  border-left: 6px solid #2563eb;
-  padding: 16px 20px;
-  border-radius: 12px;
-  box-shadow: 3px 3px 0px #18181b;
-}
-
-.explanation-panel h3 {
-  margin: 0 0 6px 0;
-  font-size: 15px;
-  font-weight: 800;
-  color: #1d4ed8;
   text-transform: uppercase;
   letter-spacing: 0.03em;
 }
 
-.explanation-panel p {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #1e293b;
-}
-
-.metrics-panel {
-  display: flex;
-  flex-direction: column;
-}
-
-.metrics-card {
-  background: #ffffff;
-  border: 2px solid #18181b;
-  border-radius: 12px;
-  padding: 18px;
-  box-shadow: 3px 3px 0px #18181b;
-}
-
-.metrics-card h4 {
-  margin: 0 0 12px 0;
-  font-size: 14px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: #18181b;
-}
-
-.metric-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  font-size: 13.5px;
+.dock-hint {
+  font-size: 11.5px;
   font-weight: 600;
-  color: #27272a;
+  color: #64748b;
+  text-transform: none;
+  letter-spacing: normal;
 }
 
-.badge-rtt {
-  background: #18181b;
-  color: #fde047;
-  padding: 2px 10px;
+.dock-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dock-badge-rtt {
+  font-size: 11px;
+  font-weight: 700;
+  color: #475569;
+  background: #e2e8f0;
+  padding: 2px 7px;
   border-radius: 6px;
-  font-family: monospace;
-  font-size: 13px;
+  border: 1px solid #cbd5e1;
+}
+
+.dock-badge-rtt strong {
+  color: #0f172a;
 }
 
 .status-badge {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 800;
   text-transform: uppercase;
-  padding: 3px 8px;
+  padding: 3px 7px;
   border-radius: 6px;
   border: 1.5px solid #18181b;
   background: #f4f4f5;
   color: #52525b;
 }
 
-.event-log {
-  list-style: none;
-  padding: 8px;
-  margin: 12px 0 0 0;
-  max-height: 160px;
-  overflow-y: auto;
-  font-size: 11px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  background: #18181b;
-  color: #a1a1aa;
+.telemetry-body {
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+}
+
+.explanation-box {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-left: 5px solid #2563eb;
+  padding: 10px 12px;
   border-radius: 8px;
 }
 
+.explanation-box p {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
+.telemetry-log-wrapper {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.event-log {
+  list-style: none;
+  padding: 8px 10px;
+  margin: 0;
+  height: 100%;
+  max-height: 175px;
+  overflow-y: auto;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #0f172a;
+  color: #94a3b8;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+  line-height: 1.45;
+}
+
 .event-log li {
-  padding: 3px 6px;
-  border-bottom: 1px solid #27272a;
+  padding: 3px 5px;
+  border-bottom: 1px solid #1e293b;
   word-break: break-all;
 }
 
 .event-log li:nth-child(even) {
-  background: #202024;
+  background: #1e293b55;
+}
+
+.export-btn {
+  width: 100%;
+}
+
+/* ==========================================================================
+   FULL-WIDTH PACKET INSPECTOR PANEL
+   ========================================================================== */
+.sim-inspector-panel {
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 14px;
+  box-shadow: 3px 3px 0px #18181b;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.inspector-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #0f172a;
+}
+
+#inspectorContent {
+  padding: 16px 20px;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  min-height: 180px;
+  max-height: 320px;
+  overflow-y: auto;
+  color: #e2e8f0;
+  line-height: 1.6;
+}
+
+#inspectorContent pre {
+  margin: 0;
+  font-family: inherit;
+  color: #38bdf8;
 }
 
 /* Conclusion Box */

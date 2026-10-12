@@ -125,110 +125,119 @@
         <p>Configure parameters below and step through authentic Web Crypto API key generation and message exchanges:</p>
       </div>
 
-      <!-- Configuration Card -->
-      <div class="sim-config-box">
-        <div class="config-grid">
-          <label>
-            <span class="config-label-text">TLS Protocol Version:</span>
+      <!-- Unified Command Deck: Configuration & Playback (Merged 1 clean card) -->
+      <div class="sim-control-deck">
+        <div class="sim-deck-row sim-deck-params">
+          <div class="sim-param-group">
+            <span class="sim-param-label">TLS Protocol Version:</span>
             <select id="tlsVersion" class="sim-select">
               <option value="1.3" selected>TLS 1.3 (RFC 8446 - 1-RTT, PFS Mandated)</option>
               <option value="1.2">TLS 1.2 (RFC 5246 - 2-RTT, Classic Handshake)</option>
             </select>
-          </label>
-          <label>
-            <span class="config-label-text">Key Exchange Algorithm:</span>
+          </div>
+          <div class="sim-param-group">
+            <span class="sim-param-label">Key Exchange Algorithm:</span>
             <select id="keyExchange" class="sim-select">
               <option value="ECDHE" selected>ECDHE (NIST P-256 Curve)</option>
               <option value="RSA">RSA (Static Key Transport)</option>
             </select>
-          </label>
-          <label>
-            <span class="config-label-text">Execution Scenario:</span>
+          </div>
+          <div class="sim-param-group">
+            <span class="sim-param-label">Execution Scenario:</span>
             <select id="simScenario" class="sim-select">
               <option value="success" selected>Normal (Success - Authentic CA)</option>
               <option value="expired">Expired Certificate (Validation Failure)</option>
               <option value="mitm">Man-in-the-Middle (Forged Certificate)</option>
               <option value="tampered">Tampered Finished Message (MAC Failure)</option>
             </select>
-          </label>
+          </div>
+        </div>
+
+        <div class="sim-deck-divider"></div>
+
+        <div class="sim-deck-row sim-deck-actions">
+          <div class="sim-action-btns">
+            <button id="btnPlay" class="sim-btn-primary">▶ Play Auto-Run</button>
+            <button id="btnStepFwd" class="sim-btn-secondary">⏭ Step Forward</button>
+            <button id="btnReset" class="sim-btn-danger">↺ Reset</button>
+          </div>
+          <div class="sim-speed-control">
+            <label for="simSpeed">Animation Speed:</label>
+            <input type="range" id="simSpeed" min="1" max="5" value="3">
+          </div>
         </div>
       </div>
 
-      <!-- Controls Row -->
-      <div class="sim-controls-strip">
-        <div class="sim-ctrl-btns">
-          <button id="btnPlay" class="sim-btn-primary">▶ Play Auto-Run</button>
-          <button id="btnStepFwd" class="sim-btn-secondary">⏭ Step Forward</button>
-          <button id="btnReset" class="sim-btn-danger">↺ Reset</button>
-        </div>
-        <div class="sim-speed-box">
-          <label for="simSpeed"><strong>Animation Speed:</strong></label>
-          <input type="range" id="simSpeed" min="1" max="5" value="3">
-        </div>
-      </div>
-
-      <!-- Main Simulation Layout -->
-      <div class="sim-layout">
-        <!-- Left: Workspace & Inspector -->
-        <div class="sim-main-col">
-          <div class="sim-workspace">
-            <!-- Client Node -->
-            <div class="node-panel client-panel">
-              <div class="node-header">Client (Browser)</div>
-              <div class="state-indicator" id="clientState">INITIAL</div>
-              <div class="crypto-state" id="clientCrypto">Keys: [Click 'Play' or 'Step Forward' to initialize]</div>
-              <div class="app-data">
-                <input type="text" id="appInput" placeholder="Wait for handshake..." disabled>
-                <button id="btnSendApp" class="sim-btn-mini" disabled>Send Record</button>
-              </div>
+      <!-- Middle Row: Client-Server Workspace with Protocol State & Telemetry ASIDE -->
+      <div class="sim-stage-row">
+        <!-- Client-Server Handshake Stage -->
+        <div class="sim-workspace">
+          <!-- Client Node -->
+          <div class="node-panel client-panel">
+            <div class="node-title-row">
+              <span class="node-header">Client (Browser)</span>
+              <span class="state-indicator" id="clientState">INITIAL</span>
             </div>
-
-            <!-- Animated Network Channel -->
-            <div class="network-channel" id="networkChannel">
-              <svg id="sequenceSvg" width="100%" height="100%"></svg>
-              <div id="messagesContainer"></div>
-            </div>
-
-            <!-- Server Node -->
-            <div class="node-panel server-panel">
-              <div class="node-header">Server (Host)</div>
-              <div class="state-indicator" id="serverState">INITIAL</div>
-              <div class="crypto-state" id="serverCrypto">Keys: [Click 'Play' or 'Step Forward' to initialize]</div>
-              <div class="app-data" id="serverOutputBox">
-                <p class="server-rcvd-msg">Awaiting secure channel...</p>
-              </div>
+            <div class="crypto-state" id="clientCrypto">Keys: [Click 'Play' or 'Step Forward' to initialize]</div>
+            <div class="app-data">
+              <input type="text" id="appInput" placeholder="Wait for handshake..." disabled>
+              <button id="btnSendApp" class="sim-btn-mini" disabled>Send Record</button>
             </div>
           </div>
 
-          <!-- Packet Inspector -->
-          <div class="inspector-panel">
-            <div class="inspector-header">Packet Inspector</div>
-            <div id="inspectorContent">Click any message packet in the sequence to view its structured cryptographic payload.</div>
+          <!-- Animated Network Channel -->
+          <div class="network-channel" id="networkChannel">
+            <div class="channel-label-watermark">UNTRUSTED NETWORK CHANNEL</div>
+            <svg id="sequenceSvg" width="100%" height="100%"></svg>
+            <div id="messagesContainer"></div>
+          </div>
+
+          <!-- Server Node -->
+          <div class="node-panel server-panel">
+            <div class="node-title-row">
+              <span class="node-header">Server (Host)</span>
+              <span class="state-indicator" id="serverState">INITIAL</span>
+            </div>
+            <div class="crypto-state" id="serverCrypto">Keys: [Click 'Play' or 'Step Forward' to initialize]</div>
+            <div class="app-data" id="serverOutputBox">
+              <p class="server-rcvd-msg">Awaiting secure channel...</p>
+            </div>
           </div>
         </div>
 
-        <!-- Right: What's Happening & Metrics -->
-        <div class="sim-side-col">
-          <div class="explanation-panel" id="explanationPanel">
-            <h3>Protocol State &amp; Progress</h3>
-            <p id="explanationText">Configure settings above, then click <strong>Play Auto-Run</strong> or <strong>Step Forward</strong> to begin.</p>
+        <!-- Protocol State & Telemetry (Aside of Client-Server) -->
+        <div class="sim-telemetry-aside">
+          <div class="dock-card-header">
+            <div class="dock-card-title">
+              <span>⚡ Protocol State &amp; Telemetry</span>
+            </div>
+            <div class="dock-badges-row">
+              <span class="dock-badge-rtt">RTT: <strong id="rttCount">0</strong></span>
+              <span id="hsStatusBadge" class="status-badge">Not Started</span>
+            </div>
           </div>
-
-          <div class="metrics-panel">
-            <div class="metrics-card">
-              <h4>Metrics &amp; Event Log</h4>
-              <div class="metric-row">
-                <span>Round Trips (RTT):</span>
-                <strong id="rttCount" class="badge-rtt">0</strong>
-              </div>
-              <div class="metric-row">
-                <span>Handshake Status:</span>
-                <span id="hsStatusBadge" class="status-badge">Not Started</span>
-              </div>
+          <div class="telemetry-body">
+            <div class="explanation-box" id="explanationPanel">
+              <p id="explanationText">Configure settings above, then click <strong>Play Auto-Run</strong> or <strong>Step Forward</strong> to begin.</p>
+            </div>
+            <div class="telemetry-log-wrapper">
               <ul id="eventLog" class="event-log"></ul>
-              <button id="btnExportLog" class="sim-btn-outline" style="width: 100%; margin-top: 10px;">Export Lab Report (PDF)</button>
             </div>
+            <button id="btnExportLog" class="sim-btn-outline export-btn">Export Lab Report (PDF)</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Bottom Row: Packet Inspector (Full Width) -->
+      <div class="sim-inspector-panel">
+        <div class="dock-card-header">
+          <div class="dock-card-title">
+            <span>📦 Packet Inspector</span>
+            <span class="dock-hint">Click any packet above to inspect cryptographic JSON payload</span>
+          </div>
+        </div>
+        <div class="inspector-body">
+          <div id="inspectorContent">Click any message packet in the sequence to view its structured cryptographic payload.</div>
         </div>
       </div>
     </section>
