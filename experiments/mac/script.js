@@ -8,7 +8,6 @@
  * - Slora Bar
  * - Arya Chavan
  * - Cajetan Dsouza
- * - Shreyas Divekar
  * ============================================================================
  */
 

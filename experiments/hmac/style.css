@@ -1,5 +1,8 @@
-/* Virtual Cryptography Laboratory - HMAC Experiment Stylesheet */
-/* Scoped strictly to .lab-experiment-container and .lab-section per Rule V301-V303 */
+/* ==========================================================================
+   HMAC Virtual Laboratory Module - Retro-Academic Lab Design System
+   Fr. Conceicao Rodrigues College of Engineering (Fr. CRCE)
+   Authors: Wendell Dsouza, Jadern Crasto, Rohit Ahir, Shreyas Divekar
+   ========================================================================== */
 
 * {
   box-sizing: border-box;
@@ -15,6 +18,78 @@
   text-rendering: optimizeLegibility;
   color: #18181b;
   line-height: 1.6;
+}
+
+/* Module Header Card */
+.lab-header-card {
+  max-width: 960px;
+  margin: 0 auto 24px auto;
+  background: #ffffff;
+  border: 2px solid #18181b;
+  border-radius: 14px;
+  padding: 24px 28px;
+  box-shadow: 4px 4px 0px #18181b;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lab-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lab-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.lab-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 4px 12px;
+  border-radius: 999px;
+  border: 1.5px solid #18181b;
+}
+
+.lab-badge-accent {
+  background: #ea580c;
+  color: #ffffff;
+}
+
+.lab-badge-group {
+  background: #ffedd5;
+  color: #9a3412;
+  border-color: #18181b;
+}
+
+.lab-badge-subtle {
+  background: #f4f4f5;
+  color: #52525b;
+}
+
+.lab-authors-strip {
+  font-size: 13px;
+  color: #52525b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lab-authors-strip strong {
+  color: #18181b;
 }
 
 /* Section Cards */

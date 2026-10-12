@@ -1,6 +1,7 @@
 /**
  * Virtual Cryptography Laboratory - HMAC Experiment
  * RFC 2104 / NIST FIPS PUB 198-1 Keyed-Hash Message Authentication Code
+ * Authors: Wendell Dsouza, Jadern Crasto, Rohit Ahir, Shreyas Divekar
  * 100% Offline, Zero external dependencies, Pure client-side implementation.
  */
 
@@ -365,6 +366,8 @@
   var isSimMode = urlParams.get('mode') === 'sim';
   if (isSimMode) {
     document.body.classList.add('mode-sim');
+    var headerEl = document.querySelector('.lab-header-card');
+    if (headerEl) headerEl.style.display = 'none';
     var allSecs = document.querySelectorAll('.lab-section');
     for (var s = 0; s < allSecs.length; s++) {
       if (allSecs[s].id !== 'simulation') allSecs[s].style.display = 'none';
