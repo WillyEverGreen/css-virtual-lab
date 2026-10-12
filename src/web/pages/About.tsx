@@ -1,5 +1,4 @@
 import { Link } from 'react-router';
-import Process from '../../components/Process.jsx';
 import FinalCta from '../../components/FinalCta.jsx';
 
 export default function About() {
@@ -209,8 +208,7 @@ export default function About() {
         </div>
       </div>
 
-      {/* Webflow Process & FinalCta Components */}
-      <Process />
+      {/* FinalCta Component */}
       <FinalCta />
     </div>
   );
