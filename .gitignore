@@ -1,11 +1,12 @@
-.vercel
-node_modules
-dist
-.DS_Store
-*.log
+# Dependencies & Build Output
+node_modules/
+dist/
+.vercel/
+
+# Environment & Local Secrets
 .env*.local
-scratch/
-mac_slora/
-md5_ruth/
-sha1_tanush/
-ssl_jace/
+
+# Logs & OS artifacts
+*.log
+.DS_Store
+Thumbs.db

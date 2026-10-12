@@ -79,27 +79,36 @@ vercel --prod
 ## 📂 Repository Structure
 ```
 css-virtual-lab/
-├── assets/                 # Compiled production CSS & JS bundles
-├── css/                    # Shared design system stylesheets
-├── experiments/            # Standalone laboratory modules
+├── experiments/            # 5 Standalone laboratory modules (strictly RFC/FIPS compliant)
 │   ├── md5/                # EXP 01: MD5 Message Digest Algorithm
 │   ├── sha1/               # EXP 02: Secure Hash Algorithm 1
 │   ├── mac/                # EXP 03: Message Authentication Code
 │   ├── hmac/               # EXP 04: Keyed-Hash Message Authentication Code
-│   └── ssl-tls/            # EXP 05: SSL/TLS Protocol Overview
-├── fonts/                  # Web font assets
-├── icons/                  # SVG icons and symbol sprites
-├── images/                 # Educational diagrams and college insignia
-├── js/                     # Common utilities and scripts
+│   └── ssl-tls/            # EXP 05: SSL/TLS Protocol Overview & Handshake Analysis
+│       ├── index.html      # Self-contained lab UI & interactive simulator
+│       ├── style.css       # Scoped retro-academic brutalist stylesheet
+│       ├── script.js       # Pure client-side offline cryptographic computation
+│       ├── quiz.json       # Assessment question bank (Ruleset v1 schema)
+│       └── README.md       # Standardized experiment technical specification
+├── public/                 # Static assets copied directly to build output
+│   ├── css/                # Shared design system stylesheets
+│   ├── fonts/              # Web font assets
+│   ├── icons/              # Vector SVG icons
+│   ├── images/             # Educational diagrams and college insignia
+│   ├── js/                 # Common web runtime scripts
+│   ├── 404.html            # Standalone fallback error page
+│   ├── favicon.svg         # Platform vector favicon
+│   ├── robots.txt          # Web crawler access instructions
+│   └── _headers            # Security & CSP headers
 ├── src/                    # React SPA source code
-│   ├── components/         # Master Navbar, modals, widgets
+│   ├── components/         # Master Navbar, Hero, Modals, Widgets
 │   ├── shared/             # Configurations, schemas, roster metadata
-│   ├── web/                # Pages (Dashboard, ExperimentView), theme
+│   ├── web/                # Pages (Dashboard, ExperimentView, Instructions, About)
 │   ├── App.jsx             # Root React application
 │   └── main.jsx            # React DOM bootstrap
 ├── index.html              # Main SPA HTML entry point
 ├── package.json            # Project dependencies and npm scripts
-├── vite.config.ts          # Vite bundler configuration
+├── vite.config.ts          # Vite bundler configuration & experiment runner
 └── vercel.json             # Vercel deployment and routing rules
 ```
 
