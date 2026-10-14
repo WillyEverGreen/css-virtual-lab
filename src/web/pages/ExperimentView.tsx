@@ -825,10 +825,10 @@ export default function ExperimentView() {
     fetchStatus(false);
   }, [fetchStatus]);
 
-  // Fetch local bundle HTML for content sections
+  // Fetch local bundle HTML for content sections (re-sync on tab switch or manual refresh)
   useEffect(() => {
     let canceled = false;
-    fetch(`/experiments/${validSlug}/index.html?v=${cacheBuster}`)
+    fetch(`/experiments/${validSlug}/index.html?t=${Date.now()}`)
       .then((res) => {
         if (!res.ok) throw new Error('HTML unavailable');
         return res.text();
@@ -843,7 +843,7 @@ export default function ExperimentView() {
     return () => {
       canceled = true;
     };
-  }, [validSlug, cacheBuster]);
+  }, [validSlug, activeTab, cacheBuster]);
 
   // Parse prose sections from bundleHtml
   const objectiveHtml = useMemo(
@@ -876,6 +876,8 @@ export default function ExperimentView() {
         maxWidth: '1680px',
         width: '100%',
         margin: '0 auto',
+        ['--lab-accent' as any]: accentColor,
+        ['--lab-accent-light' as any]: validSlug === 'mac' ? '#ecfdf5' : validSlug === 'md5' ? '#fff0eb' : validSlug === 'sha1' ? '#eff6ff' : validSlug === 'hmac' ? '#faf5ff' : '#fffbeb',
       }}
     >
       <div className="lab-opening-bar" key={validSlug} style={{ background: accentColor }} />

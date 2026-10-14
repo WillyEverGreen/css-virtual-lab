@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SSL/TLS Protocol Overview &amp; Handshake Analysis - Fr. CRCE Virtual Cryptography Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../lab-common.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -35,22 +39,22 @@
         </p>
 
         <div class="lab-callout">
-          <div class="lab-callout-title">Standard Specification &amp; Cryptographic Evolution</div>
+          <div class="lab-callout-title">Experiment Aim</div>
           <p>
             Standardized in <strong>RFC 8446 (TLS 1.3)</strong> and previously in <strong>RFC 5246 (TLS 1.2)</strong>, TLS provides confidentiality, integrity, and authentication through a synergy of asymmetric key exchange, X.509 digital certificates, and authenticated symmetric encryption. TLS 1.3 deprecates insecure legacy ciphers (static RSA key transport, CBC padding mode, RC4, 3DES) and reduces connection latency to a single round trip (1-RTT).
           </p>
         </div>
 
-        <div class="lab-grid-3">
-          <div class="lab-card-item">
+        <div class="aim-cards-grid">
+          <div class="aim-card aim-card-blue">
             <h4>1. Handshake Protocol</h4>
             <p>Negotiates cipher suites, authenticates the server identity via digital certificates, and securely establishes shared symmetric keys in 1 RTT.</p>
           </div>
-          <div class="lab-card-item">
+          <div class="aim-card aim-card-green">
             <h4>2. Perfect Forward Secrecy</h4>
             <p>Mandates Ephemeral Diffie-Hellman (ECDHE) so that future compromise of the server's private key cannot decrypt past recorded sessions.</p>
           </div>
-          <div class="lab-card-item">
+          <div class="aim-card aim-card-orange">
             <h4>3. AEAD Record Encryption</h4>
             <p>Wraps all application data in Authenticated Encryption (AES-GCM), eliminating legacy padding oracle attacks (POODLE, Lucky 13, BEAST).</p>
           </div>
@@ -64,39 +68,90 @@
       <h2 class="lab-section-title">Cryptographic Architecture &amp; Protocol Layers</h2>
       <div class="lab-prose">
         <p>
-          TLS operates as a layered protocol positioned between the Transport layer (TCP) and the Application layer (e.g., HTTP):
+          TLS operates as a layered protocol positioned between the Transport layer (TCP) and the Application layer (e.g., HTTP). It provides confidentiality, integrity, and authentication through a synergy of asymmetric key exchange, X.509 digital certificates, and authenticated symmetric encryption.
         </p>
 
         <h3>1. The Subprotocol Hierarchy</h3>
-        <ul style="padding-left: 20px; line-height: 1.8;">
-          <li><strong>Handshake Protocol:</strong> Negotiates protocol version, cipher suites, exchanges random nonces, performs public key exchange, and authenticates peer certificates.</li>
-          <li><strong>Record Protocol:</strong> Secures application data using keys generated during the handshake. It fragments, optionally compresses, attaches authentication tags, and encrypts payloads.</li>
-          <li><strong>Alert Protocol:</strong> Transmits warnings and fatal errors (e.g. <code>bad_certificate</code>, <code>bad_record_mac</code>, <code>handshake_failure</code>). Fatal alerts immediately terminate the connection.</li>
-          <li><strong>ChangeCipherSpec Protocol (TLS 1.2):</strong> A legacy 1-byte message signaling the transition to symmetric encryption (deprecated in TLS 1.3).</li>
-        </ul>
+        <div class="theory-algo-grid">
+          <div class="algo-card algo-card-blue">
+            <h4>Handshake Protocol</h4>
+            <p>Negotiates protocol version, cipher suites, exchanges random nonces, performs public key exchange, and authenticates peer certificates.</p>
+          </div>
+          <div class="algo-card algo-card-green">
+            <h4>Record Protocol</h4>
+            <p>Secures application data using keys from the handshake. It fragments, authenticates, and encrypts payloads before transmission.</p>
+          </div>
+          <div class="algo-card algo-card-orange">
+            <h4>Alert Protocol</h4>
+            <p>Transmits warnings and fatal errors (e.g. <code>bad_certificate</code>, <code>bad_record_mac</code>, <code>handshake_failure</code>). Fatal alerts immediately terminate the connection.</p>
+          </div>
+        </div>
 
         <h3>2. Ephemeral Diffie-Hellman (ECDHE) Key Exchange</h3>
         <p>
           In TLS 1.3, static RSA key transport is eliminated. Both client and server dynamically generate ephemeral key pairs on NIST curve P-256 (<code>secp256r1</code>):
         </p>
-        <div class="lab-formula-box">
-          Client ephemeral private key: d_c &isin; [1, n-1], Public key share: Q_c = d_c &times; G<br>
-          Server ephemeral private key: d_s &isin; [1, n-1], Public key share: Q_s = d_s &times; G<br>
-          Shared ECDH Secret: Z = d_c &times; Q_s = d_s &times; Q_c = (d_c &times; d_s) &times; G
+        <div class="formula-block"><strong>Ephemeral Diffie&ndash;Hellman Key Exchange (ECDHE):</strong> Client: Q<sub>c</sub> = d<sub>c</sub> &times; G &nbsp;|&nbsp; Server: Q<sub>s</sub> = d<sub>s</sub> &times; G &nbsp;|&nbsp; Shared Secret: Z = d<sub>c</sub> &times; Q<sub>s</sub> = d<sub>s</sub> &times; Q<sub>c</sub> = (d<sub>c</sub> &times; d<sub>s</sub>) &times; G</div>
+        <div class="lab-callout">
+          <div class="lab-callout-title">Perfect Forward Secrecy Guarantee</div>
+          <p>Because private keys <code>d_c</code> and <code>d_s</code> are discarded immediately after the session finishes, <strong>Perfect Forward Secrecy (PFS)</strong> is guaranteed: an adversary intercepting and recording ciphertext cannot decrypt historic conversations even if they later compromise the server's long-term certificate private key.</p>
         </div>
-        <p>
-          Because private keys <code>d_c</code> and <code>d_s</code> are discarded immediately after the session finishes, <strong>Perfect Forward Secrecy (PFS)</strong> is guaranteed: an adversary intercepting and recording ciphertext cannot decrypt historic conversations even if they later compromise the server's long-term certificate private key.
-        </p>
 
         <h3>3. Key Derivation &amp; Master Secret</h3>
         <p>
           Using the HMAC-based Key Derivation Function (HKDF in TLS 1.3 / PRF in TLS 1.2), the client and server combine nonces and the shared secret <code>Z</code> to derive:
         </p>
-        <ul style="padding-left: 20px; line-height: 1.8;">
+        <ul>
           <li><strong>Client Write Key &amp; IV:</strong> Encrypts outbound data from client to server.</li>
           <li><strong>Server Write Key &amp; IV:</strong> Encrypts outbound data from server to client.</li>
           <li><strong>Finished MAC Keys:</strong> Authenticates the complete transcript of prior handshake messages to defeat tampering.</li>
         </ul>
+
+        <h3>4. TLS 1.2 vs TLS 1.3 Architectural Comparison</h3>
+        <div class="lab-table-wrapper">
+          <table class="lab-table">
+            <thead>
+              <tr>
+                <th>Feature</th>
+                <th>TLS 1.2 (RFC 5246)</th>
+                <th>TLS 1.3 (RFC 8446)</th>
+                <th>Security &amp; Performance Impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Handshake Latency</strong></td>
+                <td>2 Round Trips (2-RTT)</td>
+                <td>1 Round Trip (1-RTT) + 0-RTT Resumption</td>
+                <td>50% latency reduction in initial TCP connection establishment</td>
+              </tr>
+              <tr>
+                <td><strong>Key Exchange</strong></td>
+                <td>Static RSA, DHE, or ECDHE</td>
+                <td>ECDHE exclusively mandated</td>
+                <td>Guarantees Perfect Forward Secrecy; eliminates retrospective decryption</td>
+              </tr>
+              <tr>
+                <td><strong>Cipher Suite Architecture</strong></td>
+                <td>Over 30 legacy suites; separate auth/cipher/hash</td>
+                <td>5 streamlined AEAD suites (e.g. <code>TLS_AES_128_GCM_SHA256</code>)</td>
+                <td>Drastically shrinks attack surface and configuration error potential</td>
+              </tr>
+              <tr>
+                <td><strong>Symmetric Ciphers</strong></td>
+                <td>CBC mode with HMAC, RC4, 3DES, AES-GCM</td>
+                <td>AEAD only (AES-GCM, AES-CCM, ChaCha20-Poly1305)</td>
+                <td>Eliminates padding oracle attacks (POODLE, Lucky 13, BEAST)</td>
+              </tr>
+              <tr>
+                <td><strong>Certificate Privacy</strong></td>
+                <td>Transmitted in cleartext during handshake</td>
+                <td>Encrypted using derived handshake secret</td>
+                <td>Prevents passive eavesdroppers from observing host identity</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </section>
 
@@ -106,14 +161,79 @@
       <h2 class="lab-section-title">Laboratory Procedure</h2>
       <div class="lab-prose">
         <p>Follow these experimental steps to evaluate the TLS handshake state machine:</p>
-        <ol style="padding-left: 20px; line-height: 1.8;">
-          <li><strong>Step 1: Configuration Setup.</strong> Navigate to the <em>Simulator</em> tab. Select protocol version (TLS 1.3 or TLS 1.2), Key Exchange algorithm (ECDHE or RSA), and Execution Scenario (Normal, Expired Certificate, MITM Forged Cert, or Tampered Finished Message).</li>
-          <li><strong>Step 2: Start Handshake Simulation.</strong> Click <strong>Play Auto-Run</strong> to watch the live animated packet flight across the network channel, or click <strong>Step Forward</strong> to advance through the protocol messages one by one.</li>
-          <li><strong>Step 3: Packet Inspection.</strong> Click any message packet in the central network channel to examine its structured JSON payload (protocol version, randoms, cipher suites, key shares, or verification tags) in the <em>Packet Inspector</em>.</li>
-          <li><strong>Step 4: Interactive Application Data Exchange.</strong> Once the handshake completes with status <code>Established</code>, enter a plaintext application message in the Client terminal and click <strong>Send Encrypted Record</strong>. Observe AES-GCM ciphertext transmission and automatic server-side decryption.</li>
-          <li><strong>Step 5: Attack Scenario Evaluation.</strong> Test the failure scenarios (Expired Certificate, MITM Attacker, Tampered MAC) to observe how TLS triggers fatal alerts and terminates without exposing application data.</li>
-          <li><strong>Step 6: Review Observations &amp; Export Report.</strong> Check the dynamic <em>Observations &amp; Results</em> table in Section 5 and export the PDF laboratory report.</li>
+
+        <ol class="procedure-steps-list">
+          <li>
+            <strong>Configuration:</strong> Navigate to the Simulator tab. Select protocol version (TLS 1.3 or 1.2), key exchange algorithm (ECDHE or RSA), and execution scenario (Normal, Expired Certificate, MITM Forged Cert, or Tampered Finished Message).
+          </li>
+          <li>
+            <strong>Run Handshake:</strong> Click <strong>Play Auto-Run</strong> to watch the live animated packet flight across the network channel, or click <strong>Step Forward</strong> to advance through the protocol messages one by one.
+          </li>
+          <li>
+            <strong>Packet Inspection:</strong> Click any message packet in the central network channel to examine its structured JSON payload (protocol version, randoms, cipher suites, key shares, or verification tags) in the Packet Inspector.
+          </li>
+          <li>
+            <strong>Application Data Exchange:</strong> Once the handshake completes with status <code>Established</code>, enter a plaintext application message in the Client terminal and click <strong>Send Encrypted Record</strong>. Observe AES-GCM ciphertext transmission and automatic server-side decryption.
+          </li>
+          <li>
+            <strong>Attack Scenarios &amp; Alerts:</strong> Test the failure scenarios (Expired Certificate, MITM Attacker, Tampered MAC) to observe how TLS triggers fatal alerts and terminates the session without exposing application data.
+          </li>
+          <li>
         </ol>
+
+        <!-- TLS Handshake Execution Pipeline Flowchart -->
+        <div class="flowchart-container">
+          <div class="flowchart-title">TLS 1.3 Protocol Execution Pipeline — Architectural Flow Diagram</div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-node">
+              <div class="flow-step-badge">1</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">ClientHello Transmission <span class="code-badge">1-RTT Start</span></div>
+                <div class="flow-step-desc">Client generates ephemeral ECDHE key pair (<span class="code-badge">d_c, Q_c</span>) on curve P-256 and sends supported cipher suites + public key share</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">2</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">ServerHello &amp; Key Share Selection <span class="code-badge">Negotiation</span></div>
+                <div class="flow-step-desc">Server chooses <span class="code-badge">TLS_AES_128_GCM_SHA256</span>, generates server ephemeral key (<span class="code-badge">d_s, Q_s</span>), and responds with key share</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">3</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">ECDH Shared Secret Derivation <span class="code-badge">Z = (d_c &times; d_s) &times; G</span></div>
+                <div class="flow-step-desc">Both endpoints independently multiply their private scalar by peer public point to compute identical shared secret <em>Z</em></div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">4</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Server Authentication &amp; CertificateVerify <span class="code-badge">RSA-PSS / ECDSA</span></div>
+                <div class="flow-step-desc">Server transmits X.509 certificate chain and signs handshake transcript hash using private key to prevent MITM impersonation</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">5</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Finished HMAC Message Exchange <span class="code-badge">Handshake Complete</span></div>
+                <div class="flow-step-desc">Both parties compute transcript verification tags using HKDF-derived keys, proving identical key state and transcript integrity</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">6</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Authenticated Application Data Record <span class="code-badge">AES-GCM AEAD</span></div>
+                <div class="flow-step-desc">Subsequent application payload is encapsulated into 16-byte tagged AEAD ciphertext with Perfect Forward Secrecy guaranteed</div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 

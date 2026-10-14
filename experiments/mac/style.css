@@ -15,7 +15,7 @@ html, body {
   min-height: auto;
   background-color: transparent;
   color: #18181b;
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'DM Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -153,8 +153,8 @@ html, body {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  background: #ecfdf5;
-  color: #047857;
+  background: #fff0eb;
+  color: #c2410c;
   border: 1.5px solid #18181b;
   padding: 3px 12px;
   border-radius: 999px;
@@ -166,15 +166,16 @@ html, body {
 .lab-experiment-container h2,
 .lab-experiment-container h3,
 .lab-experiment-container h4 {
-  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'DM Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight: 800;
   color: #18181b;
   letter-spacing: -0.025em;
 }
 
 .lab-section-title {
-  font-size: 26px;
+  font-size: 28px;
   margin: 0 0 20px 0;
+  line-height: 1.25;
 }
 
 /* Prose & Typography */
@@ -186,11 +187,15 @@ html, body {
 }
 
 .lab-prose h3 {
-  font-size: 19px;
+  font-size: 18px;
   font-weight: 800;
   color: #18181b;
-  margin: 28px 0 12px 0;
+  margin: 30px 0 10px 0;
+  padding: 0;
+  border: none;
+  letter-spacing: -0.02em;
 }
+
 
 .lab-callout {
   background: #f0fdf4;
@@ -246,16 +251,36 @@ html, body {
 }
 
 /* Formula Box */
-.lab-formula-box {
+.lab-formula-box,
+.formula-block,
+.formula-box {
   background: #18181b;
-  color: #86efac;
-  border: 2px solid #18181b;
-  border-radius: 10px;
-  padding: 16px 20px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 14.5px;
+  color: #f4f4f5;
+  border: 1px solid #27272a;
+  border-left: 3.5px solid #059669;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  margin: 10px 0 14px 0;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: none;
   overflow-x: auto;
-  margin: 16px 0;
+  white-space: normal;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-indent: 0;
+  line-height: 1.55;
+}
+
+.lab-formula-box strong,
+.formula-block strong,
+.formula-box strong {
+  color: #facc15;
+  font-weight: 700;
 }
 
 /* Pipeline Architecture: Alice -> Eve -> Bob */
@@ -533,8 +558,10 @@ html, body {
 .lab-table-wrapper {
   overflow-x: auto;
   border: 2px solid #18181b;
-  border-radius: 10px;
+  border-radius: 12px;
   margin: 20px 0;
+  box-shadow: 2.5px 2.5px 0px #18181b;
+  background: #ffffff;
 }
 
 .lab-table {
@@ -550,16 +577,45 @@ html, body {
   text-align: left;
   padding: 12px 16px;
   font-weight: 800;
+  font-size: 13.5px;
+  letter-spacing: 0.02em;
+  border: none;
 }
 
 .lab-table td {
   padding: 12px 16px;
   border-bottom: 1px solid #e4e4e7;
   color: #27272a;
+  line-height: 1.5;
+}
+
+.lab-table tr:last-child td {
+  border-bottom: none;
 }
 
 .lab-table tr:hover td {
-  background: #f0fdf4;
+  background: #fff7ed;
+}
+
+.lab-table tr.row-highlight td {
+  background: #fff0eb;
+  border-left: 4px solid #fc411f;
+  font-weight: 600;
+}
+
+.lab-table td code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  background: #f4f4f5;
+  color: #18181b;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid #e4e4e7;
+  font-weight: 600;
+}
+
+.lab-table tr.row-highlight:hover td {
+  background: #ffedd5;
 }
 
 .pill-yes {
@@ -708,11 +764,13 @@ html, body {
   width: 100%;
   max-width: 920px;
   margin: 20px auto;
-  background: #0f172a;
+  background-color: #faf9f6;
+  background-image: radial-gradient(#d4d4d8 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
   border: 2px solid #18181b;
-  border-radius: 12px;
-  padding: 16px;
-  box-shadow: 4px 4px 0px #18181b;
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: 3.5px 3.5px 0px #18181b;
   overflow-x: auto;
 }
 
@@ -730,9 +788,10 @@ html, body {
 
 /* Transmitted Payload Box */
 .transmitted-payload {
-  background: #0f172a;
+  background: #fdfcf9;
   border: 2px solid #18181b;
   border-radius: 10px;
+  box-shadow: 2px 2px 0px #18181b;
   padding: 14px 18px;
   margin-top: 14px;
 }
@@ -740,7 +799,7 @@ html, body {
 .transmitted-label {
   font-size: 11px;
   font-weight: 800;
-  color: #38bdf8;
+  color: #2563eb;
   text-transform: uppercase;
   margin-bottom: 8px;
   letter-spacing: 0.05em;
@@ -753,32 +812,36 @@ html, body {
   align-items: center;
   flex-wrap: wrap;
   gap: 4px;
-  background: #18181b;
+  background: #ffffff;
   padding: 10px 14px;
   border-radius: 6px;
-  border: 1.5px solid #334155;
+  border: 1.5px solid #18181b;
   word-break: break-all;
 }
 
 .transmitted-msg {
-  color: #f8fafc;
-  background: #334155;
+  color: #1e3a8a;
+  background: #dbeafe;
+  border: 1px solid #93c5fd;
   padding: 2px 8px;
   border-radius: 4px;
+  font-weight: 600;
 }
 
 .transmitted-separator {
-  color: #fbbf24;
+  color: #d97706;
   font-weight: 800;
   font-size: 14px;
   padding: 0 4px;
 }
 
 .transmitted-mac {
-  color: #4ade80;
-  background: #064e3b;
+  color: #14532d;
+  background: #dcfce7;
+  border: 1px solid #86efac;
   padding: 2px 8px;
   border-radius: 4px;
+  font-weight: 600;
 }
 
 /* Error Toast */

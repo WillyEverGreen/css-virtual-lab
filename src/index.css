@@ -8,7 +8,7 @@
 }
 
 html, body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   scroll-behavior: smooth;
   overflow-x: clip;
   min-height: 100vh;
@@ -17,7 +17,7 @@ html, body {
 h1, h2, h3, h4, h5, h6,
 .heading-1, .heading-2, .heading-3, .heading-4, .heading-5, .heading-6,
 .hero-title, .lab-section-title {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-weight: 700 !important;
   letter-spacing: -0.02em;
 }
@@ -100,7 +100,7 @@ iframe {
   max-width: 100%;
 }
 
-pre, code {
+pre {
   max-width: 100%;
   overflow-x: auto;
 }

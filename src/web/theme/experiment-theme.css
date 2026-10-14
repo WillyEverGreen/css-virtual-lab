@@ -30,8 +30,8 @@
   --lab-blue: #0260a8;
   
   /* Clean modern textbook typography */
-  --lab-font-display: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  --lab-font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --lab-font-display: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --lab-font-body: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --lab-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
@@ -48,16 +48,16 @@
 }
 
 .lab-section {
-  background: var(--lab-surface);
-  border: 1px solid var(--lab-border);
+  background: var(--lab-surface, #ffffff);
+  border: 2px solid #18181b;
   box-sizing: border-box;
-  border-radius: 16px;
+  border-radius: 14px;
   width: 100%;
   max-width: 100%;
-  margin: 24px auto;
-  padding: 40px 44px;
-  transition: box-shadow 0.2s ease, border-color 0.2s ease;
-  box-shadow: 0 4px 20px -2px rgba(148, 87, 67, 0.06);
+  margin: 20px auto;
+  padding: 36px 40px;
+  box-shadow: 3px 3px 0px #18181b;
+  scroll-margin-top: 80px;
 }
 
 @media (width >= 1024px) {
@@ -106,16 +106,17 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11.5px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--lab-accent);
-  background: var(--lab-accent-light);
-  border: 1px solid var(--lab-border);
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin-bottom: 16px;
+  font-family: 'DM Sans', -apple-system, system-ui, sans-serif !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.08em !important;
+  color: var(--lab-accent, #c2410c) !important;
+  background: var(--lab-accent-light, #fff7ed) !important;
+  border: 1.5px solid var(--lab-accent, #18181b) !important;
+  padding: 3px 12px !important;
+  border-radius: 9999px !important;
+  margin-bottom: 14px !important;
 }
 
 .lab-section-title,
@@ -129,10 +130,10 @@
 .lab-prose h2,
 .lab-prose h3,
 .lab-prose h4 {
-  font-family: var(--lab-font-display) !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
   font-weight: 800 !important;
   letter-spacing: -0.025em;
-  color: var(--lab-text);
+  color: #111827;
 }
 
 .lab-section-title {
@@ -140,77 +141,379 @@
   margin: 0 0 24px 0;
 }
 
-.lab-prose h3 {
-  font-size: 20px;
-  margin: 28px 0 12px 0;
-  letter-spacing: -0.01em;
+/* ── Clean Document Typography ── */
+.lab-prose {
+  color: var(--lab-text-body, #2e2824);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
+/* ── Section Subheadings: Sleek accent line, no full-width heavy bar ── */
+.lab-prose h3,
+.lab-section h3,
+.lab-experiment-container h3 {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  margin: 32px 0 10px 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  letter-spacing: -0.02em !important;
+  display: block !important;
+  line-height: 1.35 !important;
+}
+
+.lab-prose h4 {
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  color: #18181b !important;
+  margin: 0 0 6px 0 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ── Prose Paragraphs: Natural, clean, unbloated ── */
 .lab-prose p {
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--lab-text-body);
-  margin-bottom: 18px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #374151;
+  margin: 0 0 12px 0;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
 .lab-prose strong {
-  color: var(--lab-text);
-  font-weight: 700;
+  color: #111827;
+  font-weight: 600;
+  background: transparent !important;
+  padding: 0 !important;
 }
 
-.lab-prose ul, .lab-prose ol {
-  margin: 18px 0 24px 24px;
-  padding: 0;
+/* ── Inline Code: Sleek, refined, academic badge perfectly baseline-aligned ── */
+.lab-prose code,
+.lab-section code,
+.lab-experiment-container p code,
+.lab-experiment-container li code,
+.lab-experiment-container td code {
+  font-family: 'JetBrains Mono', 'DM Mono', monospace !important;
+  font-size: 0.88em !important;
+  font-weight: 600 !important;
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  padding: 0.12em 0.45em !important;
+  border-radius: 4px !important;
+  border: 1px solid #fed7aa !important;
+  display: inline-block !important;
+  line-height: 1.25 !important;
+  vertical-align: baseline !important;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: break-spaces;
+  overflow: visible !important;
 }
 
-.lab-prose li {
-  font-size: 15.5px;
-  line-height: 1.75;
-  margin-bottom: 10px;
-  color: var(--lab-text-body);
+/* ── Formula & Terminal Code Blocks: Fitted to content, not stretching 1600px ── */
+.lab-prose .lab-formula-box,
+.lab-formula-box {
+  font-family: 'JetBrains Mono', monospace !important;
+  background: #111827 !important;
+  color: #facc15 !important;
+  border: 1.5px solid #1f2937 !important;
+  border-radius: 8px !important;
+  padding: 14px 20px !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+  margin: 16px 0 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.lab-prose .lab-formula-box code,
+.lab-prose .lab-monitor code,
+.lab-prose pre code {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  color: inherit !important;
+  font-size: inherit !important;
+  display: inline !important;
+}
+
+.lab-prose .lab-formula-box .comment,
+.lab-prose pre .comment {
+  color: #9ca3af !important;
+  font-style: italic;
+}
+
+/* ── Clean, Balanced Lists ── */
+.lab-prose ul {
+  margin: 6px 0 14px 0 !important;
+  padding: 0 0 0 18px !important;
+  list-style: disc !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.lab-prose ul > li {
+  display: list-item !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  color: #374151 !important;
+  margin: 0 !important;
 }
 
 .lab-prose ul > li::marker {
-  color: var(--lab-accent);
+  color: var(--lab-accent, #945743) !important;
+}
+
+.lab-prose ol {
+  margin: 6px 0 14px 0 !important;
+  padding: 0 0 0 20px !important;
+  list-style: decimal !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.lab-prose ol > li {
+  display: list-item !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  color: #374151 !important;
+  margin: 0 !important;
 }
 
 .lab-prose ol > li::marker {
-  font-weight: 700;
-  color: var(--lab-accent);
+  font-weight: 700 !important;
+  color: var(--lab-accent, #945743) !important;
 }
 
-.lab-prose code {
-  font-family: var(--lab-font-mono);
-  font-size: 0.9em;
-  background: var(--lab-accent-light);
-  color: var(--lab-accent-hover);
-  padding: 2px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--lab-border);
+/* Nested lists */
+.lab-prose li > ul,
+.lab-prose li > ol {
+  margin: 4px 0 4px 0 !important;
+  padding-left: 18px !important;
 }
 
+/* ── Responsive, Clean Tables (MD5 Baseline) ── */
+.lab-prose .lab-table-wrapper,
+.lab-prose .lab-table-wrap {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: auto !important;
+  border: 2px solid #18181b !important;
+  border-radius: 12px !important;
+  margin: 20px 0 !important;
+  background: #ffffff !important;
+  box-shadow: 2.5px 2.5px 0px #18181b !important;
+}
+
+.lab-prose table,
+.lab-prose .lab-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-size: 14px !important;
+  font-family: var(--lab-font-body) !important;
+  margin: 0 !important;
+  text-align: left !important;
+  background: #ffffff !important;
+}
+
+.lab-prose table th,
+.lab-prose .lab-table th,
+.lab-prose .lab-table thead th {
+  background: #18181b !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  padding: 12px 16px !important;
+  border: none !important;
+  font-size: 13.5px !important;
+  letter-spacing: 0.02em !important;
+  text-align: left !important;
+}
+
+.lab-prose table td,
+.lab-prose .lab-table td,
+.lab-prose .lab-table tbody td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #e4e4e7 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  color: #27272a !important;
+  font-size: 14px !important;
+  line-height: 1.5 !important;
+}
+
+.lab-prose table tr:last-child td,
+.lab-prose .lab-table tr:last-child td {
+  border-bottom: none !important;
+}
+
+.lab-prose table tr:hover td,
+.lab-prose .lab-table tr:hover td {
+  background: #fff7ed !important;
+}
+
+.lab-prose table td code,
+.lab-prose .lab-table td code {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid #e4e4e7 !important;
+  font-weight: 600 !important;
+}
+
+/* ── Status Pills & Badges ── */
+.lab-prose .pill-yes {
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  font-weight: 600 !important;
+  font-size: 11.5px !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  border: 1px solid #86efac !important;
+  display: inline-block;
+}
+
+.lab-prose .pill-no {
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+  font-weight: 600 !important;
+  font-size: 11.5px !important;
+  padding: 2px 7px !important;
+  border-radius: 4px !important;
+  border: 1px solid #fca5a5 !important;
+  display: inline-block;
+}
+
+/* ── Callout Box (Only for key takeaways) ── */
+.lab-prose .lab-callout,
 .lab-callout {
-  background: var(--lab-surface-warm);
-  border: 1px solid var(--lab-border);
-  border-left: 4px solid var(--lab-accent);
-  border-radius: 12px;
-  padding: 20px 24px;
-  margin: 24px 0;
+  background: #faf8f5 !important;
+  border: 1px solid #e8ded4 !important;
+  border-left: 4px solid var(--lab-accent, #945743) !important;
+  border-radius: 8px !important;
+  padding: 14px 18px !important;
+  margin: 16px 0 !important;
+  box-shadow: none !important;
 }
 
+.lab-prose .lab-callout-title,
 .lab-callout-title {
-  font-weight: 700;
-  color: var(--lab-accent);
-  margin-bottom: 6px;
-  font-size: 15px;
-  letter-spacing: -0.01em;
+  font-weight: 700 !important;
+  color: var(--lab-accent, #945743) !important;
+  margin-bottom: 6px !important;
+  font-size: 14px !important;
+  letter-spacing: -0.01em !important;
 }
 
+.lab-prose .lab-callout p,
 .lab-callout p {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.65;
-  color: var(--lab-text-body);
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #374151 !important;
+}
+
+/* ── Card Grids & Flow Cards: Unified MD5 Baseline ── */
+.lab-prose .lab-grid-3,
+.lab-prose .theory-algo-grid,
+.lab-prose .aim-cards-grid,
+.lab-grid-3,
+.theory-algo-grid,
+.aim-cards-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+  gap: 16px !important;
+  margin: 20px 0 !important;
+}
+
+.lab-prose .lab-card-item,
+.lab-prose .algo-card,
+.lab-prose .aim-card,
+.lab-card-item,
+.algo-card,
+.aim-card {
+  background: #ffffff !important;
+  border: 2px solid #18181b !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-shadow: 2px 2px 0px #18181b !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.lab-prose .lab-card-item:hover,
+.lab-prose .algo-card:hover,
+.lab-prose .aim-card:hover,
+.lab-card-item:hover,
+.algo-card:hover,
+.aim-card:hover {
+  border-color: #18181b !important;
+  transform: translate(-1px, -1px) !important;
+  box-shadow: 3.5px 3.5px 0px #18181b !important;
+}
+
+.lab-prose .lab-card-item p,
+.lab-prose .algo-card p,
+.lab-prose .aim-card p,
+.lab-card-item p,
+.algo-card p,
+.aim-card p {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #4b5563 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.aim-card-blue,
+.algo-card-blue,
+.lab-card-blue,
+.aim-cards-grid > :nth-child(3n+1),
+.theory-algo-grid > :nth-child(3n+1),
+.lab-grid-3 > :nth-child(3n+1) {
+  border-left: 6px solid #2563eb !important;
+}
+
+.aim-card-green,
+.algo-card-green,
+.lab-card-green,
+.aim-cards-grid > :nth-child(3n+2),
+.theory-algo-grid > :nth-child(3n+2),
+.lab-grid-3 > :nth-child(3n+2) {
+  border-left: 6px solid #16a34a !important;
+}
+
+.aim-card-orange,
+.algo-card-orange,
+.lab-card-orange,
+.aim-cards-grid > :nth-child(3n),
+.theory-algo-grid > :nth-child(3n),
+.lab-grid-3 > :nth-child(3n) {
+  border-left: 6px solid #ea580c !important;
 }
 
 /* Simulation Sandboxed Frame / Component */
@@ -340,3 +643,377 @@
 }
 
 
+
+/* ============================================================
+   REFERENCE DESIGN UNIFIED COMPONENTS (ACROSS ALL LABS)
+   ============================================================ */
+
+/* ── Formula, Code & Monitor Blocks ── */
+.lab-formula-box,
+.formula-box,
+.formula-block,
+.code-block,
+.lab-monitor,
+pre.lab-code {
+  font-family: 'JetBrains Mono', monospace !important;
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+  border: 1px solid #27272a !important;
+  border-left: 3.5px solid var(--lab-accent, #fc411f) !important;
+  border-radius: 6px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  margin: 10px 0 14px 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+  overflow-x: auto !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  text-indent: 0 !important;
+  line-height: 1.55 !important;
+}
+
+pre.lab-code {
+  white-space: pre-wrap !important;
+}
+
+.lab-formula-box strong,
+.formula-box strong,
+.formula-block strong {
+  color: #facc15 !important;
+  font-weight: 700 !important;
+}
+
+/* ── Tables across all experiments (MD5 Baseline) ── */
+.lab-table-wrapper,
+.lab-table-wrap,
+.comparison-table-wrapper,
+.rounds-table-wrapper {
+  overflow-x: auto !important;
+  margin: 20px 0 !important;
+  border: 2px solid #18181b !important;
+  border-radius: 12px !important;
+  box-shadow: 2.5px 2.5px 0px #18181b !important;
+  background: #ffffff !important;
+}
+
+.lab-table,
+.exp-table,
+.styled-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 14px !important;
+  background: #ffffff !important;
+}
+
+.lab-table thead th,
+.lab-table th,
+.exp-table thead th,
+.exp-table th,
+.styled-table thead th,
+.styled-table th {
+  background: #18181b !important;
+  color: #ffffff !important;
+  padding: 12px 16px !important;
+  font-weight: 800 !important;
+  font-size: 13.5px !important;
+  border: none !important;
+  letter-spacing: 0.02em !important;
+  text-align: left !important;
+}
+
+.lab-table tbody td,
+.lab-table td,
+.exp-table tbody td,
+.exp-table td,
+.styled-table tbody td,
+.styled-table td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #e4e4e7 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  font-size: 14px !important;
+  color: #27272a !important;
+  line-height: 1.5 !important;
+}
+
+.lab-table tr:last-child td,
+.exp-table tr:last-child td,
+.styled-table tr:last-child td {
+  border-bottom: none !important;
+}
+
+.lab-table tr:hover td,
+.lab-table tbody tr:hover td,
+.exp-table tr:hover td,
+.styled-table tr:hover td {
+  background: #fff7ed !important;
+}
+
+.lab-table tr.row-highlight td,
+.exp-table tr.row-highlight td,
+.styled-table tr.row-highlight td {
+  background: #fff0eb !important;
+  border-left: 4px solid var(--lab-accent, #fc411f) !important;
+  font-weight: 600 !important;
+}
+
+.lab-table td code,
+.exp-table td code,
+.styled-table td code {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid #e4e4e7 !important;
+  font-weight: 600 !important;
+}
+
+/* ── Badges in tables ── */
+.pill-yes,
+.badge-yes {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border: 1px solid #86efac !important;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.pill-no,
+.badge-no,
+.badge-none {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+  border: 1px solid #fca5a5 !important;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ── Aim & Algo Cards ── */
+.aim-cards-grid,
+.theory-algo-grid,
+.lab-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.aim-card,
+.algo-card,
+.lab-card-item {
+  background: #ffffff !important;
+  border: 2px solid #18181b !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-shadow: 2px 2px 0px #18181b !important;
+}
+
+.aim-card-blue,
+.algo-card-blue {
+  border-left: 6px solid #2563eb !important;
+}
+
+.aim-card-orange,
+.algo-card-orange {
+  border-left: 6px solid #ea580c !important;
+}
+
+.aim-card-green,
+.algo-card-green {
+  border-left: 6px solid #16a34a !important;
+}
+
+.aim-card h4,
+.algo-card h4,
+.lab-card-item h4 {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: 15.5px !important;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  margin: 0 0 8px 0 !important;
+}
+
+/* ============================================================
+   PROCEDURE STEPS LIST (Clean text, no boxes)
+   ============================================================ */
+.procedure-steps-list {
+  padding-left: 22px !important;
+  line-height: 1.75 !important;
+  font-size: 15px !important;
+  color: #374151 !important;
+  margin: 16px 0 28px 0 !important;
+}
+
+.procedure-steps-list li {
+  margin-bottom: 14px !important;
+  color: #374151 !important;
+}
+
+.procedure-steps-list li strong {
+  color: #18181b !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   ARCHITECTURAL FLOW DIAGRAM (EXECUTION PIPELINE)
+   ============================================================ */
+.flowchart-container {
+  background-color: #faf9f6 !important;
+  background-image: radial-gradient(#d4d4d8 1.2px, transparent 1.2px) !important;
+  background-size: 18px 18px !important;
+  border: 2px solid #18181b !important;
+  border-radius: 14px !important;
+  padding: 26px 22px 28px 22px !important;
+  margin: 24px 0 28px 0 !important;
+  box-shadow: 3.5px 3.5px 0px #18181b !important;
+  position: relative !important;
+}
+
+.flowchart-title {
+  text-align: center !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  color: #18181b !important;
+  margin-bottom: 22px !important;
+  letter-spacing: -0.2px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.flowchart-title::before,
+.flowchart-title::after {
+  content: '' !important;
+  height: 2px !important;
+  width: 32px !important;
+  background: #18181b !important;
+  display: inline-block !important;
+  border-radius: 1px !important;
+}
+
+.flow-steps-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  max-width: 740px !important;
+  margin: 0 auto !important;
+}
+
+.flow-step-node {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  background: #ffffff !important;
+  border: 2px solid #18181b !important;
+  border-radius: 10px !important;
+  padding: 13px 18px !important;
+  position: relative !important;
+  box-shadow: 2.5px 2.5px 0px #18181b !important;
+  transition: transform 140ms ease, box-shadow 140ms ease !important;
+}
+
+.flow-step-node:hover {
+  background: #ffffff !important;
+  border-color: #18181b !important;
+  box-shadow: 4px 4px 0px #18181b !important;
+  transform: translate(-1.5px, -1.5px) !important;
+}
+
+.flow-step-badge {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  border-radius: 50% !important;
+  background: var(--lab-accent, #2563eb) !important;
+  color: #ffffff !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  font-size: 14px !important;
+  border: 2px solid #18181b !important;
+  box-shadow: 1.5px 1.5px 0px #18181b !important;
+}
+
+.flow-step-content {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.flow-step-name {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  color: #18181b !important;
+  margin-bottom: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.flow-step-desc {
+  font-size: 12.5px !important;
+  color: #4b5563 !important;
+  line-height: 1.45 !important;
+  margin: 0 !important;
+}
+
+.flow-step-desc em {
+  color: #18181b !important;
+  font-style: italic !important;
+  font-weight: 700 !important;
+}
+
+.flow-arrow-down {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  margin: 5px auto !important;
+  background: #ffffff !important;
+  border: 1.5px solid #18181b !important;
+  border-radius: 50% !important;
+  color: #18181b !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  box-shadow: 1px 1px 0px #18181b !important;
+  user-select: none !important;
+  z-index: 1 !important;
+  line-height: 1 !important;
+}
+
+.code-badge {
+  background: #fef08a !important;
+  color: #854d0e !important;
+  border: 1.5px solid #18181b !important;
+  padding: 1.5px 7px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  box-shadow: 1px 1px 0px #18181b !important;
+  letter-spacing: -0.2px !important;
+  display: inline-block !important;
+}

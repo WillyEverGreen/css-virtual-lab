@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SHA-1 Secure Hash Algorithm - Fr. CRCE Virtual Cryptography Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../lab-common.css">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,72 +34,87 @@
       <span class="lab-section-tag">Section 1</span>
       <h1 class="lab-section-title">SHA-1 Secure Hash Algorithm</h1>
       <div class="lab-prose">
-        <p>SHA-1 (Secure Hash Algorithm 1) maps a message of any length to a fixed 160-bit digest, written as 40 hexadecimal characters. It was published by NIST in FIPS 180-1 and is built on the Merkle-Damgard construction with a 512-bit compression function.</p>
-        <p>In this experiment you will:</p>
-        <ul>
-          <li>Generate SHA-1 digests live for any input message and verify them against known test vectors.</li>
-          <li>Follow the RFC 3174 padding rule: the 0x80 byte, zero fill, and the 64-bit big-endian length.</li>
-          <li>Observe the expansion of a 512-bit block into 80 words and the 80 compression steps in four rounds.</li>
-          <li>Measure the avalanche effect by flipping a single bit of the input and counting the changed digest bits.</li>
-          <li>Understand why SHA-1 is now considered cryptographically broken for collision resistance.</li>
-        </ul>
+        <p>SHA-1 (Secure Hash Algorithm 1) maps a message of any length to a fixed <strong>160-bit digest</strong>, written as 40 hexadecimal characters. Published by NIST in <strong>FIPS 180-1</strong>, it is built on the Merkle-Damg&aring;rd construction with a 512-bit compression function.</p>
+
+        <div class="lab-callout">
+          <div class="lab-callout-title">Experiment Aim</div>
+          <p>In this experiment you will trace the complete SHA-1 pipeline: message padding to a 512-bit boundary, expansion of 16 message words into 80 scheduled words, four rounds of 20 compression steps each, and the final 160-bit chaining output. You will also measure the Avalanche Effect and understand why SHA-1 is now considered cryptographically broken.</p>
+        </div>
+
+        <div class="aim-cards-grid">
+          <div class="aim-card aim-card-blue">
+            <h4>1. Message Padding</h4>
+            <p>Appends a <code>0x80</code> byte, zero fill, and the 64-bit big-endian message length so the padded message is always a multiple of 512 bits.</p>
+          </div>
+          <div class="aim-card aim-card-green">
+            <h4>2. 80-Step Compression</h4>
+            <p>Expands each 512-bit block into 80 scheduled words, then processes four rounds of 20 steps updating five 32-bit registers <code>a, b, c, d, e</code>.</p>
+          </div>
+          <div class="aim-card aim-card-orange">
+            <h4>3. Avalanche Criterion</h4>
+            <p>A single flipped input bit changes approximately 50% of the 160 output bits, demonstrating strong cryptographic diffusion.</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- SECTION 2: THEORY -->
     <section id="theory" class="lab-section">
       <span class="lab-section-tag">Section 2</span>
-      <h2 class="lab-section-title">Theory</h2>
+      <h2 class="lab-section-title">Theory &amp; Mathematical Construction</h2>
       <div class="lab-prose">
-        <h3>Properties of a cryptographic hash</h3>
-        <p>A hash function H should be fast to compute, one-way (preimage resistant), hard to make a second input with the same digest (second-preimage resistant), and hard to find any two inputs with the same digest (collision resistant). A small change in the input should change about half of the output bits (the avalanche effect).</p>
 
-        <h3>Parameters</h3>
-        <ul>
-          <li>Digest size: 160 bits (five 32-bit words).</li>
-          <li>Block size: 512 bits (sixteen 32-bit words).</li>
-          <li>Message limit: less than 2^64 bits.</li>
-          <li>Rounds: 4 rounds of 20 steps each, 80 steps in total.</li>
-        </ul>
+        <h3>1. Properties of a Cryptographic Hash</h3>
+        <p>A secure hash function <code>H</code> must satisfy five key properties: it must be fast to compute, <strong>one-way</strong> (preimage resistant), <strong>second-preimage resistant</strong> (hard to find a second input with the same digest), <strong>collision resistant</strong> (hard to find any two inputs with the same digest), and exhibit the <strong>Avalanche Effect</strong> (a small input change causes ~50% output bit change).</p>
 
-        <h3>Step 1: Padding</h3>
-        <p>Append a single 1 bit (the byte 0x80), then as many 0 bits as needed so that the length is 448 mod 512, then append the original message length in bits as a 64-bit big-endian integer. The padded message is always a multiple of 512 bits.</p>
+        <div class="lab-grid-3">
+          <div class="lab-card-item">
+            <h4>Digest Size</h4>
+            <p>160 bits: five 32-bit words. Represented as 40 hexadecimal characters.</p>
+          </div>
+          <div class="lab-card-item">
+            <h4>Block Size</h4>
+            <p>512 bits: sixteen 32-bit words per compression block. Messages shorter are padded.</p>
+          </div>
+          <div class="lab-card-item">
+            <h4>Round Structure</h4>
+            <p>4 rounds &times; 20 steps = 80 compression steps total. Each round uses a distinct logical function and constant K.</p>
+          </div>
+        </div>
 
-        <h3>Step 2: Initial hash value</h3>
-        <pre class="lab-code">H0 = 67452301
-H1 = EFCDAB89
-H2 = 98BADCFE
-H3 = 10325476
-H4 = C3D2E1F0</pre>
+        <h3>2. Step 1: Preprocessing &amp; Padding</h3>
+        <p>Append a single 1 bit (the byte <code>0x80</code>), then as many 0 bits as needed so that the length is 448 mod 512, then append the original message length in bits as a 64-bit big-endian integer. The padded message is always a multiple of 512 bits.</p>
 
-        <h3>Step 3: Message schedule</h3>
-        <p>Each 512-bit block is split into W[0] to W[15] (big-endian). The remaining words are:</p>
-        <pre class="lab-code">W[t] = ROTL1( W[t-3] XOR W[t-8] XOR W[t-14] XOR W[t-16] ),  16 &lt;= t &lt;= 79</pre>
+        <h3>3. Step 2: Initial Buffer Values (H0 &ndash; H4)</h3>
+        <div class="formula-block"><strong>Initial Register Constants (H0 &ndash; H4):</strong> H0 = 0x67452301 &nbsp; H1 = 0xEFCDAB89 &nbsp; H2 = 0x98BADCFE &nbsp; H3 = 0x10325476 &nbsp; H4 = 0xC3D2E1F0</div>
 
-        <h3>Step 4: Compression (80 steps)</h3>
-        <p>Initialise a, b, c, d, e with H0 to H4, then for t = 0 to 79:</p>
-        <pre class="lab-code">TEMP = ROTL5(a) + f(t, b, c, d) + e + K(t) + W[t]   (mod 2^32)
-e = d
-d = c
-c = ROTL30(b)
-b = a
-a = TEMP</pre>
+        <h3>4. Step 3: 80-Word Message Schedule Expansion</h3>
+        <p>Each 512-bit block is split into <code>W[0]</code> to <code>W[15]</code> (big-endian). The remaining words are expanded as:</p>
+        <div class="formula-block"><strong>80-Word Expansion (for t = 16 to 79):</strong> W[t] = ROTL<sup>1</sup>(W[t-3] &oplus; W[t-8] &oplus; W[t-14] &oplus; W[t-16])</div>
 
-        <table class="lab-table">
-          <thead><tr><th>Steps</th><th>Function f</th><th>Name</th><th>Constant K</th></tr></thead>
-          <tbody>
-            <tr><td>0 - 19</td><td>(b AND c) OR (NOT b AND d)</td><td>Ch</td><td>5A827999</td></tr>
-            <tr><td>20 - 39</td><td>b XOR c XOR d</td><td>Parity</td><td>6ED9EBA1</td></tr>
-            <tr><td>40 - 59</td><td>(b AND c) OR (b AND d) OR (c AND d)</td><td>Maj</td><td>8F1BBCDC</td></tr>
-            <tr><td>60 - 79</td><td>b XOR c XOR d</td><td>Parity</td><td>CA62C1D6</td></tr>
-          </tbody>
-        </table>
+        <h3>5. Step 4: 80-Step Compression Structure</h3>
+        <p>Initialise <code>a, b, c, d, e</code> with <code>H0</code> to <code>H4</code>, then for <code>t = 0</code> to 79:</p>
+        <div class="formula-block"><strong>Compression Transformation (for t = 0 to 79):</strong> TEMP = (ROTL<sup>5</sup>(a) + f(t, b, c, d) + e + K(t) + W[t]) mod&nbsp;2<sup>32</sup> &nbsp; e = d &nbsp; d = c &nbsp; c = ROTL<sup>30</sup>(b) &nbsp; b = a &nbsp; a = TEMP</div>
 
-        <h3>Step 5: Chaining</h3>
-        <p>After the 80 steps, add a to e into H0 to H4 (mod 2^32). The next block starts from the updated H values. The final digest is H0 || H1 || H2 || H3 || H4.</p>
+        <div class="lab-table-wrapper">
+          <table class="lab-table">
+            <thead><tr><th>Steps</th><th>Function f</th><th>Name</th><th>Constant K</th></tr></thead>
+            <tbody>
+              <tr><td>0 &ndash; 19</td><td><code>(b AND c) OR (NOT b AND d)</code></td><td>Ch</td><td><code>5A827999</code></td></tr>
+              <tr><td>20 &ndash; 39</td><td><code>b XOR c XOR d</code></td><td>Parity</td><td><code>6ED9EBA1</code></td></tr>
+              <tr><td>40 &ndash; 59</td><td><code>(b AND c) OR (b AND d) OR (c AND d)</code></td><td>Maj</td><td><code>8F1BBCDC</code></td></tr>
+              <tr><td>60 &ndash; 79</td><td><code>b XOR c XOR d</code></td><td>Parity</td><td><code>CA62C1D6</code></td></tr>
+            </tbody>
+          </table>
+        </div>
 
-        <h3>Security status</h3>
-        <p>Wang, Yin and Yu (2005) showed collisions in SHA-1 faster than brute force (2^69 operations). In 2017 the SHAttered attack produced the first practical collision. Modern systems should use SHA-256 or SHA-3 for digital signatures and certificates; SHA-1 survives only in legacy and non-security uses.</p>
+        <h3>6. Step 5: Merkle-Damgard Chaining &amp; Output</h3>
+        <p>After the 80 steps, add <code>a</code> to <code>e</code> into <code>H0</code> to <code>H4</code> (mod 2<sup>32</sup>). The next block starts from the updated H values. The final digest is <code>H0 || H1 || H2 || H3 || H4</code>.</p>
+
+        <h3>7. Security Status &amp; Collision Vulnerabilities</h3>
+        <div class="lab-warn-box">
+          Wang, Yin and Yu (2005) showed collisions in SHA-1 faster than brute force (2<sup>69</sup> operations). In 2017 the <strong>SHAttered</strong> attack produced the first practical collision. Modern systems should use <strong>SHA-256</strong> or <strong>SHA-3</strong> for digital signatures and certificates; SHA-1 survives only in legacy and non-security contexts.
+        </div>
       </div>
     </section>
 
@@ -104,15 +123,98 @@ a = TEMP</pre>
       <span class="lab-section-tag">Section 3</span>
       <h2 class="lab-section-title">Procedure</h2>
       <div class="lab-prose">
-        <ol>
-          <li>Open the Simulation tab. In the Digest view, keep the default input <code>abc</code> and check that the digest equals a9993e364706816aba3e25717850c26c9cd0d89d. The self-check panel should show both test vectors as passed.</li>
-          <li>Type your own message and watch the digest, input bit count and block count update at once.</li>
-          <li>Switch to the Padding view. Note the message bytes, the 0x80 byte, the zero fill and the 64-bit length. Try a message of 55, 56 and 64 characters and observe when a second block is added.</li>
-          <li>Open the Schedule view and read W[0] to W[15] taken from the block, then the expanded words W[16] to W[79].</li>
-          <li>Open the Rounds view. Record the a, b, c, d, e registers at the end of each round and use the step slider to inspect any single step t, with its function f, constant K and word W[t].</li>
-          <li>Open the Avalanche view. Use Flip last bit or edit the modified message, and record the number of changed bits and the percentage. Repeat for three different edits.</li>
-          <li>Compare your observations with the expected value of about 80 changed bits out of 160 (50 percent).</li>
+        <p>Follow these experimental steps to observe SHA-1 hashing, padding, message scheduling, and diffusion:</p>
+
+        <ol class="procedure-steps-list">
+          <li>
+            <strong>Digest View:</strong> Open the Simulation tab. Keep the default input <code>abc</code> and verify the digest equals <code>a9993e364706816aba3e25717850c26c9cd0d89d</code>. Confirm both test vectors pass in the self-check panel.
+          </li>
+          <li>
+            <strong>Custom Input Exploration:</strong> Type your own message and watch the digest, input bit count, and block count update in real time. Note how even minor changes produce completely different digests.
+          </li>
+          <li>
+            <strong>Padding Examination:</strong> Switch to the Padding view. Note the message bytes, the <code>0x80</code> byte, the zero fill, and the 64-bit length. Try messages of 55, 56, and 64 characters to observe when a second block is added.
+          </li>
+          <li>
+            <strong>Message Schedule Tracing:</strong> Open the Schedule view. Read <code>W[0]</code> to <code>W[15]</code> taken directly from the block, then the expanded words <code>W[16]</code> to <code>W[79]</code> produced by the ROTL<sup>1</sup> expansion formula.
+          </li>
+          <li>
+            <strong>Rounds &amp; Step Inspector:</strong> Open the Rounds view. Record the <code>a, b, c, d, e</code> registers at the end of each round. Use the step slider to inspect any single step <em>t</em> with its function <em>f</em>, constant <em>K</em>, and word <code>W[t]</code>.
+          </li>
+          <li>
+            <strong>Avalanche Effect Analysis:</strong> Open the Avalanche view. Use <strong>Flip last bit</strong> or edit the modified message. Record the number of changed bits and percentage. Repeat for three different edits and compare to the expected ~80 changed bits (50%) out of 160.
+          </li>
         </ol>
+
+        <!-- SHA-1 Algorithm Execution Pipeline Flowchart -->
+        <div class="flowchart-container">
+          <div class="flowchart-title">SHA-1 Algorithm Execution Pipeline — Architectural Flow Diagram</div>
+          <div class="flow-steps-grid">
+            <div class="flow-step-node">
+              <div class="flow-step-badge">1</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Input Message Stream <span class="code-badge">M</span></div>
+                <div class="flow-step-desc">Arbitrary-length plaintext message string converted to continuous UTF-8 byte stream</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">2</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">0x80 Bit Padding &amp; Zero Fill <span class="code-badge">M || 100...0</span></div>
+                <div class="flow-step-desc">Append single '1' bit (<span class="code-badge">0x80</span>), followed by <em>k</em> zero bits such that length &equiv; 448 mod 512</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">3</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Append 64-bit Big-Endian Length <span class="code-badge">len &amp; 0xFFFFFFFFFFFFFFFF</span></div>
+                <div class="flow-step-desc">Pad original message bit count as big-endian 64-bit integer, yielding exact multiple of 512 bits</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">4</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Message Schedule Expansion <span class="code-badge">W[0..15] &rarr; W[16..79]</span></div>
+                <div class="flow-step-desc">Expand 16 block words into 80 words via <span class="code-badge">W[t] = ROTL&sup1;(W[t-3] &oplus; W[t-8] &oplus; W[t-14] &oplus; W[t-16])</span></div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">5</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Initialize Working Registers <span class="code-badge">H0..H4</span></div>
+                <div class="flow-step-desc">Predefined constants: <em>A=0x67452301, B=0xEFCDAB89, C=0x98BADCFE, D=0x10325476, E=0xC3D2E1F0</em></div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">6</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">80-Step Non-Linear Compression <span class="code-badge">4 Rounds &times; 20 Steps</span></div>
+                <div class="flow-step-desc">Execute round functions (<em>Ch, Parity, Maj, Parity</em>) with round constants <span class="code-badge">K[t]</span> and rotated registers</div>
+              </div>
+            </div>
+            <div class="flow-arrow-down">&darr;</div>
+            <div class="flow-step-node">
+              <div class="flow-step-badge">7</div>
+              <div class="flow-step-content">
+                <div class="flow-step-name">Merkle&ndash;Damg&aring;rd Accumulation &amp; Digest <span class="code-badge">160-bit Hex</span></div>
+                <div class="flow-step-desc">Feed-forward addition <span class="code-badge">H &larr; (H + reg) mod 2&sup3;&sup2;</span>; concatenate <span class="code-badge">H0 || H1 || H2 || H3 || H4</span> (40 hex chars)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lab-callout">
+          <div class="lab-callout-title">RFC 3174 Standard Test Vectors</div>
+          <p>
+            &bull; <code>abc</code> &rarr; <code>a9993e364706816aba3e25717850c26c9cd0d89d</code><br>
+            &bull; <code>abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq</code> &rarr; <code>84983e441c3bd26ebaae4aa1f95129e5e54670f1</code>
+          </p>
+        </div>
       </div>
     </section>
 

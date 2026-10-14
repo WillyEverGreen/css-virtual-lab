@@ -1,0 +1,695 @@
+/* ==========================================================================
+   SHARED LABORATORY DESIGN SYSTEM — Fr. CRCE Virtual Cryptography Lab
+   Applies to: mac, hmac, md5, sha1, ssl-tls
+   ========================================================================== */
+
+/* ── Font ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+.lab-experiment-container,
+.lab-experiment-container * {
+  font-family: 'DM Sans', 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.lab-experiment-container pre,
+.lab-experiment-container code,
+.lab-experiment-container .mono,
+.lab-experiment-container .font-mono,
+.lab-formula-box,
+.lab-monitor {
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+}
+
+/* ── Clean Document Typography ── */
+.lab-prose {
+  color: #27272a;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ── Prose Paragraphs: Natural, clean, unbloated ── */
+.lab-prose p,
+section.lab-section > p {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #374151;
+  margin: 0 0 14px 0;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+.lab-prose strong {
+  color: #111827;
+  font-weight: 600;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* ── Inline code ── */
+.lab-experiment-container p code,
+.lab-experiment-container li code,
+.lab-experiment-container td code,
+.lab-prose code {
+  font-family: 'JetBrains Mono', 'DM Mono', monospace !important;
+  font-size: 0.88em !important;
+  font-weight: 600 !important;
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  padding: 0.12em 0.45em !important;
+  border-radius: 4px !important;
+  border: 1px solid #fed7aa !important;
+  display: inline-block !important;
+  line-height: 1.25 !important;
+  vertical-align: baseline !important;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  white-space: break-spaces;
+  overflow: visible !important;
+}
+
+/* ── h3 Section Subheadings: Reference-style clean bold ── */
+.lab-prose h3,
+.lab-experiment-container h3 {
+  font-size: 18px !important;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  margin: 32px 0 10px 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  border-bottom: none !important;
+  border-radius: 0 !important;
+  letter-spacing: -0.02em !important;
+  display: block !important;
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  line-height: 1.35 !important;
+}
+
+/* ── Balanced Lists ── */
+.lab-experiment-container ul,
+.lab-prose ul {
+  margin: 6px 0 14px 0 !important;
+  padding: 0 0 0 18px !important;
+  list-style: disc !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.lab-experiment-container ul li,
+.lab-prose ul li {
+  display: list-item !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  color: #374151 !important;
+  margin: 0 !important;
+}
+
+.lab-experiment-container ol,
+.lab-prose ol {
+  margin: 6px 0 14px 0 !important;
+  padding: 0 0 0 20px !important;
+  list-style: decimal !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
+}
+
+.lab-experiment-container ol li,
+.lab-prose ol li {
+  display: list-item !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  font-size: 14.5px !important;
+  line-height: 1.65 !important;
+  color: #374151 !important;
+  margin: 0 !important;
+}
+
+/* ── Legacy code block fallback (non-formula) ── */
+pre.lab-code-legacy {
+  background: #111827 !important;
+  color: #f3f4f6 !important;
+  border: 1px solid #1f2937 !important;
+  border-radius: 8px !important;
+  padding: 12px 18px !important;
+  font-size: 13px !important;
+  line-height: 1.6 !important;
+  margin: 10px 0 16px 0 !important;
+  display: block !important;
+  width: fit-content !important;
+  min-width: min(100%, 460px) !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+  overflow-x: auto !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+}
+
+/* ── Bold terms in prose ── */
+.lab-prose strong,
+.lab-experiment-container .lab-prose strong {
+  color: #111827;
+  font-weight: 600;
+  background: transparent;
+  padding: 0;
+}
+
+/* No yellow highlight in structural elements */
+.lab-section-title strong,
+.lab-card-item strong,
+.lab-card-item h4,
+.algo-card strong,
+.proc-step-body strong,
+.panel-title strong,
+.quiz-prompt strong,
+.ref-info strong,
+.lab-callout-title,
+.lab-callout strong,
+h1 strong, h2 strong, h3 strong, h4 strong {
+  background: none !important;
+  padding: 0 !important;
+}
+
+/* ── Info / Note Box ── */
+.lab-info-box {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-left: 5px solid #3b82f6;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14.5px;
+  color: #1e3a5f;
+  line-height: 1.65;
+}
+
+.lab-info-box .lab-info-title {
+  font-weight: 800;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #2563eb;
+  margin-bottom: 6px;
+}
+
+/* ── Warning Box ── */
+.lab-warn-box {
+  background: #fff7ed;
+  border: 1.5px solid #fed7aa;
+  border-left: 5px solid #f97316;
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin: 16px 0;
+  font-size: 14.5px;
+  color: #7c2d12;
+  line-height: 1.65;
+}
+
+/* ── Section divider ── */
+.lab-section-divider {
+  border: none;
+  border-top: 2px dashed #e4e4e7;
+  margin: 28px 0;
+}
+
+/* ── Definition term pill ── */
+.lab-term {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1.5px solid #6ee7b7;
+  border-radius: 5px;
+  padding: 1px 8px;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* ── Callout: reset inner p so it does not get the box treatment ── */
+.lab-callout p {
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* ── Quiz feedback improvements ── */
+.quiz-feedback.correct,
+.quiz-feedback.incorrect {
+  border-left-width: 4px !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  padding: 12px 16px !important;
+}
+
+.quiz-feedback.correct  { border-left-color: #16a34a !important; }
+.quiz-feedback.incorrect { border-left-color: #dc2626 !important; }
+
+/* ── Card inner elements: no extra boxing ── */
+.algo-card p,
+.lab-card-item p,
+.proc-step-body p,
+.panel-card p,
+.ref-info p {
+  background: transparent !important;
+  border: none !important;
+  border-left: none !important;
+  padding: 0 !important;
+  margin: 0 0 6px 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .lab-formula-box,
+  .lab-monitor {
+    font-size: 12px !important;
+    padding: 14px !important;
+  }
+  .lab-experiment-container ul li,
+  .lab-experiment-container ol li {
+    font-size: 13.5px;
+    padding: 9px 12px;
+  }
+  .lab-prose p,
+  section.lab-section > p {
+    font-size: 14.5px;
+    padding: 10px 14px;
+  }
+}
+
+/* ============================================================
+   REFERENCE DESIGN UNIFIED COMPONENTS (ACROSS ALL LABS)
+   ============================================================ */
+
+/* ── Formula, Code & Monitor Blocks ── */
+.lab-formula-box,
+.formula-box,
+.formula-block,
+.code-block,
+.lab-monitor,
+pre.lab-code {
+  font-family: 'JetBrains Mono', monospace !important;
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+  border: 1px solid #27272a !important;
+  border-left: 3.5px solid var(--lab-accent, var(--primary-color, #fc411f)) !important;
+  border-radius: 6px !important;
+  padding: 10px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  text-align: left !important;
+  margin: 10px 0 14px 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  box-shadow: none !important;
+  overflow-x: auto !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  text-indent: 0 !important;
+  line-height: 1.55 !important;
+}
+
+pre.lab-code {
+  white-space: pre-wrap !important;
+}
+
+.lab-formula-box strong,
+.formula-box strong,
+.formula-block strong {
+  color: #facc15 !important;
+  font-weight: 700 !important;
+}
+
+/* ── Tables across all experiments (MD5 Baseline) ── */
+.lab-table-wrapper,
+.lab-table-wrap,
+.comparison-table-wrapper,
+.rounds-table-wrapper {
+  overflow-x: auto !important;
+  margin: 20px 0 !important;
+  border: 2px solid #18181b !important;
+  border-radius: 12px !important;
+  box-shadow: 2.5px 2.5px 0px #18181b !important;
+  background: #ffffff !important;
+}
+
+.lab-table,
+.exp-table,
+.styled-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  text-align: left !important;
+  font-size: 14px !important;
+  background: #ffffff !important;
+}
+
+.lab-table thead th,
+.lab-table th,
+.exp-table thead th,
+.exp-table th,
+.styled-table thead th,
+.styled-table th {
+  background: #18181b !important;
+  color: #ffffff !important;
+  padding: 12px 16px !important;
+  font-weight: 800 !important;
+  font-size: 13.5px !important;
+  border: none !important;
+  letter-spacing: 0.02em !important;
+  text-align: left !important;
+}
+
+.lab-table tbody td,
+.lab-table td,
+.exp-table tbody td,
+.exp-table td,
+.styled-table tbody td,
+.styled-table td {
+  padding: 12px 16px !important;
+  border-bottom: 1px solid #e4e4e7 !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  font-size: 14px !important;
+  color: #27272a !important;
+  line-height: 1.5 !important;
+}
+
+.lab-table tr:last-child td,
+.exp-table tr:last-child td,
+.styled-table tr:last-child td {
+  border-bottom: none !important;
+}
+
+.lab-table tr:hover td,
+.lab-table tbody tr:hover td,
+.exp-table tr:hover td,
+.styled-table tr:hover td {
+  background: #fff7ed !important;
+}
+
+.lab-table tr.row-highlight td,
+.exp-table tr.row-highlight td,
+.styled-table tr.row-highlight td {
+  background: #fff0eb !important;
+  border-left: 4px solid var(--lab-accent, #fc411f) !important;
+  font-weight: 600 !important;
+}
+
+.lab-table td code,
+.exp-table td code,
+.styled-table td code {
+  font-family: 'JetBrains Mono', monospace !important;
+  font-size: 12px !important;
+  background: #f4f4f5 !important;
+  color: #18181b !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  border: 1px solid #e4e4e7 !important;
+  font-weight: 600 !important;
+}
+
+/* ── Badges in tables ── */
+.pill-yes,
+.badge-yes {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #dcfce7 !important;
+  color: #15803d !important;
+  border: 1px solid #86efac !important;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.pill-no,
+.badge-no,
+.badge-none {
+  display: inline-block;
+  padding: 2px 8px;
+  background: #fee2e2 !important;
+  color: #b91c1c !important;
+  border: 1px solid #fca5a5 !important;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ── Aim & Algo Cards ── */
+.aim-cards-grid,
+.theory-algo-grid,
+.lab-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.aim-card,
+.algo-card,
+.lab-card-item {
+  background: #ffffff !important;
+  border: 2px solid #18181b !important;
+  border-radius: 12px !important;
+  padding: 20px !important;
+  box-shadow: 2px 2px 0px #18181b !important;
+}
+
+.aim-card-blue,
+.algo-card-blue,
+.lab-card-blue,
+.aim-cards-grid > :nth-child(3n+1),
+.theory-algo-grid > :nth-child(3n+1),
+.lab-grid-3 > :nth-child(3n+1) {
+  border-left: 6px solid #2563eb !important;
+}
+
+.aim-card-green,
+.algo-card-green,
+.lab-card-green,
+.aim-cards-grid > :nth-child(3n+2),
+.theory-algo-grid > :nth-child(3n+2),
+.lab-grid-3 > :nth-child(3n+2) {
+  border-left: 6px solid #16a34a !important;
+}
+
+.aim-card-orange,
+.algo-card-orange,
+.lab-card-orange,
+.aim-cards-grid > :nth-child(3n),
+.theory-algo-grid > :nth-child(3n),
+.lab-grid-3 > :nth-child(3n) {
+  border-left: 6px solid #ea580c !important;
+}
+
+.aim-card h4,
+.algo-card h4,
+.lab-card-item h4 {
+  font-family: 'DM Sans', system-ui, sans-serif !important;
+  font-size: 15.5px !important;
+  font-weight: 800 !important;
+  color: #111827 !important;
+  margin: 0 0 8px 0 !important;
+}
+
+.aim-card p,
+.algo-card p,
+.lab-card-item p {
+  margin: 0 !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+  color: #4b5563 !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+
+/* ============================================================
+   PROCEDURE STEPS LIST (Clean text, no boxes)
+   ============================================================ */
+.procedure-steps-list {
+  padding-left: 22px !important;
+  line-height: 1.75 !important;
+  font-size: 15px !important;
+  color: #374151 !important;
+  margin: 16px 0 28px 0 !important;
+}
+
+.procedure-steps-list li {
+  margin-bottom: 14px !important;
+  color: #374151 !important;
+}
+
+.procedure-steps-list li strong {
+  color: #18181b !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================
+   ARCHITECTURAL FLOW DIAGRAM (EXECUTION PIPELINE)
+   ============================================================ */
+.flowchart-container {
+  background-color: #faf9f6 !important;
+  background-image: radial-gradient(#d4d4d8 1.2px, transparent 1.2px) !important;
+  background-size: 18px 18px !important;
+  border: 2px solid #18181b !important;
+  border-radius: 14px !important;
+  padding: 26px 22px 28px 22px !important;
+  margin: 24px 0 28px 0 !important;
+  box-shadow: 3.5px 3.5px 0px #18181b !important;
+  position: relative !important;
+}
+
+.flowchart-title {
+  text-align: center !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 15px !important;
+  color: #18181b !important;
+  margin-bottom: 22px !important;
+  letter-spacing: -0.2px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  flex-wrap: wrap !important;
+}
+
+.flowchart-title::before,
+.flowchart-title::after {
+  content: '' !important;
+  height: 2px !important;
+  width: 32px !important;
+  background: #18181b !important;
+  display: inline-block !important;
+  border-radius: 1px !important;
+}
+
+.flow-steps-grid {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  max-width: 740px !important;
+  margin: 0 auto !important;
+}
+
+.flow-step-node {
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  background: #ffffff !important;
+  border: 2px solid #18181b !important;
+  border-radius: 10px !important;
+  padding: 13px 18px !important;
+  position: relative !important;
+  box-shadow: 2.5px 2.5px 0px #18181b !important;
+  transition: transform 140ms ease, box-shadow 140ms ease !important;
+}
+
+.flow-step-node:hover {
+  background: #ffffff !important;
+  border-color: #18181b !important;
+  box-shadow: 4px 4px 0px #18181b !important;
+  transform: translate(-1.5px, -1.5px) !important;
+}
+
+.flow-step-badge {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  border-radius: 50% !important;
+  background: var(--lab-accent, #2563eb) !important;
+  color: #ffffff !important;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 800 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  font-size: 14px !important;
+  border: 2px solid #18181b !important;
+  box-shadow: 1.5px 1.5px 0px #18181b !important;
+}
+
+.flow-step-content {
+  flex: 1 !important;
+  min-width: 0 !important;
+}
+
+.flow-step-name {
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: 14px !important;
+  color: #18181b !important;
+  margin-bottom: 2px !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.flow-step-desc {
+  font-size: 12.5px !important;
+  color: #4b5563 !important;
+  line-height: 1.45 !important;
+  margin: 0 !important;
+}
+
+.flow-step-desc em {
+  color: #18181b !important;
+  font-style: italic !important;
+  font-weight: 700 !important;
+}
+
+.flow-arrow-down {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 26px !important;
+  height: 26px !important;
+  margin: 5px auto !important;
+  background: #ffffff !important;
+  border: 1.5px solid #18181b !important;
+  border-radius: 50% !important;
+  color: #18181b !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  box-shadow: 1px 1px 0px #18181b !important;
+  user-select: none !important;
+  z-index: 1 !important;
+  line-height: 1 !important;
+}
+
+.code-badge {
+  background: #fef08a !important;
+  color: #854d0e !important;
+  border: 1.5px solid #18181b !important;
+  padding: 1.5px 7px !important;
+  border-radius: 4px !important;
+  font-size: 11px !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  font-weight: 700 !important;
+  box-shadow: 1px 1px 0px #18181b !important;
+  letter-spacing: -0.2px !important;
+  display: inline-block !important;
+}

@@ -5,132 +5,132 @@
     {
       "id": "q1",
       "type": "mcq-single",
-      "prompt": "What is the fixed output digest length produced by the MD5 algorithm?",
+      "prompt": "What is the fixed output digest size produced by the MD5 hashing algorithm?",
       "options": [
-        "128 bits (16 bytes)",
-        "160 bits (20 bytes)",
-        "256 bits (32 bytes)",
-        "512 bits (64 bytes)"
+        "64 bits (16 hex characters)",
+        "128 bits (32 hex characters)",
+        "256 bits (64 hex characters)",
+        "512 bits (128 hex characters)"
       ],
-      "answerIndex": 0,
-      "explanation": "MD5 produces a fixed 128-bit (16-byte) hash digest, conventionally represented as 32 hexadecimal characters."
+      "answerIndex": 1,
+      "explanation": "MD5 always produces a fixed 128-bit (16-byte) hash value, represented as 32 lowercase hexadecimal characters."
     },
     {
       "id": "q2",
       "type": "mcq-single",
-      "prompt": "What is the message block size processed in each iteration of the MD5 compression function?",
+      "prompt": "What byte value (in hexadecimal) is appended immediately following the message to begin MD5 padding?",
       "options": [
-        "128 bits",
-        "256 bits",
-        "512 bits",
-        "1024 bits"
+        "0x00",
+        "0x01",
+        "0x80",
+        "0xFF"
       ],
       "answerIndex": 2,
-      "explanation": "MD5 operates on 512-bit (64-byte) message blocks, divided into sixteen 32-bit sub-words M[0] through M[15]."
+      "explanation": "MD5 padding begins with a single binary '1' bit followed by zeros. In byte form, 10000000_2 = 0x80."
     },
     {
       "id": "q3",
       "type": "mcq-single",
-      "prompt": "In MD5 preprocessing, which single byte is appended immediately following the original message bytes?",
+      "prompt": "What is the size of each processing block and each word in the MD5 compression function?",
       "options": [
-        "0x00",
-        "0x80",
-        "0xFF",
-        "0x5A"
+        "128-bit block and 16-bit word",
+        "256-bit block and 32-bit word",
+        "512-bit block and 32-bit word",
+        "1024-bit block and 64-bit word"
       ],
-      "answerIndex": 1,
-      "explanation": "A single '1' bit followed by seven '0' bits (hexadecimal byte 0x80) is appended as the padding delimiter."
+      "answerIndex": 2,
+      "explanation": "MD5 processes data in 512-bit (64-byte) blocks. Each block is subdivided into sixteen 32-bit integer words."
     },
     {
       "id": "q4",
       "type": "mcq-single",
-      "prompt": "How is the original message length encoded during MD5 padding?",
-      "options": [
-        "As a 32-bit big-endian integer",
-        "As a 64-bit big-endian integer",
-        "As a 64-bit little-endian integer",
-        "As a 128-bit little-endian integer"
-      ],
-      "answerIndex": 2,
-      "explanation": "RFC 1321 specifies that the message length before padding is appended as a 64-bit little-endian integer."
-    },
-    {
-      "id": "q5",
-      "type": "mcq-single",
-      "prompt": "How many total step operations are executed during the 4 rounds of MD5 block compression?",
+      "prompt": "How many total compression steps (operations) are executed for each 512-bit block in MD5?",
       "options": [
         "16 operations",
         "32 operations",
         "64 operations",
-        "80 operations"
+        "128 operations"
       ],
       "answerIndex": 2,
-      "explanation": "MD5 executes 4 rounds with 16 step operations each, resulting in a total of 64 compression operations per block."
+      "explanation": "MD5 executes 4 rounds with 16 steps per round, giving a total of 4 × 16 = 64 operations per 512-bit block."
+    },
+    {
+      "id": "q5",
+      "type": "mcq-single",
+      "prompt": "What phenomenon causes a single-character or single-bit change in the input to flip ~50% of the output hash bits?",
+      "options": [
+        "Collision Resistance",
+        "Avalanche Effect (Strict Avalanche Criterion)",
+        "Pre-image Resistance",
+        "Length Extension Property"
+      ],
+      "answerIndex": 1,
+      "explanation": "The Avalanche Effect ensures that even a microscopic 1-bit input change propagates rapidly across non-linear rounds to randomize roughly half of the digest bits."
     },
     {
       "id": "q6",
       "type": "mcq-single",
-      "prompt": "Which boolean auxiliary function is utilized during Round 1 of MD5 compression?",
+      "prompt": "Which auxiliary Boolean function is used in Round 1 (Steps 0 to 15) of MD5?",
       "options": [
-        "F(B, C, D) = (B AND C) OR ((NOT B) AND D)",
-        "G(B, C, D) = (B AND D) OR (C AND (NOT D))",
-        "H(B, C, D) = B XOR C XOR D",
-        "I(B, C, D) = C XOR (B OR (NOT D))"
+        "F(B, C, D) = (B & C) | (~B & D)",
+        "G(B, C, D) = (B & D) | (C & ~D)",
+        "H(B, C, D) = B ^ C ^ D",
+        "I(B, C, D) = C ^ (B | ~D)"
       ],
       "answerIndex": 0,
-      "explanation": "Round 1 uses the conditional function F(B, C, D) = (B AND C) OR ((NOT B) AND D), which selects bits from C or D based on B."
+      "explanation": "Round 1 uses F(B, C, D) = (B & C) | (~B & D), which functions as a conditional multiplexer (if B is 1 pick C, else pick D)."
     },
     {
       "id": "q7",
       "type": "mcq-single",
-      "prompt": "How are the 64 pseudo-random constant words K[i] derived in MD5?",
+      "prompt": "How are the sixty-four 32-bit constants K[i] in MD5 mathematically derived?",
       "options": [
-        "Linear Feedback Shift Registers",
-        "Integer parts of 2^32 * abs(sin(i + 1)) in radians",
         "Fractional parts of square roots of prime numbers",
-        "MD4 state permutations"
+        "Integer parts of 2^32 × |sin(i + 1)|",
+        "Precomputed DES S-box substitution tables",
+        "Pseudo-random numbers generated by linear congruential generators"
       ],
       "answerIndex": 1,
-      "explanation": "Each constant K[i] is defined as floor(2^32 * abs(sin(i + 1))), where i is in radians from 0 to 63."
+      "explanation": "RFC 1321 defines K[i] = floor(2^32 × |sin(i + 1)|) for 0 ≤ i ≤ 63, providing 'nothing-up-my-sleeve' constants."
     },
     {
       "id": "q8",
       "type": "mcq-single",
-      "prompt": "What phenomenon ensures that changing a single input bit alters approximately 50 percent of the output digest bits?",
+      "prompt": "How is the original message bit-length appended during MD5 preprocessing?",
       "options": [
-        "Birthday Paradox",
-        "Avalanche Effect",
-        "Padding Oracle",
-        "Length Extension"
+        "As a 32-bit big-endian integer",
+        "As a 64-bit little-endian integer",
+        "As a 128-bit big-endian integer",
+        "As an ASCII numeric string"
       ],
       "answerIndex": 1,
-      "explanation": "The Avalanche Effect is a key cryptographic property where a minor input change causes drastic, unpredictable changes across the hash output."
+      "explanation": "The original length (in bits) before padding is appended as a 64-bit little-endian integer modulo 2^64."
     },
     {
       "id": "q9",
       "type": "mcq-single",
-      "prompt": "Why has MD5 been officially deprecated for cryptographic security per RFC 6151?",
+      "prompt": "What byte ordering convention does MD5 use when parsing words and assembling the output digest?",
       "options": [
-        "It requires too much RAM to compute",
-        "Practical collision attacks allow different inputs to produce identical hashes",
-        "It cannot hash messages larger than 1 MB",
-        "The digest is too long for modern protocols"
+        "Big-endian (most significant byte first)",
+        "Little-endian (least significant byte first)",
+        "Middle-endian (PDP-11 architecture)",
+        "Network byte order"
       ],
       "answerIndex": 1,
-      "explanation": "MD5 suffered practical collision attacks (e.g., Wang et al., 2004, and Flame malware), making it vulnerable to forged certificates and collisions."
+      "explanation": "MD5 uses Little-Endian byte order for both message word interpretation and final register string concatenation."
     },
     {
       "id": "q10",
       "type": "mcq-single",
-      "prompt": "Which initial hexadecimal constant is loaded into Register A before MD5 processing begins?",
+      "prompt": "Why is MD5 considered broken and unsafe for digital certificates and password verification today?",
       "options": [
-        "0x67452301",
-        "0xefcdab89",
-        "0x98badcfe",
-        "0x10325476"
+        "Practical collision attacks allow generating two different messages with identical hashes",
+        "Its 128-bit digest size cannot be stored in modern relational databases",
+        "It relies on secret private keys that can be intercepted over the network",
+        "It is too computationally slow compared to bcrypt and Argon2"
       ],
       "answerIndex": 0,
-      "explanation": "Register A is initialized with word constant 0x67452301 (A=0x01, 0x23, 0x45, 0x67 in little-endian order)."
+      "explanation": "Efficient collision attacks discovered by Wang et al. allow attackers to create distinct files or certificates with identical MD5 digests, completely breaking collision resistance."
     }
   ]
 }
