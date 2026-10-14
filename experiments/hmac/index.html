@@ -182,67 +182,7 @@
           </li>
         </ol>
 
-        <!-- HMAC Algorithm Execution Pipeline Flowchart -->
-        <div class="flowchart-container">
-          <div class="flowchart-title">HMAC Algorithm Execution Pipeline — Architectural Flow Diagram</div>
-          <div class="flow-steps-grid">
-            <div class="flow-step-node">
-              <div class="flow-step-badge">1</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Input Message &amp; Key <span class="code-badge">M, K</span></div>
-                <div class="flow-step-desc">Accept arbitrary message <em>M</em> and shared secret key <em>K</em></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">2</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Key Derivation &amp; Padding <span class="code-badge">K'</span></div>
-                <div class="flow-step-desc">If <span class="code-badge">len(K) &gt; 64</span>: hash to 32 bytes; if <span class="code-badge">len(K) &lt; 64</span>: zero-pad to exactly 64 bytes</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">3</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Inner Pad XOR Stream <span class="code-badge">K' &oplus; ipad</span></div>
-                <div class="flow-step-desc">Bitwise XOR derived key with repeating <span class="code-badge">0x36</span> byte stream (64 bytes)</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">4</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Inner Hash Pass <span class="code-badge">H((K' &oplus; ipad) || M)</span></div>
-                <div class="flow-step-desc">Concatenate inner padded key with payload and compute intermediate 256-bit SHA-256 digest</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">5</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Outer Pad XOR Stream <span class="code-badge">K' &oplus; opad</span></div>
-                <div class="flow-step-desc">Bitwise XOR derived key with repeating <span class="code-badge">0x5C</span> byte stream (64 bytes)</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">6</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Outer Hash Pass <span class="code-badge">H((K' &oplus; opad) || inner_hash)</span></div>
-                <div class="flow-step-desc">Wrap and re-hash the outer padded key with the inner digest, eliminating length extension vulnerabilities</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">7</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Final Authentication Tag Output <span class="code-badge">256-Bit Hex</span></div>
-                <div class="flow-step-desc">Output cryptographic 64-character hex authentication tag transmitted alongside message payload</div>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <h3 style="font-size: 16px; font-weight: 700; margin: 24px 0 10px 0;">RFC 2104 Official HMAC-SHA-256 Test Vectors</h3>
         <div class="lab-table-wrapper">

@@ -146,67 +146,7 @@
           </li>
         </ol>
 
-        <!-- SHA-1 Algorithm Execution Pipeline Flowchart -->
-        <div class="flowchart-container">
-          <div class="flowchart-title">SHA-1 Algorithm Execution Pipeline — Architectural Flow Diagram</div>
-          <div class="flow-steps-grid">
-            <div class="flow-step-node">
-              <div class="flow-step-badge">1</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Input Message Stream <span class="code-badge">M</span></div>
-                <div class="flow-step-desc">Arbitrary-length plaintext message string converted to continuous UTF-8 byte stream</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">2</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">0x80 Bit Padding &amp; Zero Fill <span class="code-badge">M || 100...0</span></div>
-                <div class="flow-step-desc">Append single '1' bit (<span class="code-badge">0x80</span>), followed by <em>k</em> zero bits such that length &equiv; 448 mod 512</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">3</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Append 64-bit Big-Endian Length <span class="code-badge">len &amp; 0xFFFFFFFFFFFFFFFF</span></div>
-                <div class="flow-step-desc">Pad original message bit count as big-endian 64-bit integer, yielding exact multiple of 512 bits</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">4</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Message Schedule Expansion <span class="code-badge">W[0..15] &rarr; W[16..79]</span></div>
-                <div class="flow-step-desc">Expand 16 block words into 80 words via <span class="code-badge">W[t] = ROTL&sup1;(W[t-3] &oplus; W[t-8] &oplus; W[t-14] &oplus; W[t-16])</span></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">5</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Initialize Working Registers <span class="code-badge">H0..H4</span></div>
-                <div class="flow-step-desc">Predefined constants: <em>A=0x67452301, B=0xEFCDAB89, C=0x98BADCFE, D=0x10325476, E=0xC3D2E1F0</em></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">6</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">80-Step Non-Linear Compression <span class="code-badge">4 Rounds &times; 20 Steps</span></div>
-                <div class="flow-step-desc">Execute round functions (<em>Ch, Parity, Maj, Parity</em>) with round constants <span class="code-badge">K[t]</span> and rotated registers</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">7</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Merkle&ndash;Damg&aring;rd Accumulation &amp; Digest <span class="code-badge">160-bit Hex</span></div>
-                <div class="flow-step-desc">Feed-forward addition <span class="code-badge">H &larr; (H + reg) mod 2&sup3;&sup2;</span>; concatenate <span class="code-badge">H0 || H1 || H2 || H3 || H4</span> (40 hex chars)</div>
-              </div>
-            </div>
-          </div>
-        </div>
+
 
         <div class="lab-callout">
           <div class="lab-callout-title">RFC 3174 Standard Test Vectors</div>

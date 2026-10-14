@@ -274,60 +274,6 @@
           </li>
         </ol>
 
-        <!-- MAC Algorithm Execution Pipeline Flowchart -->
-        <div class="flowchart-container">
-          <div class="flowchart-title">MAC Operational Pipeline — Architectural Flow Diagram</div>
-          <div class="flow-steps-grid">
-            <div class="flow-step-node">
-              <div class="flow-step-badge">1</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Key &amp; Message Specification <span class="code-badge">M, K</span></div>
-                <div class="flow-step-desc">Sender specifies payload <em>M</em> and accesses shared secret symmetric key <em>K</em></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">2</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">MAC Tag Generation <span class="code-badge">T = MAC(K, M)</span></div>
-                <div class="flow-step-desc">Sender invokes cryptographic MAC algorithm to compute authentic tag <em>T</em></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">3</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Channel Transmission <span class="code-badge">Payload: M || T</span></div>
-                <div class="flow-step-desc">Combined packet transmitted across untrusted network channel vulnerable to active eavesdropping</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">4</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Adversary Tamper Simulation <span class="code-badge">M &rarr; M', T &rarr; T'</span></div>
-                <div class="flow-step-desc">Attacker modifies payload; lacking key <em>K</em>, attacker must guess or forge with random key</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">5</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Receiver Recalculation <span class="code-badge">T'' = MAC(K, M')</span></div>
-                <div class="flow-step-desc">Receiver independently calculates expected tag <em>T''</em> using received message and authentic key <em>K</em></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">6</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Constant-Time Verification <span class="code-badge">T' == T'' ?</span></div>
-                <div class="flow-step-desc">If tags match: authenticity &amp; integrity confirmed; if tags differ: packet rejected immediately</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
         <div class="lab-callout" style="margin-top: 20px;">
           <div class="lab-callout-title">Expected Observations</div>
           <ul style="margin: 6px 0 0; padding-left: 20px; font-size: 13.5px; color: #3f3f46;">

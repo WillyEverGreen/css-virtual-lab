@@ -178,62 +178,7 @@
           <li>
             <strong>Attack Scenarios &amp; Alerts:</strong> Test the failure scenarios (Expired Certificate, MITM Attacker, Tampered MAC) to observe how TLS triggers fatal alerts and terminates the session without exposing application data.
           </li>
-          <li>
         </ol>
-
-        <!-- TLS Handshake Execution Pipeline Flowchart -->
-        <div class="flowchart-container">
-          <div class="flowchart-title">TLS 1.3 Protocol Execution Pipeline — Architectural Flow Diagram</div>
-          <div class="flow-steps-grid">
-            <div class="flow-step-node">
-              <div class="flow-step-badge">1</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">ClientHello Transmission <span class="code-badge">1-RTT Start</span></div>
-                <div class="flow-step-desc">Client generates ephemeral ECDHE key pair (<span class="code-badge">d_c, Q_c</span>) on curve P-256 and sends supported cipher suites + public key share</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">2</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">ServerHello &amp; Key Share Selection <span class="code-badge">Negotiation</span></div>
-                <div class="flow-step-desc">Server chooses <span class="code-badge">TLS_AES_128_GCM_SHA256</span>, generates server ephemeral key (<span class="code-badge">d_s, Q_s</span>), and responds with key share</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">3</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">ECDH Shared Secret Derivation <span class="code-badge">Z = (d_c &times; d_s) &times; G</span></div>
-                <div class="flow-step-desc">Both endpoints independently multiply their private scalar by peer public point to compute identical shared secret <em>Z</em></div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">4</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Server Authentication &amp; CertificateVerify <span class="code-badge">RSA-PSS / ECDSA</span></div>
-                <div class="flow-step-desc">Server transmits X.509 certificate chain and signs handshake transcript hash using private key to prevent MITM impersonation</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">5</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Finished HMAC Message Exchange <span class="code-badge">Handshake Complete</span></div>
-                <div class="flow-step-desc">Both parties compute transcript verification tags using HKDF-derived keys, proving identical key state and transcript integrity</div>
-              </div>
-            </div>
-            <div class="flow-arrow-down">&darr;</div>
-            <div class="flow-step-node">
-              <div class="flow-step-badge">6</div>
-              <div class="flow-step-content">
-                <div class="flow-step-name">Authenticated Application Data Record <span class="code-badge">AES-GCM AEAD</span></div>
-                <div class="flow-step-desc">Subsequent application payload is encapsulated into 16-byte tagged AEAD ciphertext with Perfect Forward Secrecy guaranteed</div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
