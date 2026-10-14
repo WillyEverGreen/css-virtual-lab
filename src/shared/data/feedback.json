@@ -1,0 +1,75 @@
+[
+  {
+    "id": "fb_1792003878716_sx3y4",
+    "slug": "md5",
+    "experimentTitle": "MD5 Hashing & Collisions",
+    "studentName": "Ulric Collaco",
+    "rollNo": "10714",
+    "rating": "up",
+    "ratingScore": 5,
+    "aspect": "Simulation Clarity",
+    "comment": "Testing assessment feedback submission for faculty review.",
+    "timestamp": "2026-10-14T18:51:18.716Z",
+    "receivedAt": "2026-10-14T18:51:18.723Z"
+  },
+  {
+    "id": "fb_10714_01",
+    "slug": "md5",
+    "experimentTitle": "MD5 Hash Algorithm",
+    "studentName": "Ulric Collaco",
+    "rollNo": "10714",
+    "rating": "up",
+    "ratingScore": 5,
+    "aspect": "Simulation Clarity",
+    "comment": "The 64-round step compression pipeline and live avalanche diffusion heatmap made it very clear how each single bit-flip cascades across registers A, B, C, and D.",
+    "timestamp": "2026-10-14T11:20:00.000Z"
+  },
+  {
+    "id": "fb_10707_02",
+    "slug": "ssl-tls",
+    "experimentTitle": "SSL/TLS Protocol Handshake",
+    "studentName": "Sai Balkawade",
+    "rollNo": "10707",
+    "rating": "up",
+    "ratingScore": 5,
+    "aspect": "Protocol Visualizer",
+    "comment": "Both TLS 1.3 1-RTT and TLS 1.2 2-RTT sequence timelines animate smoothly with ECDHE key derivation and live AES-GCM record encryption.",
+    "timestamp": "2026-10-14T12:05:00.000Z"
+  },
+  {
+    "id": "fb_10710_03",
+    "slug": "sha1",
+    "experimentTitle": "SHA-1 Secure Hash Algorithm",
+    "studentName": "Tanush Chavan",
+    "rollNo": "10710",
+    "rating": "up",
+    "ratingScore": 5,
+    "aspect": "Step-by-step Procedure",
+    "comment": "The 80-word expansion schedule (W0 to W79) and 512-bit message padding visualizer help bridge the gap between RFC 3174 specifications and code.",
+    "timestamp": "2026-10-14T13:40:00.000Z"
+  },
+  {
+    "id": "fb_10708_04",
+    "slug": "mac",
+    "experimentTitle": "Message Authentication Code (MAC)",
+    "studentName": "Slora Bar",
+    "rollNo": "10708",
+    "rating": "up",
+    "ratingScore": 5,
+    "aspect": "Interactive Simulation",
+    "comment": "The Alice, Eve (In-Transit Attacker), and Bob tripartite workflow clearly demonstrates why shared key MAC verifies data integrity and detects tampering.",
+    "timestamp": "2026-10-14T14:15:00.000Z"
+  },
+  {
+    "id": "fb_10724_05",
+    "slug": "hmac",
+    "experimentTitle": "HMAC Keyed-Hash MAC",
+    "studentName": "Wendell Dsouza",
+    "rollNo": "10724",
+    "rating": "up",
+    "ratingScore": 5,
+    "aspect": "Theory & Working",
+    "comment": "The inner and outer padding XOR breakdown (K xor ipad and K xor opad) paired with AES-256 Encrypt-then-MAC makes nested hashing easy to grasp.",
+    "timestamp": "2026-10-14T15:00:00.000Z"
+  }
+]

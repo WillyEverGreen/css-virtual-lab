@@ -202,9 +202,14 @@ function QuizView({ slug }: QuizProps) {
   const [revealed, setRevealed] = useState<Record<string, boolean>>({});
   const [submitted, setSubmitted] = useState(false);
   const [feedbackRating, setFeedbackRating] = useState<'up' | 'down' | null>(null);
+  const [feedbackScore, setFeedbackScore] = useState<number>(5);
+  const [feedbackName, setFeedbackName] = useState('');
+  const [feedbackRoll, setFeedbackRoll] = useState('');
+  const [feedbackAspect, setFeedbackAspect] = useState('Simulation Clarity');
   const [feedbackComment, setFeedbackComment] = useState('');
   const [feedbackSaved, setFeedbackSaved] = useState(false);
   const [feedbackSubmitting, setFeedbackSubmitting] = useState(false);
+  const [lastSubmittedEntry, setLastSubmittedEntry] = useState<any>(null);
 
   useEffect(() => {
     let canceled = false;
@@ -241,10 +246,16 @@ function QuizView({ slug }: QuizProps) {
       if (stored) {
         const parsed = JSON.parse(stored);
         if (parsed.rating) setFeedbackRating(parsed.rating);
+        if (parsed.ratingScore) setFeedbackScore(parsed.ratingScore);
+        if (parsed.studentName) setFeedbackName(parsed.studentName);
+        if (parsed.rollNo) setFeedbackRoll(parsed.rollNo);
+        if (parsed.aspect) setFeedbackAspect(parsed.aspect);
         if (parsed.comment) setFeedbackComment(parsed.comment);
+        setLastSubmittedEntry(parsed);
         setFeedbackSaved(true);
       } else {
         setFeedbackRating(null);
+        setFeedbackScore(5);
         setFeedbackComment('');
         setFeedbackSaved(false);
       }
@@ -281,29 +292,43 @@ function QuizView({ slug }: QuizProps) {
     if (!feedbackRating) return;
 
     setFeedbackSubmitting(true);
-    const payload = {
+    const expTitle = (EXPERIMENTS_CONFIG as any)[slug]?.title || slug.toUpperCase();
+    const newEntry = {
+      id: `fb_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       slug,
+      experimentTitle: expTitle,
+      studentName: feedbackName.trim() || 'Student (Batch A)',
+      rollNo: feedbackRoll.trim() || 'Batch A',
       rating: feedbackRating,
-      comment: feedbackComment.trim(),
+      ratingScore: feedbackScore,
+      aspect: feedbackAspect,
+      comment: feedbackComment.trim() || 'No additional remarks provided.',
       timestamp: new Date().toISOString(),
     };
 
     try {
-      localStorage.setItem(`crypto_lab_feedback_${slug}`, JSON.stringify(payload));
-      if (feedbackComment.trim()) {
-        await fetch(`/api/experiments/${slug}/comments`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: 'Lab Student',
-            message: `[Rating: ${feedbackRating === 'up' ? 'Helpful' : 'Needs Work'}] ${feedbackComment.trim()}`,
-          }),
-        }).catch(() => {});
-      }
+      await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEntry),
+      }).catch(() => {});
+
+      localStorage.setItem(`crypto_lab_feedback_${slug}`, JSON.stringify(newEntry));
+      let allFb: any[] = [];
+      try {
+        const stored = localStorage.getItem('crypto_virtual_lab_all_feedback');
+        if (stored) allFb = JSON.parse(stored);
+      } catch (_) {}
+      allFb = [newEntry, ...allFb.filter((x: any) => x.id !== newEntry.id)];
+      localStorage.setItem('crypto_virtual_lab_all_feedback', JSON.stringify(allFb));
+
+      setLastSubmittedEntry(newEntry);
+      setFeedbackSaved(true);
     } catch (_) {
+      setLastSubmittedEntry(newEntry);
+      setFeedbackSaved(true);
     } finally {
       setFeedbackSubmitting(false);
-      setFeedbackSaved(true);
     }
   };
 
@@ -576,7 +601,7 @@ function QuizView({ slug }: QuizProps) {
       <div
         id="assessment-feedback"
         style={{
-          marginTop: '36px',
+          marginTop: '40px',
           paddingTop: '28px',
           borderTop: '2px dashed var(--lab-border, #e4e4e7)',
         }}
@@ -586,147 +611,313 @@ function QuizView({ slug }: QuizProps) {
             background: 'var(--lab-surface, #fff)',
             border: '2px solid #18181b',
             borderRadius: '14px',
-            padding: '24px',
+            padding: '28px',
             boxShadow: '3px 3px 0px #18181b',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#18181b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '6px' }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#18181b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: '#18181b' }}>
-              Module Feedback
+              Experiment Feedback
             </h3>
           </div>
-          <p style={{ margin: '0 0 16px 0', fontSize: '14px', color: '#71717a' }}>
-            Help us improve the cryptographic experiments. Was this module helpful and clear?
+          <p style={{ margin: '0 0 20px 0', fontSize: '14px', color: '#71717a' }}>
+            Help us improve this experiment. Share your observations, feedback, and rating on the simulation.
           </p>
 
           {feedbackSaved ? (
             <div
               style={{
-                padding: '16px 20px',
+                padding: '22px 24px',
                 borderRadius: '10px',
-                background: '#dcfce7',
-                border: '1.5px solid #16a34a',
+                background: '#f0fdf4',
+                border: '2px solid #16a34a',
                 color: '#14532d',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '12px',
+                boxShadow: '2px 2px 0px #16a34a',
               }}
             >
-              <div>
-                <div style={{ fontWeight: 800, fontSize: '15px' }}>
-                  Thank you! Your feedback has been received.
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ fontSize: '18px', fontWeight: 900 }}>✓</span>
+                    <span style={{ fontWeight: 800, fontSize: '16px' }}>
+                      Thank you! Your feedback has been submitted successfully.
+                    </span>
+                  </div>
+                  <div style={{ fontSize: '13.5px', marginTop: '8px', color: '#166534', lineHeight: 1.6 }}>
+                    <div>
+                      <strong>Student:</strong> {lastSubmittedEntry?.studentName || feedbackName || 'Lab Student'} &bull; <strong>Roll No:</strong> {lastSubmittedEntry?.rollNo || feedbackRoll || 'Batch A'}
+                    </div>
+                    <div>
+                      <strong>Rating:</strong> {lastSubmittedEntry?.ratingScore || feedbackScore}/5 &bull; {lastSubmittedEntry?.rating === 'up' || feedbackRating === 'up' ? 'Helpful & Clear' : 'Needs Improvement'} &bull; <strong>Aspect:</strong> {lastSubmittedEntry?.aspect || feedbackAspect}
+                    </div>
+                    {((lastSubmittedEntry && lastSubmittedEntry.comment) || feedbackComment) && (
+                      <div style={{ marginTop: '4px', fontStyle: 'italic' }}>
+                        &ldquo;{lastSubmittedEntry?.comment || feedbackComment}&rdquo;
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div style={{ fontSize: '13px', marginTop: '2px', color: '#166534' }}>
-                  Rating: {feedbackRating === 'up' ? 'Helpful & Clear' : 'Needs Improvement'}
-                  {feedbackComment && ` • "${feedbackComment}"`}
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setFeedbackSaved(false)}
+                  style={{
+                    background: '#fff',
+                    border: '1.5px solid #16a34a',
+                    borderRadius: '6px',
+                    padding: '7px 16px',
+                    fontSize: '13px',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    color: '#14532d',
+                    boxShadow: '1px 1px 0px #16a34a',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  Edit or Submit Another Review
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setFeedbackSaved(false)}
-                style={{
-                  background: '#fff',
-                  border: '1.5px solid #16a34a',
-                  borderRadius: '6px',
-                  padding: '5px 12px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  color: '#14532d',
-                }}
-              >
-                Edit Feedback
-              </button>
             </div>
           ) : (
             <form onSubmit={handleFeedbackSubmit}>
-              <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', flexWrap: 'wrap' }}>
-                <button
-                  type="button"
-                  onClick={() => setFeedbackRating('up')}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '9px 18px',
-                    borderRadius: '8px',
-                    border: `2px solid ${feedbackRating === 'up' ? '#16a34a' : '#18181b'}`,
-                    background: feedbackRating === 'up' ? '#dcfce7' : '#fff',
-                    color: feedbackRating === 'up' ? '#14532d' : '#18181b',
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    boxShadow: feedbackRating === 'up' ? '2px 2px 0 #16a34a' : '2px 2px 0 #18181b',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3"/><path d="M7 10V4.5a2.5 2.5 0 0 1 5 0V7"/></svg>
-                  Helpful &amp; Clear
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setFeedbackRating('down')}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '9px 18px',
-                    borderRadius: '8px',
-                    border: `2px solid ${feedbackRating === 'down' ? '#dc2626' : '#18181b'}`,
-                    background: feedbackRating === 'down' ? '#fee2e2' : '#fff',
-                    color: feedbackRating === 'down' ? '#7f1d1d' : '#18181b',
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    fontSize: '14px',
-                    boxShadow: feedbackRating === 'down' ? '2px 2px 0 #dc2626' : '2px 2px 0 #18181b',
-                    transition: 'all 0.15s ease',
-                  }}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3"/><path d="M17 14v5.5a2.5 2.5 0 0 1-5 0V17"/></svg>
-                  Needs Improvement
-                </button>
-              </div>
-
-              <textarea
-                value={feedbackComment}
-                onChange={(e) => setFeedbackComment(e.target.value)}
-                placeholder="Optional comments or suggestions for this experiment..."
-                rows={3}
+              {/* Student Metadata Inputs */}
+              <div
                 style={{
-                  width: '100%',
-                  padding: '12px 14px',
-                  borderRadius: '8px',
-                  border: '1.5px solid #18181b',
-                  fontSize: '14px',
-                  fontFamily: 'inherit',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                  marginBottom: '14px',
-                  resize: 'vertical',
-                }}
-              />
-
-              <button
-                type="submit"
-                disabled={!feedbackRating || feedbackSubmitting}
-                style={{
-                  padding: '9px 22px',
-                  borderRadius: '8px',
-                  border: '2px solid #18181b',
-                  background: feedbackRating ? '#18181b' : '#e4e4e7',
-                  color: feedbackRating ? '#fff' : '#a1a1aa',
-                  fontSize: '13px',
-                  fontWeight: 700,
-                  cursor: feedbackRating && !feedbackSubmitting ? 'pointer' : 'not-allowed',
-                  boxShadow: feedbackRating ? '2px 2px 0 #18181b' : 'none',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gap: '14px',
+                  marginBottom: '18px',
                 }}
               >
-                {feedbackSubmitting ? 'Submitting...' : 'Submit Feedback'}
-              </button>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: '#18181b' }}>
+                    Student Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={feedbackName}
+                    onChange={(e) => setFeedbackName(e.target.value)}
+                    placeholder="e.g. Ulric Collaco / Sai Balkawade"
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      border: '1.5px solid #18181b',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      background: '#fff',
+                    }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: '#18181b' }}>
+                    Roll No. / Group (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={feedbackRoll}
+                    onChange={(e) => setFeedbackRoll(e.target.value)}
+                    placeholder="e.g. 10714 (Batch A)"
+                    style={{
+                      width: '100%',
+                      padding: '10px 14px',
+                      borderRadius: '8px',
+                      border: '1.5px solid #18181b',
+                      fontSize: '14px',
+                      fontFamily: 'inherit',
+                      outline: 'none',
+                      boxSizing: 'border-box',
+                      background: '#fff',
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Rating Section */}
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '8px', color: '#18181b' }}>
+                  Overall Assessment Rating <span style={{ color: '#dc2626' }}>*</span>
+                </label>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFeedbackRating('up');
+                      if (feedbackScore < 4) setFeedbackScore(5);
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '9px 18px',
+                      borderRadius: '8px',
+                      border: `2px solid ${feedbackRating === 'up' ? '#16a34a' : '#18181b'}`,
+                      background: feedbackRating === 'up' ? '#dcfce7' : '#fff',
+                      color: feedbackRating === 'up' ? '#14532d' : '#18181b',
+                      cursor: 'pointer',
+                      fontWeight: 700,
+                      fontSize: '14px',
+                      boxShadow: feedbackRating === 'up' ? '2px 2px 0 #16a34a' : '2px 2px 0 #18181b',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3"/><path d="M7 10V4.5a2.5 2.5 0 0 1 5 0V7"/></svg>
+                    Helpful &amp; Clear
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFeedbackRating('down');
+                      if (feedbackScore > 3) setFeedbackScore(2);
+                    }}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      padding: '9px 18px',
+                      borderRadius: '8px',
+                      border: `2px solid ${feedbackRating === 'down' ? '#dc2626' : '#18181b'}`,
+                      background: feedbackRating === 'down' ? '#fee2e2' : '#fff',
+                      color: feedbackRating === 'down' ? '#7f1d1d' : '#18181b',
+                      cursor: 'pointer',
+                      fontWeight: 700,
+                      fontSize: '14px',
+                      boxShadow: feedbackRating === 'down' ? '2px 2px 0 #dc2626' : '2px 2px 0 #18181b',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 14V2"/><path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-3"/><path d="M17 14v5.5a2.5 2.5 0 0 1-5 0V17"/></svg>
+                    Needs Improvement
+                  </button>
+
+                  {/* Star Score Selector */}
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', marginLeft: '6px' }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => {
+                          setFeedbackScore(star);
+                          if (!feedbackRating) setFeedbackRating(star >= 3 ? 'up' : 'down');
+                        }}
+                        style={{
+                          background: 'transparent',
+                          border: 'none',
+                          cursor: 'pointer',
+                          padding: '3px',
+                          fontSize: '19px',
+                          color: star <= feedbackScore ? '#eab308' : '#d4d4d8',
+                          transition: 'transform 0.1s',
+                        }}
+                        title={`Rating: ${star} of 5 stars`}
+                      >
+                        ★
+                      </button>
+                    ))}
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: '#52525b', marginLeft: '6px' }}>
+                      {feedbackScore}/5
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Aspect selection chips */}
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '8px', color: '#18181b' }}>
+                  Primary Evaluated Aspect
+                </label>
+                <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+                  {[
+                    'Simulation Clarity',
+                    'Step-by-step Procedure',
+                    'Theoretical Formulation',
+                    'Quiz & Assessment',
+                    'UI & Usability',
+                  ].map((aspect) => {
+                    const isSel = feedbackAspect === aspect;
+                    return (
+                      <button
+                        key={aspect}
+                        type="button"
+                        onClick={() => setFeedbackAspect(aspect)}
+                        style={{
+                          padding: '6px 14px',
+                          borderRadius: '8px',
+                          border: `1.5px solid ${isSel ? '#18181b' : '#d4d4d8'}`,
+                          background: isSel ? '#18181b' : '#fafafa',
+                          color: isSel ? '#fff' : '#3f3f46',
+                          fontSize: '13px',
+                          fontWeight: isSel ? 700 : 500,
+                          cursor: 'pointer',
+                          boxShadow: isSel ? '2px 2px 0px #18181b' : 'none',
+                          transition: 'all 0.12s ease',
+                        }}
+                      >
+                        {aspect}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Comments Textarea */}
+              <div style={{ marginBottom: '18px' }}>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: 700, marginBottom: '6px', color: '#18181b' }}>
+                  Comments &amp; Observations
+                </label>
+                <textarea
+                  value={feedbackComment}
+                  onChange={(e) => setFeedbackComment(e.target.value)}
+                  placeholder="Share feedback on mathematical clarity, simulation controls, or quiz explanations..."
+                  rows={3}
+                  style={{
+                    width: '100%',
+                    padding: '12px 14px',
+                    borderRadius: '8px',
+                    border: '1.5px solid #18181b',
+                    fontSize: '14px',
+                    fontFamily: 'inherit',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                    background: '#fff',
+                    resize: 'vertical',
+                  }}
+                />
+              </div>
+
+              {/* Action row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flexWrap: 'wrap' }}>
+                <button
+                  type="submit"
+                  disabled={!feedbackRating || feedbackSubmitting}
+                  style={{
+                    padding: '10px 26px',
+                    borderRadius: '8px',
+                    border: '2px solid #18181b',
+                    background: feedbackRating ? '#18181b' : '#e4e4e7',
+                    color: feedbackRating ? '#fff' : '#a1a1aa',
+                    fontSize: '14px',
+                    fontWeight: 800,
+                    cursor: feedbackRating && !feedbackSubmitting ? 'pointer' : 'not-allowed',
+                    boxShadow: feedbackRating ? '2px 2px 0 #18181b' : 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  {feedbackSubmitting ? 'Submitting...' : 'Submit Feedback'}
+                </button>
+                {!feedbackRating && (
+                  <span style={{ fontSize: '13px', color: '#71717a' }}>
+                    Select Helpful or Needs Improvement above to submit.
+                  </span>
+                )}
+              </div>
             </form>
           )}
         </div>

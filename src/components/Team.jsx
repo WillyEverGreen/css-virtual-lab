@@ -226,25 +226,32 @@ export default function Team() {
                               <div style={{ fontWeight: 700, fontSize: '14px', lineHeight: 1.2 }}>
                                 {m.name}
                               </div>
-                              {m.githubLogin ? (
-                                <a
-                                  href={`https://github.com/${m.githubLogin}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  style={{
-                                    fontSize: '12px',
-                                    color: '#0969da',
-                                    textDecoration: 'none',
-                                    fontWeight: 600,
-                                  }}
-                                >
-                                  @{m.githubLogin}
-                                </a>
-                              ) : (
-                                <span style={{ fontSize: '11px', color: '#e056fd', fontWeight: 600 }}>
-                                  Pending handle
-                                </span>
-                              )}
+                              <div style={{ fontSize: '12px', color: '#64748b', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                {m.rollNo && m.rollNo !== 'TBD' && (
+                                  <span style={{ fontWeight: 700, color: '#18181b', background: '#f1f5f9', padding: '1px 5px', borderRadius: '4px', fontSize: '11px', border: '1px solid #cbd5e1' }}>
+                                    {m.rollNo}
+                                  </span>
+                                )}
+                                {m.githubLogin ? (
+                                  <a
+                                    href={`https://github.com/${m.githubLogin}`}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    style={{
+                                      fontSize: '12px',
+                                      color: '#0969da',
+                                      textDecoration: 'none',
+                                      fontWeight: 600,
+                                    }}
+                                  >
+                                    @{m.githubLogin}
+                                  </a>
+                                ) : (
+                                  <span style={{ fontSize: '11px', color: '#e056fd', fontWeight: 600 }}>
+                                    Pending handle
+                                  </span>
+                                )}
+                              </div>
                             </div>
                           </div>
 
