@@ -13,18 +13,25 @@ export default function Services() {
               </p>
             </div>
           </div>
-          <div className="services-columns">
+          <div className="services-columns" style={{ width: '100%', maxWidth: '100%', display: 'block', margin: 0, padding: 0 }}>
             <div
               className="w-layout-grid services-grid"
               style={{
+                width: '100%',
+                maxWidth: '100%',
+                display: 'grid',
                 gridTemplateColumns: 'repeat(6, 1fr)',
+                gridColumnGap: 0,
+                gridRowGap: 0,
+                margin: 0,
+                padding: 0,
               }}
             >
-              {/* Row 1: MD5 (2 cols), SHA-1 (2 cols), MAC (2 cols) */}
+              {/* Row 1: MD5 (2 cols), SHA-1 (2 cols), MAC (2 cols) - 100% full width, no gaps */}
               <Link
                 to="/experiments/md5"
                 className="services-callout-item yellow w-inline-block"
-                style={{ gridColumn: 'span 2', textDecoration: 'none', color: 'inherit' }}
+                style={{ gridColumn: 'span 2', textDecoration: 'none', color: 'inherit', margin: 0 }}
               >
                 <div className="services-callout-bg-shape">
                   <img
@@ -41,8 +48,8 @@ export default function Services() {
 
               <Link
                 to="/experiments/sha1"
-                className="services-callout-item middle green w-inline-block"
-                style={{ gridColumn: 'span 2', textDecoration: 'none', color: 'inherit' }}
+                className="services-callout-item green w-inline-block"
+                style={{ gridColumn: 'span 2', textDecoration: 'none', color: 'inherit', margin: 0 }}
               >
                 <div className="services-callout-bg-shape">
                   <img
@@ -60,7 +67,7 @@ export default function Services() {
               <Link
                 to="/experiments/mac"
                 className="services-callout-item purple w-inline-block"
-                style={{ gridColumn: 'span 2', textDecoration: 'none', color: 'inherit' }}
+                style={{ gridColumn: 'span 2', textDecoration: 'none', color: 'inherit', margin: 0 }}
               >
                 <div className="services-callout-bg-shape">
                   <img
@@ -75,11 +82,11 @@ export default function Services() {
                 </div>
               </Link>
 
-              {/* Row 2: HMAC (3 cols), SSL/TLS (3 cols) - wider to fill bottom row perfectly */}
+              {/* Row 2: HMAC (3 cols), SSL/TLS (3 cols) - 100% full width, no gaps */}
               <Link
                 to="/experiments/hmac"
                 className="services-callout-item blue w-inline-block"
-                style={{ gridColumn: 'span 3', textDecoration: 'none', color: 'inherit' }}
+                style={{ gridColumn: 'span 3', textDecoration: 'none', color: 'inherit', margin: 0 }}
               >
                 <div className="services-callout-bg-shape">
                   <img
@@ -96,8 +103,8 @@ export default function Services() {
 
               <Link
                 to="/experiments/ssl-tls"
-                className="services-callout-item middle pink w-inline-block"
-                style={{ gridColumn: 'span 3', textDecoration: 'none', color: 'inherit' }}
+                className="services-callout-item pink w-inline-block"
+                style={{ gridColumn: 'span 3', textDecoration: 'none', color: 'inherit', margin: 0 }}
               >
                 <div className="services-callout-bg-shape">
                   <img

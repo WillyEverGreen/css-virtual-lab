@@ -187,3 +187,30 @@ pre {
   }
 }
 
+@media (min-width: 901px) {
+  .services-columns {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .services-grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: grid !important;
+    grid-template-columns: repeat(6, 1fr) !important;
+    column-gap: 0px !important;
+    row-gap: 0px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .services-callout-item {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    border: 1px solid #000 !important;
+  }
+}
+
+

@@ -134,6 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     clientCrypto: document.getElementById('clientCrypto'),
     serverCrypto: document.getElementById('serverCrypto'),
     networkChannel: document.getElementById('networkChannel'),
+    channelTrack: document.getElementById('channelTrack'),
     messagesContainer: document.getElementById('messagesContainer'),
     svg: document.getElementById('sequenceSvg'),
     inspectorContent: document.getElementById('inspectorContent'),
@@ -528,6 +529,21 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearUI() {
     Elements.messagesContainer.innerHTML = '';
     Elements.svg.innerHTML = '';
+    const track = Elements.channelTrack || document.getElementById('channelTrack');
+    if (track) {
+      track.style.height = '100%';
+      track.style.minHeight = '100%';
+    }
+    if (Elements.svg) {
+      Elements.svg.setAttribute('height', '100%');
+      Elements.svg.style.height = '100%';
+    }
+    if (Elements.messagesContainer) {
+      Elements.messagesContainer.style.height = '100%';
+    }
+    if (Elements.networkChannel) {
+      Elements.networkChannel.scrollTop = 0;
+    }
     Elements.eventLog.innerHTML = '';
     Elements.obsTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #71717a;">Click \'Play Auto-Run\' or \'Step Forward\' to generate real-time observations.</td></tr>';
     Elements.inspectorContent.innerHTML = 'Click any message packet in the sequence to view its structured cryptographic payload.';
@@ -667,6 +683,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function ensureChannelCapacity(y) {
+    const track = Elements.channelTrack || document.getElementById('channelTrack');
+    const needed = Math.max(446, y + 55);
+    if (track) {
+      track.style.height = needed + 'px';
+      track.style.minHeight = needed + 'px';
+    }
+    if (Elements.svg) {
+      Elements.svg.setAttribute('height', needed);
+      Elements.svg.style.height = needed + 'px';
+    }
+    if (Elements.messagesContainer) {
+      Elements.messagesContainer.style.height = needed + 'px';
+    }
+    if (Elements.networkChannel) {
+      const channelVisibleHeight = Elements.networkChannel.clientHeight;
+      if (y + 55 > channelVisibleHeight) {
+        setTimeout(() => {
+          Elements.networkChannel.scrollTo({
+            top: Elements.networkChannel.scrollHeight,
+            behavior: 'smooth'
+          });
+        }, 60);
+      }
+    }
+  }
+
   function animatePacket(step, payload, isError) {
     const pkt = document.createElement('div');
     pkt.className = `msg-packet ${step.encrypted ? 'encrypted' : ''} ${isError ? 'error' : ''}`;
@@ -685,7 +728,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Elements.messagesContainer.appendChild(pkt);
     
-    const startY = 16 + (State.stepIndex * 40);
+    const stepGap = simSequence.length > 6 ? 36 : 46;
+    const startY = 14 + (State.stepIndex * stepGap);
     pkt.style.top = startY + 'px';
     
     if (step.dir === 'c2s') {
@@ -705,6 +749,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     drawArrow(startY + 12, step.dir, isError ? '#ef4444' : (step.encrypted ? '#d97706' : '#2563eb'));
+    ensureChannelCapacity(startY);
   }
 
   function drawArrow(y, dir, color) {
@@ -799,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Elements.inspectorContent.innerHTML = `<div style="margin-bottom: 8px; color: #38bdf8; font-weight: 700; font-size: 11.5px; border-bottom: 1px solid #1e293b; padding-bottom: 6px;">[RECORD: APPLICATION DATA]</div><pre style="margin: 0; font-family: inherit; color: #e2e8f0;">${pkt.dataset.payload}</pre>`;
     reportHeight();
     
-    const startY = 12 + ((State.stepIndex + 1) * 36);
+    const startY = 14 + (State.stepIndex * 36);
     pkt.style.top = startY + 'px';
     Elements.messagesContainer.appendChild(pkt);
     pkt.style.left = '8%';
@@ -809,6 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
       pkt.style.transform = 'translateX(-100%)'; 
     }, 50);
     drawArrow(startY + 12, 'c2s', '#d97706');
+    ensureChannelCapacity(startY);
     State.stepIndex++;
 
     // Server decryption

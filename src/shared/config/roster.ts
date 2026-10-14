@@ -55,19 +55,5 @@ export const DEFAULT_ROSTER: Roster = {
   ],
 };
 
-export const UNASSIGNED_MEMBERS: UnassignedMember[] = [
-  { name: 'Crisann Lobo', githubLogin: 'cl-cl-536' },
-  { name: 'Niranjan Shanbhag', githubLogin: 'NiranjanS20' },
-  { name: 'Nemi Gada', githubLogin: 'NemiGada' },
-  { name: 'Eva Gonsalves', githubLogin: 'Eva29120' },
-  { name: 'Rahul Kewat', githubLogin: 'Rahul9969' },
-  { name: 'Joel Wilson Mulakkal', githubLogin: 'InfiniteSkiller' },
-  { name: 'STEWIN MATHIAS', githubLogin: 'stewin16' },
-  { name: 'Ephraim T Philip', githubLogin: 'ephraimtphilip77-hash' },
-  { name: 'Sherwin Gonsalves', githubLogin: 'SHERV22' },
-  { name: 'sakshi', githubLogin: 'sakshi' },
-  { name: 'Kamesh Nerpagar', githubLogin: 'kameshnerpagar' },
-  { name: 'Sven Tuscano', githubLogin: 'SvenTuscano' },
-  { name: 'Arnav Potale', githubLogin: 'arnavpotale' },
-  { name: 'Daksh Shetty', githubLogin: 'DakShetty' },
-];
+export const UNASSIGNED_MEMBERS: UnassignedMember[] = [];
+
