@@ -5,7 +5,7 @@
 # Virtual Cryptography Laboratory - Fr. CRCE
 
 **Department of Computer Engineering | Fr. Conceicao Rodrigues College of Engineering**  
-*Cryptographic Security Systems (CSS) • Academic Year 2025-2026*
+*Cryptographic Security Systems (CSS) • Batch A • Academic Year 2025-2026*
 
 [Live Platform](https://virtual-cryptography-lab.vercel.app) • [Verification Dashboard](https://virtual-cryptography-lab.vercel.app/dash) • [Team Roster](https://virtual-cryptography-lab.vercel.app/team)
 
@@ -17,9 +17,23 @@
 
 ## About the Project
 
-The **Virtual Cryptography Laboratory** is a hands-on learning platform for Cryptographic Security Systems (CSS). It lets students test and understand real-world cryptographic algorithms directly in the browser through interactive simulations, packet flow visualizers, and live Man-in-the-Middle (MitM) attacker scenarios.
+The **Virtual Cryptography Laboratory** is a hands-on learning platform developed by **Batch A** for Cryptographic Security Systems (CSS). It lets students test and understand core cryptographic algorithms directly in the browser through interactive simulations, packet flow visualizers, and live Man-in-the-Middle (MitM) attacker scenarios.
 
 All cryptographic computations run **100% client-side** using standard bitwise math and the browser's native **Web Crypto API** (`crypto.subtle`), with zero backend dependencies.
+
+---
+
+## Lab Structure
+
+To maintain uniformity across all Batch A experiments, every module follows a standard 7-part structure:
+
+1. **Objective:** Pedagogical goals and expected learning outcomes
+2. **Theory:** Cryptographic definitions, mathematical foundations, and RFC standards
+3. **Procedure:** Step-by-step instructions to perform the lab
+4. **Simulation:** Interactive real-time sandbox with customizable inputs
+5. **Observations:** Execution transcript, round-by-round math, and bit-level tracking
+6. **Assessment:** Multiple-choice quiz to verify understanding
+7. **References:** RFC documents, NIST publications, and academic resources
 
 ---
 
@@ -42,7 +56,7 @@ All cryptographic computations run **100% client-side** using standard bitwise m
 
 ---
 
-## Project Team
+## Batch A Team
 
 ### Deployment & DevOps
 - **Ulric** & **Sai** (Sai Balkawade)
@@ -87,4 +101,5 @@ npm run build
 ## College & Course Info
 - **Institution:** Fr. Conceicao Rodrigues College of Engineering (Fr. CRCE), Bandra, Mumbai
 - **Department:** Department of Computer Engineering
-- **Course:** Cryptographic Security Systems (CSS)
+- **Course:** Cryptographic Security Systems (CSS) - Batch A
+- **Academic Year:** 2025-2026
