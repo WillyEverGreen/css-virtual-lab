@@ -508,9 +508,9 @@ function QuizView({ slug }: QuizProps) {
                           }}
                         >
                           {isRevealed && isThisCorrect
-                            ? 'Correct'
+                            ? '✓'
                             : isRevealed && isSelected && !isThisCorrect
-                            ? 'Incorrect'
+                            ? '✗'
                             : isSelected
                             ? '●'
                             : ''}

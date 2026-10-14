@@ -568,10 +568,10 @@ document.addEventListener('DOMContentLoaded', () => {
           if (selected && parseInt(selected.value, 10) === correctIdx) {
             score++;
             feedbackEl.className = 'quiz-feedback correct';
-            feedbackEl.textContent = `Correct: Correct! ${quizReasons[qKey] || ''}`;
+            feedbackEl.textContent = `✓ Correct! ${quizReasons[qKey] || ''}`;
           } else {
             feedbackEl.className = 'quiz-feedback incorrect';
-            feedbackEl.textContent = `Incorrect: Incorrect. ${quizReasons[qKey] || ''}`;
+            feedbackEl.textContent = `✗ Incorrect. ${quizReasons[qKey] || ''}`;
           }
         }
       });
