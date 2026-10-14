@@ -58,8 +58,8 @@ To maintain uniformity across all Batch A experiments, every module follows a st
 
 ## Batch A Team
 
-### Deployment & DevOps
-- **Ulric** & **Sai** (Sai Balkawade)
+### Deployment Team
+- **Ulric and Sai**
 
 ### Experiment Authors
 - **MD5:** Ruth Dmello, Alciya Dodti, Nicole Dabre, Larissa Dabreo
