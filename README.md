@@ -1,33 +1,18 @@
 <div align="center">
 
-<img src="public/icons/lab-icon.svg" width="130" alt="Virtual Cryptography Laboratory Icon" />
+<img src="public/icons/lab-icon.svg" width="110" alt="Virtual Cryptography Laboratory logo" />
 
-# Virtual Cryptography Laboratory - Fr. CRCE
+# Virtual Cryptography Laboratory
 
-**Department of Computer Engineering | Fr. Conceicao Rodrigues College of Engineering**  
-*Cryptographic Security Systems (CSS) • Batch A • Academic Year 2025-2026*
+**Interactive lab for learning classical and modern ciphers by breaking them.**
 
-[Live Platform](https://virtual-cryptography-lab.vercel.app) • [Verification Dashboard](https://virtual-cryptography-lab.vercel.app/dash) • [Team Roster](https://virtual-cryptography-lab.vercel.app/team)
+<a href="https://virtual-cryptography-lab.vercel.app"><img src="https://img.shields.io/badge/Live_Demo-Open_the_app-2ea44f?style=for-the-badge" alt="Live demo" /></a>
 
-**Deployed by Ulric and Sai**
+<br/>
+
+<img src="docs/screenshot.png" width="860" alt="Virtual Cryptography Laboratory screenshot" />
 
 </div>
-
----
-
-## Screenshots
-
-**Landing page**
-
-![Landing page](docs/screenshots/css-virtual-lab-home.png)
-
-**Interactive cipher modules**
-
-![Interactive cipher modules](docs/screenshots/css-virtual-lab-2.png)
-
-**Mobile view**
-
-![Mobile view](docs/screenshots/css-virtual-lab-mobile.png)
 
 ## About the Project
 
